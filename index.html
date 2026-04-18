@@ -283,31 +283,29 @@
       const l2 = createNode(svg, { x: 350, y: 24, w: 140, h: 42, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
       const runtime = createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
       const adapter = createNode(svg, { x: 175, y: 150, w: 210, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
-      const scheduler = createNode(svg, { x: 165, y: 206, w: 230, h: 52, label: 'Scheduler（优先级 / 时间窗）', fill: '#dbf6e2', stroke: '#67b982' });
-      const drvAICPU = createNode(svg, { x: 35, y: 286, w: 150, h: 36, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      const drvAIC = createNode(svg, { x: 205, y: 286, w: 150, h: 36, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      const drvAIV = createNode(svg, { x: 375, y: 286, w: 150, h: 36, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      const aicpu = createNode(svg, { x: 35, y: 352, w: 150, h: 42, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
-      const aic = createNode(svg, { x: 205, y: 352, w: 150, h: 42, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
-      const aiv = createNode(svg, { x: 375, y: 352, w: 150, h: 42, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
+      const scheduler = createNode(svg, { x: 165, y: 198, w: 230, h: 86, label: 'Scheduler', fill: '#dbf6e2', stroke: '#67b982' });
+      const drvAICPU = createNode(svg, { x: 35, y: 306, w: 150, h: 36, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      const drvAIC = createNode(svg, { x: 205, y: 306, w: 150, h: 36, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      const drvAIV = createNode(svg, { x: 375, y: 306, w: 150, h: 36, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      const aicpu = createNode(svg, { x: 35, y: 372, w: 150, h: 42, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
+      const aic = createNode(svg, { x: 205, y: 372, w: 150, h: 42, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
+      const aiv = createNode(svg, { x: 375, y: 372, w: 150, h: 42, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
 
-      const pri = createNode(svg, { x: 90, y: 262, w: 170, h: 32, label: '策略1：高优先级先发', fill: '#eefaf1', stroke: '#84c89b', fs: 12 });
-      const tw = createNode(svg, { x: 300, y: 262, w: 170, h: 32, label: '策略2：时间窗发射', fill: '#eefaf1', stroke: '#84c89b', fs: 12 });
+      const pri = createNode(svg, { x: 178, y: 248, w: 102, h: 26, label: '高优先级', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
+      const tw = createNode(svg, { x: 282, y: 248, w: 102, h: 26, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
 
       addText(svg, 280, 434, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
 
       connect(svg, { x: 140, y: 66 }, { x: 250, y: 92 }, 'arrowSoft');
       connect(svg, { x: 420, y: 66 }, { x: 310, y: 92 }, 'arrowSoft');
       connect(svg, { x: 280, y: 136 }, { x: 280, y: 150 }, 'arrowSoft');
-      connect(svg, { x: 280, y: 190 }, { x: 280, y: 206 }, 'arrowSoft');
-      connect(svg, { x: 230, y: 258 }, { x: 175, y: 262 }, 'arrowSoft', true);
-      connect(svg, { x: 330, y: 258 }, { x: 385, y: 262 }, 'arrowSoft', true);
-      connect(svg, { x: 175, y: 294 }, { x: 110, y: 286 }, 'arrowSoft');
-      connect(svg, { x: 280, y: 294 }, { x: 280, y: 286 }, 'arrowSoft');
-      connect(svg, { x: 385, y: 294 }, { x: 450, y: 286 }, 'arrowSoft');
-      connect(svg, { x: 110, y: 322 }, { x: 110, y: 352 }, 'arrowSoft');
-      connect(svg, { x: 280, y: 322 }, { x: 280, y: 352 }, 'arrowSoft');
-      connect(svg, { x: 450, y: 322 }, { x: 450, y: 352 }, 'arrowSoft');
+      connect(svg, { x: 280, y: 190 }, { x: 280, y: 198 }, 'arrowSoft');
+      connect(svg, { x: 220, y: 284 }, { x: 110, y: 306 }, 'arrowSoft');
+      connect(svg, { x: 280, y: 284 }, { x: 280, y: 306 }, 'arrowSoft');
+      connect(svg, { x: 340, y: 284 }, { x: 450, y: 306 }, 'arrowSoft');
+      connect(svg, { x: 110, y: 342 }, { x: 110, y: 372 }, 'arrowSoft');
+      connect(svg, { x: 280, y: 342 }, { x: 280, y: 372 }, 'arrowSoft');
+      connect(svg, { x: 450, y: 342 }, { x: 450, y: 372 }, 'arrowSoft');
 
       return {
         svg,
@@ -315,15 +313,13 @@
         pointsB: { x: 420, y: 45 },
         runtime: { x: 280, y: 114 },
         adapter: { x: 280, y: 170 },
-        scheduler: { x: 280, y: 232 },
-        pri: { x: 175, y: 278 },
-        tw: { x: 385, y: 278 },
-        drvAICPU: { x: 110, y: 304 },
-        drvAIC: { x: 280, y: 304 },
-        drvAIV: { x: 450, y: 304 },
-        aicpu: { x: 110, y: 373 },
-        aic: { x: 280, y: 373 },
-        aiv: { x: 450, y: 373 }
+        scheduler: { x: 280, y: 228 },
+        drvAICPU: { x: 110, y: 324 },
+        drvAIC: { x: 280, y: 324 },
+        drvAIV: { x: 450, y: 324 },
+        aicpu: { x: 110, y: 393 },
+        aic: { x: 280, y: 393 },
+        aiv: { x: 450, y: 393 }
       };
     }
 
@@ -374,11 +370,7 @@
           .to(c, { duration: 0.35, attr: { cx: nodes.adapter.x, cy: nodes.adapter.y } })
           .to(c, { duration: 0.45, attr: { cx: nodes.scheduler.x, cy: nodes.scheduler.y } })
           .to(c, {
-            duration: 0.5,
-            attr: { cx: cfg.pri ? nodes.pri.x : nodes.tw.x, cy: cfg.pri ? nodes.pri.y : nodes.tw.y }
-          })
-          .to(c, {
-            duration: 0.45,
+            duration: cfg.pri ? 0.35 : 0.55,
             attr: {
               cx: cfg.target === 'aicpu' ? nodes.drvAICPU.x : (cfg.target === 'aic' ? nodes.drvAIC.x : nodes.drvAIV.x),
               cy: cfg.target === 'aicpu' ? nodes.drvAICPU.y : (cfg.target === 'aic' ? nodes.drvAIC.y : nodes.drvAIV.y)
