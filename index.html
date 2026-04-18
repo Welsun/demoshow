@@ -278,9 +278,9 @@
       const tscpu = createNode(svg, { x: 395, y: 222, w: 105, h: 40, label: 'TSCPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
       const tsfw = createNode(svg, { x: 185, y: 284, w: 190, h: 40, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e' });
       const hwts = createNode(svg, { x: 185, y: 346, w: 190, h: 40, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72' });
-      const aic = createNode(svg, { x: 95, y: 430, w: 150, h: 42, label: 'AICore 队列', fill: '#eceff5', stroke: '#aab5c8' });
-      const aiv = createNode(svg, { x: 315, y: 430, w: 150, h: 42, label: 'AIVector 队列', fill: '#eceff5', stroke: '#aab5c8' });
-      const aicpuQ = createNode(svg, { x: 205, y: 490, w: 150, h: 42, label: 'AICPU 队列', fill: '#eceff5', stroke: '#aab5c8' });
+      const aicpuQ = createNode(svg, { x: 35, y: 460, w: 150, h: 42, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
+      const aic = createNode(svg, { x: 205, y: 460, w: 150, h: 42, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
+      const aiv = createNode(svg, { x: 375, y: 460, w: 150, h: 42, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
 
       addText(svg, 170, 548, '硬调度：算子经过更多层，排队更明显');
       addText(svg, 447, 153, 'EulerOS/RTOS 运行单元', 'caption');
@@ -294,11 +294,11 @@
       connect(svg, { x: 375, y: 242 }, { x: 395, y: 242 }, 'arrowHard', true);
       connect(svg, { x: 280, y: 262 }, { x: 280, y: 284 }, 'arrowHard');
       connect(svg, { x: 280, y: 324 }, { x: 280, y: 346 }, 'arrowHard');
-      connect(svg, { x: 280, y: 386 }, { x: 165, y: 430 }, 'arrowHard');
-      connect(svg, { x: 280, y: 386 }, { x: 390, y: 430 }, 'arrowHard');
-      connect(svg, { x: 280, y: 386 }, { x: 280, y: 490 }, 'arrowHard');
+      connect(svg, { x: 280, y: 386 }, { x: 110, y: 460 }, 'arrowHard');
+      connect(svg, { x: 280, y: 386 }, { x: 280, y: 460 }, 'arrowHard');
+      connect(svg, { x: 280, y: 386 }, { x: 450, y: 460 }, 'arrowHard');
 
-      return { svg, pointsA: { x: 140, y: 45 }, pointsB: { x: 420, y: 45 }, runtime: { x: 280, y: 114 }, euler: { x: 280, y: 180 }, lite: { x: 280, y: 242 }, tsfw: { x: 280, y: 304 }, hwts: { x: 280, y: 366 }, aic: { x: 165, y: 451 }, aiv: { x: 390, y: 451 }, aicpuQ: { x: 280, y: 511 } };
+      return { svg, pointsA: { x: 140, y: 45 }, pointsB: { x: 420, y: 45 }, runtime: { x: 280, y: 114 }, euler: { x: 280, y: 180 }, lite: { x: 280, y: 242 }, tsfw: { x: 280, y: 304 }, hwts: { x: 280, y: 366 }, aic: { x: 280, y: 481 }, aiv: { x: 450, y: 481 }, aicpuQ: { x: 110, y: 481 } };
     }
 
     function setupSoft() {
