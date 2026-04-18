@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASCEND 310P：硬调度 vs 软调度动画对比</title>
+  <style>
+    :root {
+      --bg: #f3f6fb;
+      --panel: #ffffff;
+      --text: #1f2a44;
+      --muted: #5f6b84;
+      --line: #b7c2d8;
+      --hard: #e74c3c;
+      --soft: #27ae60;
+      --shadow: 0 10px 28px rgba(14, 30, 62, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 16px;
+      min-height: 100vh;
+      background: linear-gradient(160deg, #eef3fc 0%, #f9fbff 100%);
+      color: var(--text);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    .page-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 8px 0 4px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 16px;
+    }
+
+    .legend {
+      width: min(1200px, 100%);
+      margin: 0 auto 14px;
+      background: var(--panel);
+      border: 1px solid #d8e0ef;
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 10px 12px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: 13px;
+      color: #33415f;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 100px;
+      border: 1px solid #d9e2f3;
+      background: #f9fbff;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .boards {
+      width: min(1200px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid #d8e0ef;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+    }
+
+    .card h3 {
+      margin: 4px 4px 8px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .hard h3 { color: var(--hard); }
+    .soft h3 { color: var(--soft); }
+
+    svg {
+      width: 100%;
+      height: 560px;
+      background: #fbfdff;
+      border-radius: 8px;
+    }
+
+    .metric {
+      margin: 8px 4px 2px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .badge {
+      font-size: 12px;
+      fill: #102243;
+      font-weight: 600;
+    }
+
+    .caption {
+      font-size: 11px;
+      fill: #2f3d58;
+    }
+
+    @media (max-width: 1100px) {
+      .boards { grid-template-columns: 1fr; }
+      svg { height: 560px; }
+    }
+  </style>
+</head>
+<body>
+  <h1 class="page-title">ASCEND 310P 算子分发流程：硬调度 vs 软调度</h1>
+  <p class="subtitle">左侧：HWTS 硬调度链路；右侧：新增 Scheduler 软调度（支持优先级 + 时间窗）</p>
+
+  <div class="legend">
+    <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
+    <span class="chip"><span class="dot" style="background:#3498db"></span>MatMul 算子</span>
+    <span class="chip"><span class="dot" style="background:#f1c40f"></span>Reduce 算子</span>
+    <span class="chip"><span class="dot" style="background:#9b59b6"></span>Attention 算子</span>
+    <span class="chip">软调度优势：更少链路跳转、可控优先级、可做时间窗调度</span>
+  </div>
+
+  <div class="boards">
+    <section class="card hard">
+      <h3>硬调度</h3>
+      <svg id="hardSVG" viewBox="0 0 560 560"></svg>
+      <p class="metric" id="hardMetric">平均路径层级：7 层（链路较长）</p>
+    </section>
+
+    <section class="card soft">
+      <h3>软调度</h3>
+      <svg id="softSVG" viewBox="0 0 560 560"></svg>
+      <p class="metric" id="softMetric">平均路径层级：5 层（链路更短，可动态策略）</p>
+    </section>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script>
+    const COLORS = {
+      Conv: '#e74c3c',
+      MatMul: '#3498db',
+      Reduce: '#f1c40f',
+      Attention: '#9b59b6'
+    };
+
+    function createNode(svg, cfg) {
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+
+      rect.setAttribute('x', cfg.x);
+      rect.setAttribute('y', cfg.y);
+      rect.setAttribute('width', cfg.w);
+      rect.setAttribute('height', cfg.h);
+      rect.setAttribute('rx', 10);
+      rect.setAttribute('fill', cfg.fill || '#dbe8ff');
+      rect.setAttribute('stroke', cfg.stroke || '#8da8d8');
+      rect.setAttribute('stroke-width', '1.6');
+
+      text.setAttribute('x', cfg.x + cfg.w / 2);
+      text.setAttribute('y', cfg.y + cfg.h / 2 + 5);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('font-size', cfg.fs || 14);
+      text.setAttribute('font-weight', '600');
+      text.setAttribute('fill', '#1f2a44');
+      text.textContent = cfg.label;
+
+      g.appendChild(rect);
+      g.appendChild(text);
+      svg.appendChild(g);
+      return { g, rect, text, x: cfg.x, y: cfg.y, w: cfg.w, h: cfg.h };
+    }
+
+    function addText(svg, x, y, txt, cls = 'caption') {
+      const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      t.setAttribute('x', x);
+      t.setAttribute('y', y);
+      t.setAttribute('class', cls);
+      t.setAttribute('text-anchor', 'middle');
+      t.textContent = txt;
+      svg.appendChild(t);
+    }
+
+    function addDefs(svg, markerId) {
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      const marker = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+      marker.setAttribute('id', markerId);
+      marker.setAttribute('markerWidth', '10');
+      marker.setAttribute('markerHeight', '10');
+      marker.setAttribute('refX', '8');
+      marker.setAttribute('refY', '3');
+      marker.setAttribute('orient', 'auto');
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M0,0 L0,6 L8,3 Z');
+      path.setAttribute('fill', '#6f7f9f');
+      marker.appendChild(path);
+      defs.appendChild(marker);
+      svg.appendChild(defs);
+    }
+
+    function connect(svg, p1, p2, markerId, dashed = false) {
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', p1.x);
+      line.setAttribute('y1', p1.y);
+      line.setAttribute('x2', p2.x);
+      line.setAttribute('y2', p2.y);
+      line.setAttribute('stroke', '#8a99b6');
+      line.setAttribute('stroke-width', '1.6');
+      if (dashed) line.setAttribute('stroke-dasharray', '5,4');
+      line.setAttribute('marker-end', `url(#${markerId})`);
+      svg.appendChild(line);
+    }
+
+    function opCircle(svg, color) {
+      const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('r', '7');
+      c.setAttribute('fill', color);
+      c.setAttribute('stroke', '#1a1a1a33');
+      c.setAttribute('stroke-width', '1');
+      svg.appendChild(c);
+      return c;
+    }
+
+    function addGroupBox(svg, cfg) {
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('x', cfg.x);
+      rect.setAttribute('y', cfg.y);
+      rect.setAttribute('width', cfg.w);
+      rect.setAttribute('height', cfg.h);
+      rect.setAttribute('rx', 12);
+      rect.setAttribute('fill', cfg.fill || '#f7fafc');
+      rect.setAttribute('stroke', cfg.stroke || '#a8b7d3');
+      rect.setAttribute('stroke-width', '1.5');
+      rect.setAttribute('stroke-dasharray', '6,4');
+      svg.appendChild(rect);
+
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', cfg.x + 10);
+      text.setAttribute('y', cfg.y + 18);
+      text.setAttribute('font-size', '12');
+      text.setAttribute('font-weight', '700');
+      text.setAttribute('fill', '#344c7a');
+      text.textContent = cfg.label;
+      svg.appendChild(text);
+    }
+
+    function setupHard() {
+      const svg = document.getElementById('hardSVG');
+      addDefs(svg, 'arrowHard');
+
+      const l1 = createNode(svg, { x: 70, y: 24, w: 140, h: 42, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
+      const l2 = createNode(svg, { x: 350, y: 24, w: 140, h: 42, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
+      const runtime = createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
+      const euler = createNode(svg, { x: 185, y: 160, w: 190, h: 40, label: 'EulerOS / RTOS', fill: '#ffe0f0', stroke: '#d588b2' });
+      const lite = createNode(svg, { x: 185, y: 222, w: 190, h: 40, label: 'LiteOS', fill: '#dcecff', stroke: '#88addf' });
+      const aicpu = createNode(svg, { x: 395, y: 160, w: 105, h: 40, label: 'AICPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
+      const tscpu = createNode(svg, { x: 395, y: 222, w: 105, h: 40, label: 'TSCPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
+      const tsfw = createNode(svg, { x: 185, y: 284, w: 190, h: 40, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e' });
+      const hwts = createNode(svg, { x: 185, y: 346, w: 190, h: 40, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72' });
+      const aic = createNode(svg, { x: 95, y: 430, w: 150, h: 42, label: 'AICore 队列', fill: '#eceff5', stroke: '#aab5c8' });
+      const aiv = createNode(svg, { x: 315, y: 430, w: 150, h: 42, label: 'AIVector 队列', fill: '#eceff5', stroke: '#aab5c8' });
+      const aicpuQ = createNode(svg, { x: 205, y: 490, w: 150, h: 42, label: 'AICPU 队列', fill: '#eceff5', stroke: '#aab5c8' });
+
+      addText(svg, 170, 548, '硬调度：算子经过更多层，排队更明显');
+      addText(svg, 447, 153, 'EulerOS/RTOS 运行单元', 'caption');
+      addText(svg, 447, 215, 'LiteOS 运行单元', 'caption');
+
+      connect(svg, { x: 140, y: 66 }, { x: 250, y: 92 }, 'arrowHard');
+      connect(svg, { x: 420, y: 66 }, { x: 310, y: 92 }, 'arrowHard');
+      connect(svg, { x: 280, y: 136 }, { x: 280, y: 160 }, 'arrowHard');
+      connect(svg, { x: 280, y: 200 }, { x: 280, y: 222 }, 'arrowHard');
+      connect(svg, { x: 375, y: 180 }, { x: 395, y: 180 }, 'arrowHard', true);
+      connect(svg, { x: 375, y: 242 }, { x: 395, y: 242 }, 'arrowHard', true);
+      connect(svg, { x: 280, y: 262 }, { x: 280, y: 284 }, 'arrowHard');
+      connect(svg, { x: 280, y: 324 }, { x: 280, y: 346 }, 'arrowHard');
+      connect(svg, { x: 280, y: 386 }, { x: 165, y: 430 }, 'arrowHard');
+      connect(svg, { x: 280, y: 386 }, { x: 390, y: 430 }, 'arrowHard');
+      connect(svg, { x: 280, y: 386 }, { x: 280, y: 490 }, 'arrowHard');
+
+      return { svg, pointsA: { x: 140, y: 45 }, pointsB: { x: 420, y: 45 }, runtime: { x: 280, y: 114 }, euler: { x: 280, y: 180 }, lite: { x: 280, y: 242 }, tsfw: { x: 280, y: 304 }, hwts: { x: 280, y: 366 }, aic: { x: 165, y: 451 }, aiv: { x: 390, y: 451 }, aicpuQ: { x: 280, y: 511 } };
+    }
+
+    function setupSoft() {
+      const svg = document.getElementById('softSVG');
+      addDefs(svg, 'arrowSoft');
+
+      const l1 = createNode(svg, { x: 70, y: 24, w: 140, h: 42, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
+      const l2 = createNode(svg, { x: 350, y: 24, w: 140, h: 42, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
+      const runtime = createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
+      addGroupBox(svg, { x: 20, y: 138, w: 510, h: 220, label: 'RTOS', fill: '#f6f9ff', stroke: '#8fa6ce' });
+      const adapter = createNode(svg, { x: 175, y: 150, w: 210, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
+      const scheduler = createNode(svg, { x: 165, y: 198, w: 230, h: 86, label: 'Scheduler', fill: '#dbf6e2', stroke: '#67b982' });
+      scheduler.text.setAttribute('y', 220);
+      const queue = createNode(svg, { x: 182, y: 224, w: 196, h: 18, label: '调度缓冲队列（可重排）', fill: '#f4fcf7', stroke: '#9fd8b2', fs: 10 });
+      const drvAICPU = createNode(svg, { x: 35, y: 306, w: 150, h: 36, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      const drvAIC = createNode(svg, { x: 205, y: 306, w: 150, h: 36, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      const drvAIV = createNode(svg, { x: 375, y: 306, w: 150, h: 36, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      const aicpu = createNode(svg, { x: 35, y: 372, w: 150, h: 42, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
+      const aic = createNode(svg, { x: 205, y: 372, w: 150, h: 42, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
+      const aiv = createNode(svg, { x: 375, y: 372, w: 150, h: 42, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
+
+      const pri = createNode(svg, { x: 178, y: 248, w: 102, h: 26, label: '高优先级', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
+      const tw = createNode(svg, { x: 282, y: 248, w: 102, h: 26, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
+
+      addText(svg, 280, 434, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
+      addText(svg, 280, 452, '队列内支持高优先级任务前置调度', 'caption');
+
+      connect(svg, { x: 140, y: 66 }, { x: 250, y: 92 }, 'arrowSoft');
+      connect(svg, { x: 420, y: 66 }, { x: 310, y: 92 }, 'arrowSoft');
+      connect(svg, { x: 280, y: 136 }, { x: 280, y: 150 }, 'arrowSoft');
+      connect(svg, { x: 280, y: 190 }, { x: 280, y: 198 }, 'arrowSoft');
+      connect(svg, { x: 220, y: 284 }, { x: 110, y: 306 }, 'arrowSoft');
+      connect(svg, { x: 280, y: 284 }, { x: 280, y: 306 }, 'arrowSoft');
+      connect(svg, { x: 340, y: 284 }, { x: 450, y: 306 }, 'arrowSoft');
+      connect(svg, { x: 110, y: 342 }, { x: 110, y: 372 }, 'arrowSoft');
+      connect(svg, { x: 280, y: 342 }, { x: 280, y: 372 }, 'arrowSoft');
+      connect(svg, { x: 450, y: 342 }, { x: 450, y: 372 }, 'arrowSoft');
+
+      return {
+        svg,
+        pointsA: { x: 140, y: 45 },
+        pointsB: { x: 420, y: 45 },
+        runtime: { x: 280, y: 114 },
+        adapter: { x: 280, y: 170 },
+        scheduler: { x: 280, y: 228 },
+        queueHigh: { x: 232, y: 233 },
+        queueNormal: { x: 328, y: 233 },
+        drvAICPU: { x: 110, y: 324 },
+        drvAIC: { x: 280, y: 324 },
+        drvAIV: { x: 450, y: 324 },
+        aicpu: { x: 110, y: 393 },
+        aic: { x: 280, y: 393 },
+        aiv: { x: 450, y: 393 }
+      };
+    }
+
+    function hardAnimation(nodes) {
+      const types = Object.keys(COLORS);
+      for (let i = 0; i < 8; i++) {
+        const t = types[i % types.length];
+        const fromL1 = i % 2 === 0;
+        const target = i % 3;
+        const c = opCircle(nodes.svg, COLORS[t]);
+
+        gsap.timeline({ repeat: -1, delay: i * 0.35 })
+          .set(c, { attr: { cx: fromL1 ? nodes.pointsA.x : nodes.pointsB.x, cy: fromL1 ? nodes.pointsA.y : nodes.pointsB.y }, opacity: 0.95 })
+          .to(c, { duration: 0.45, attr: { cx: nodes.runtime.x, cy: nodes.runtime.y } })
+          .to(c, { duration: 0.55, attr: { cx: nodes.euler.x, cy: nodes.euler.y } })
+          .to(c, { duration: 0.55, attr: { cx: nodes.lite.x, cy: nodes.lite.y } })
+          .to(c, { duration: 0.55, attr: { cx: nodes.tsfw.x, cy: nodes.tsfw.y } })
+          .to(c, { duration: 0.55, attr: { cx: nodes.hwts.x, cy: nodes.hwts.y } })
+          .to(c, {
+            duration: 1.1,
+            attr: {
+              cx: target === 0 ? nodes.aic.x : (target === 1 ? nodes.aiv.x : nodes.aicpuQ.x),
+              cy: target === 0 ? nodes.aic.y : (target === 1 ? nodes.aiv.y : nodes.aicpuQ.y)
+            },
+            ease: 'power1.inOut'
+          })
+          .to(c, { duration: 0.7, opacity: 0.55 })
+          .to(c, { duration: 0.45, opacity: 0 });
+      }
+    }
+
+    function softAnimation(nodes) {
+      const ops = [
+        { type: 'Conv', pri: true, target: 'aic' },
+        { type: 'Attention', pri: false, target: 'aiv' },
+        { type: 'MatMul', pri: true, target: 'aicpu' },
+        { type: 'Reduce', pri: false, target: 'aic' }
+      ];
+
+      for (let i = 0; i < 8; i++) {
+        const cfg = ops[i % ops.length];
+        const fromL1 = i % 2 === 0;
+        const c = opCircle(nodes.svg, COLORS[cfg.type]);
+
+        gsap.timeline({ repeat: -1, delay: i * 0.28 })
+          .set(c, { attr: { cx: fromL1 ? nodes.pointsA.x : nodes.pointsB.x, cy: fromL1 ? nodes.pointsA.y : nodes.pointsB.y }, opacity: 0.95 })
+          .to(c, { duration: 0.35, attr: { cx: nodes.runtime.x, cy: nodes.runtime.y } })
+          .to(c, { duration: 0.35, attr: { cx: nodes.adapter.x, cy: nodes.adapter.y } })
+          .to(c, { duration: 0.45, attr: { cx: nodes.scheduler.x, cy: nodes.scheduler.y } })
+          .to(c, {
+            duration: 0.35,
+            attr: {
+              cx: cfg.pri ? nodes.queueHigh.x : nodes.queueNormal.x,
+              cy: cfg.pri ? nodes.queueHigh.y : nodes.queueNormal.y
+            }
+          })
+          .to(c, {
+            duration: cfg.pri ? 0.35 : 0.55,
+            attr: {
+              cx: cfg.target === 'aicpu' ? nodes.drvAICPU.x : (cfg.target === 'aic' ? nodes.drvAIC.x : nodes.drvAIV.x),
+              cy: cfg.target === 'aicpu' ? nodes.drvAICPU.y : (cfg.target === 'aic' ? nodes.drvAIC.y : nodes.drvAIV.y)
+            }
+          })
+          .to(c, {
+            duration: 0.6,
+            attr: {
+              cx: cfg.target === 'aicpu' ? nodes.aicpu.x : (cfg.target === 'aic' ? nodes.aic.x : nodes.aiv.x),
+              cy: cfg.target === 'aicpu' ? nodes.aicpu.y : (cfg.target === 'aic' ? nodes.aic.y : nodes.aiv.y)
+            },
+            ease: 'power2.out'
+          })
+          .to(c, { duration: 0.25, opacity: 0 });
+      }
+    }
+
+    const hardNodes = setupHard();
+    const softNodes = setupSoft();
+    hardAnimation(hardNodes);
+    softAnimation(softNodes);
+  </script>
+</body>
+</html>
