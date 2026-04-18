@@ -91,8 +91,9 @@
     }
 
     .card h3 {
-      margin: 2px 4px 8px;
+      margin: 4px 4px 8px;
       font-size: 18px;
+      text-align: center;
     }
 
     .hard h3 { color: var(--hard); }
@@ -100,7 +101,7 @@
 
     svg {
       width: 100%;
-      height: 620px;
+      height: 560px;
       background: #fbfdff;
       border-radius: 8px;
     }
@@ -124,7 +125,7 @@
 
     @media (max-width: 1100px) {
       .boards { grid-template-columns: 1fr; }
-      svg { height: 600px; }
+      svg { height: 560px; }
     }
   </style>
 </head>
@@ -142,14 +143,14 @@
 
   <div class="boards">
     <section class="card hard">
-      <h3>硬调度（经 TSFW/HWTS）</h3>
-      <svg id="hardSVG" viewBox="0 0 560 620"></svg>
+      <h3>硬调度</h3>
+      <svg id="hardSVG" viewBox="0 0 560 560"></svg>
       <p class="metric" id="hardMetric">平均路径层级：7 层（链路较长）</p>
     </section>
 
     <section class="card soft">
-      <h3>软调度（Scheduler 直接分发到 AI Core）</h3>
-      <svg id="softSVG" viewBox="0 0 560 620"></svg>
+      <h3>软调度</h3>
+      <svg id="softSVG" viewBox="0 0 560 560"></svg>
       <p class="metric" id="softMetric">平均路径层级：5 层（链路更短，可动态策略）</p>
     </section>
   </div>
