@@ -188,7 +188,7 @@
       g.appendChild(rect);
       g.appendChild(text);
       svg.appendChild(g);
-      return { g, rect, x: cfg.x, y: cfg.y, w: cfg.w, h: cfg.h };
+      return { g, rect, text, x: cfg.x, y: cfg.y, w: cfg.w, h: cfg.h };
     }
 
     function addText(svg, x, y, txt, cls = 'caption') {
@@ -284,6 +284,8 @@
       const runtime = createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
       const adapter = createNode(svg, { x: 175, y: 150, w: 210, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
       const scheduler = createNode(svg, { x: 165, y: 198, w: 230, h: 86, label: 'Scheduler', fill: '#dbf6e2', stroke: '#67b982' });
+      scheduler.text.setAttribute('y', 220);
+      const queue = createNode(svg, { x: 182, y: 224, w: 196, h: 18, label: '调度缓冲队列（可重排）', fill: '#f4fcf7', stroke: '#9fd8b2', fs: 10 });
       const drvAICPU = createNode(svg, { x: 35, y: 306, w: 150, h: 36, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
       const drvAIC = createNode(svg, { x: 205, y: 306, w: 150, h: 36, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
       const drvAIV = createNode(svg, { x: 375, y: 306, w: 150, h: 36, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
@@ -295,6 +297,7 @@
       const tw = createNode(svg, { x: 282, y: 248, w: 102, h: 26, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
 
       addText(svg, 280, 434, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
+      addText(svg, 280, 452, '队列内支持高优先级任务前置调度', 'caption');
 
       connect(svg, { x: 140, y: 66 }, { x: 250, y: 92 }, 'arrowSoft');
       connect(svg, { x: 420, y: 66 }, { x: 310, y: 92 }, 'arrowSoft');
@@ -314,6 +317,8 @@
         runtime: { x: 280, y: 114 },
         adapter: { x: 280, y: 170 },
         scheduler: { x: 280, y: 228 },
+        queueHigh: { x: 232, y: 233 },
+        queueNormal: { x: 328, y: 233 },
         drvAICPU: { x: 110, y: 324 },
         drvAIC: { x: 280, y: 324 },
         drvAIV: { x: 450, y: 324 },
@@ -369,6 +374,13 @@
           .to(c, { duration: 0.35, attr: { cx: nodes.runtime.x, cy: nodes.runtime.y } })
           .to(c, { duration: 0.35, attr: { cx: nodes.adapter.x, cy: nodes.adapter.y } })
           .to(c, { duration: 0.45, attr: { cx: nodes.scheduler.x, cy: nodes.scheduler.y } })
+          .to(c, {
+            duration: 0.35,
+            attr: {
+              cx: cfg.pri ? nodes.queueHigh.x : nodes.queueNormal.x,
+              cy: cfg.pri ? nodes.queueHigh.y : nodes.queueNormal.y
+            }
+          })
           .to(c, {
             duration: cfg.pri ? 0.35 : 0.55,
             attr: {
