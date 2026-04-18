@@ -278,10 +278,11 @@
       const tscpu = createNode(svg, { x: 395, y: 222, w: 105, h: 40, label: 'TSCPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
       const tsfw = createNode(svg, { x: 185, y: 284, w: 190, h: 40, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e' });
       const hwts = createNode(svg, { x: 185, y: 346, w: 190, h: 40, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72' });
-      const aic = createNode(svg, { x: 95, y: 446, w: 150, h: 42, label: 'AICore 队列', fill: '#eceff5', stroke: '#aab5c8' });
-      const aiv = createNode(svg, { x: 315, y: 446, w: 150, h: 42, label: 'AIVector 队列', fill: '#eceff5', stroke: '#aab5c8' });
+      const aic = createNode(svg, { x: 95, y: 430, w: 150, h: 42, label: 'AICore 队列', fill: '#eceff5', stroke: '#aab5c8' });
+      const aiv = createNode(svg, { x: 315, y: 430, w: 150, h: 42, label: 'AIVector 队列', fill: '#eceff5', stroke: '#aab5c8' });
+      const aicpuQ = createNode(svg, { x: 205, y: 490, w: 150, h: 42, label: 'AICPU 队列', fill: '#eceff5', stroke: '#aab5c8' });
 
-      addText(svg, 170, 520, '硬调度：算子经过更多层，排队更明显');
+      addText(svg, 170, 548, '硬调度：算子经过更多层，排队更明显');
       addText(svg, 447, 153, 'EulerOS/RTOS 运行单元', 'caption');
       addText(svg, 447, 215, 'LiteOS 运行单元', 'caption');
 
@@ -293,10 +294,11 @@
       connect(svg, { x: 375, y: 242 }, { x: 395, y: 242 }, 'arrowHard', true);
       connect(svg, { x: 280, y: 262 }, { x: 280, y: 284 }, 'arrowHard');
       connect(svg, { x: 280, y: 324 }, { x: 280, y: 346 }, 'arrowHard');
-      connect(svg, { x: 280, y: 386 }, { x: 165, y: 446 }, 'arrowHard');
-      connect(svg, { x: 280, y: 386 }, { x: 390, y: 446 }, 'arrowHard');
+      connect(svg, { x: 280, y: 386 }, { x: 165, y: 430 }, 'arrowHard');
+      connect(svg, { x: 280, y: 386 }, { x: 390, y: 430 }, 'arrowHard');
+      connect(svg, { x: 280, y: 386 }, { x: 280, y: 490 }, 'arrowHard');
 
-      return { svg, pointsA: { x: 140, y: 45 }, pointsB: { x: 420, y: 45 }, runtime: { x: 280, y: 114 }, euler: { x: 280, y: 180 }, lite: { x: 280, y: 242 }, tsfw: { x: 280, y: 304 }, hwts: { x: 280, y: 366 }, aic: { x: 165, y: 467 }, aiv: { x: 390, y: 467 } };
+      return { svg, pointsA: { x: 140, y: 45 }, pointsB: { x: 420, y: 45 }, runtime: { x: 280, y: 114 }, euler: { x: 280, y: 180 }, lite: { x: 280, y: 242 }, tsfw: { x: 280, y: 304 }, hwts: { x: 280, y: 366 }, aic: { x: 165, y: 451 }, aiv: { x: 390, y: 451 }, aicpuQ: { x: 280, y: 511 } };
     }
 
     function setupSoft() {
@@ -358,7 +360,7 @@
       for (let i = 0; i < 8; i++) {
         const t = types[i % types.length];
         const fromL1 = i % 2 === 0;
-        const destAIC = i % 3 !== 0;
+        const target = i % 3;
         const c = opCircle(nodes.svg, COLORS[t]);
 
         gsap.timeline({ repeat: -1, delay: i * 0.35 })
@@ -371,8 +373,8 @@
           .to(c, {
             duration: 1.1,
             attr: {
-              cx: destAIC ? nodes.aic.x : nodes.aiv.x,
-              cy: destAIC ? nodes.aic.y : nodes.aiv.y
+              cx: target === 0 ? nodes.aic.x : (target === 1 ? nodes.aiv.x : nodes.aicpuQ.x),
+              cy: target === 0 ? nodes.aic.y : (target === 1 ? nodes.aiv.y : nodes.aicpuQ.y)
             },
             ease: 'power1.inOut'
           })
