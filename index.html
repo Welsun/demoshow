@@ -242,6 +242,29 @@
       return c;
     }
 
+    function addGroupBox(svg, cfg) {
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('x', cfg.x);
+      rect.setAttribute('y', cfg.y);
+      rect.setAttribute('width', cfg.w);
+      rect.setAttribute('height', cfg.h);
+      rect.setAttribute('rx', 12);
+      rect.setAttribute('fill', cfg.fill || '#f7fafc');
+      rect.setAttribute('stroke', cfg.stroke || '#a8b7d3');
+      rect.setAttribute('stroke-width', '1.5');
+      rect.setAttribute('stroke-dasharray', '6,4');
+      svg.appendChild(rect);
+
+      const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      text.setAttribute('x', cfg.x + 10);
+      text.setAttribute('y', cfg.y + 18);
+      text.setAttribute('font-size', '12');
+      text.setAttribute('font-weight', '700');
+      text.setAttribute('fill', '#344c7a');
+      text.textContent = cfg.label;
+      svg.appendChild(text);
+    }
+
     function setupHard() {
       const svg = document.getElementById('hardSVG');
       addDefs(svg, 'arrowHard');
@@ -283,6 +306,7 @@
       const l1 = createNode(svg, { x: 70, y: 24, w: 140, h: 42, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
       const l2 = createNode(svg, { x: 350, y: 24, w: 140, h: 42, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
       const runtime = createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
+      addGroupBox(svg, { x: 20, y: 138, w: 510, h: 220, label: 'RTOS', fill: '#f6f9ff', stroke: '#8fa6ce' });
       const adapter = createNode(svg, { x: 175, y: 150, w: 210, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
       const scheduler = createNode(svg, { x: 165, y: 198, w: 230, h: 86, label: 'Scheduler', fill: '#dbf6e2', stroke: '#67b982' });
       scheduler.text.setAttribute('y', 220);
