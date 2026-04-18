@@ -250,17 +250,23 @@
       const runtime = createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
       const euler = createNode(svg, { x: 185, y: 160, w: 190, h: 40, label: 'EulerOS / RTOS', fill: '#ffe0f0', stroke: '#d588b2' });
       const lite = createNode(svg, { x: 185, y: 222, w: 190, h: 40, label: 'LiteOS', fill: '#dcecff', stroke: '#88addf' });
+      const aicpu = createNode(svg, { x: 395, y: 160, w: 105, h: 40, label: 'AICPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
+      const tscpu = createNode(svg, { x: 395, y: 222, w: 105, h: 40, label: 'TSCPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
       const tsfw = createNode(svg, { x: 185, y: 284, w: 190, h: 40, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e' });
       const hwts = createNode(svg, { x: 185, y: 346, w: 190, h: 40, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72' });
       const aic = createNode(svg, { x: 95, y: 446, w: 150, h: 42, label: 'AICore 队列', fill: '#eceff5', stroke: '#aab5c8' });
       const aiv = createNode(svg, { x: 315, y: 446, w: 150, h: 42, label: 'AIVector 队列', fill: '#eceff5', stroke: '#aab5c8' });
 
       addText(svg, 170, 520, '硬调度：算子经过更多层，排队更明显');
+      addText(svg, 447, 153, 'EulerOS/RTOS 运行单元', 'caption');
+      addText(svg, 447, 215, 'LiteOS 运行单元', 'caption');
 
       connect(svg, { x: 140, y: 66 }, { x: 250, y: 92 }, 'arrowHard');
       connect(svg, { x: 420, y: 66 }, { x: 310, y: 92 }, 'arrowHard');
       connect(svg, { x: 280, y: 136 }, { x: 280, y: 160 }, 'arrowHard');
       connect(svg, { x: 280, y: 200 }, { x: 280, y: 222 }, 'arrowHard');
+      connect(svg, { x: 375, y: 180 }, { x: 395, y: 180 }, 'arrowHard', true);
+      connect(svg, { x: 375, y: 242 }, { x: 395, y: 242 }, 'arrowHard', true);
       connect(svg, { x: 280, y: 262 }, { x: 280, y: 284 }, 'arrowHard');
       connect(svg, { x: 280, y: 324 }, { x: 280, y: 346 }, 'arrowHard');
       connect(svg, { x: 280, y: 386 }, { x: 165, y: 446 }, 'arrowHard');
