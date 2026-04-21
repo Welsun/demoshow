@@ -151,20 +151,20 @@
       font-size: 14px;
     }
 
-    .bg-layout { display: grid; gap: 10px; }
+    .bg-layout { display: grid; gap: 8px; }
 
     .ppt-panel {
       border: 1px solid #d8e0ef;
       background: #fbfdff;
       border-radius: 12px;
-      padding: 14px;
+      padding: 12px;
     }
 
     .ppt-tools {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .ppt-btn {
@@ -186,45 +186,47 @@
     .ppt-frame {
       border: 1px solid #d8e4f8;
       border-radius: 10px;
-      min-height: clamp(260px, 46vw, 640px);
+      min-height: clamp(200px, 33vw, 420px);
       overflow: hidden;
       background: #fff;
       display: grid;
       place-items: center;
       color: #5e6f92;
-      padding: 12px;
+      padding: 8px;
     }
 
     .ppt-frame iframe,
     .ppt-frame img {
       width: 100%;
       height: 100%;
-      max-height: clamp(240px, 44vw, 620px);
+      max-height: clamp(190px, 32vw, 400px);
       border: 0;
       border-radius: 8px;
       object-fit: contain;
       background: #f9fbff;
+      transform-origin: center;
+      transition: transform 0.25s ease;
     }
 
     .bg-card {
       border: 1px solid #d8e0ef;
       background: #fff;
       border-radius: 10px;
-      padding: 10px;
+      padding: 8px;
     }
 
     .pain-card { display: none; }
     .pain-card.active { display: block; }
 
     .pain-stack {
-      margin-top: 10px;
+      margin-top: 8px;
       display: grid;
-      gap: 8px;
+      gap: 6px;
     }
 
     .bg-card h3 {
-      margin: 0 0 6px;
-      font-size: 15px;
+      margin: 0 0 4px;
+      font-size: 14px;
       color: #24447f;
     }
 
@@ -232,7 +234,7 @@
       margin: 0;
       padding-left: 18px;
       color: #3b4d73;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .legend {
@@ -560,9 +562,7 @@
             <button class="ppt-btn active" data-slide="slide1">业务背景PPT-1</button>
             <button class="ppt-btn" data-slide="slide2">业务背景PPT-2</button>
           </div>
-          <div class="ppt-frame" id="pptFrame">
-            <img src="./assets/background-intro-1.png" alt="业务背景PPT-1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张PPT导出图片。</div>'" />
-          </div>
+          <div class="ppt-frame" id="pptFrame"></div>
           <div class="pain-stack">
             <article class="bg-card pain-card active" data-pain="pain1">
               <h3>业务痛点1-资源利用率低</h3>
@@ -983,23 +983,53 @@
     const frame = document.getElementById('pptFrame');
     const slideButtons = document.querySelectorAll('#pptSlides .ppt-btn');
     const painCards = document.querySelectorAll('.pain-card');
-    const slideTemplates = {
-      slide1: '<img src="./assets/background-intro-1.png" alt="业务背景PPT-1" onerror="this.outerHTML=\'<div style=\"color:#5e6f92\">未找到 assets/background-intro-1.png，请放入第一张PPT导出图片。</div>\'" />',
-      slide2: '<img src="./assets/background-intro-2.png" alt="业务背景PPT-2" onerror="this.outerHTML=\'<div style=\"color:#5e6f92\">未找到 assets/background-intro-2.png，请放入第二张PPT导出图片。</div>\'" />'
+    const slideConfig = {
+      slide1: {
+        src: './assets/background-intro-1.png',
+        alt: '业务背景PPT-1',
+        scale: 1.5,
+        missingText: '未找到 assets/background-intro-1.png，请放入第一张PPT导出图片。'
+      },
+      slide2: {
+        src: './assets/background-intro-2.png',
+        alt: '业务背景PPT-2',
+        scale: 0.7,
+        missingText: '未找到 assets/background-intro-2.png，请放入第二张PPT导出图片。'
+      }
     };
     const slideToPain = { slide1: 'pain1', slide2: 'pain2' };
+
+    function renderSlide(slideKey) {
+      const config = slideConfig[slideKey];
+      if (!frame || !config) return;
+
+      frame.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = config.src;
+      img.alt = config.alt;
+      img.style.transform = `scale(${config.scale || 1})`;
+      img.addEventListener('error', () => {
+        const fallback = document.createElement('div');
+        fallback.style.color = '#5e6f92';
+        fallback.textContent = config.missingText;
+        img.replaceWith(fallback);
+      });
+
+      frame.appendChild(img);
+    }
 
     slideButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
         slideButtons.forEach((x) => x.classList.remove('active'));
         btn.classList.add('active');
         const currentSlide = btn.dataset.slide;
-        frame.innerHTML = slideTemplates[currentSlide];
+        renderSlide(currentSlide);
         painCards.forEach((card) => {
           card.classList.toggle('active', card.dataset.pain === slideToPain[currentSlide]);
         });
       });
     });
+    renderSlide('slide1');
     const navTags = document.querySelectorAll('.mini-nav .tag');
     const contentSections = document.querySelectorAll('.section[id]');
 
