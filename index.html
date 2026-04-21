@@ -258,8 +258,39 @@
 
     .result-layout {
       display: grid;
-      grid-template-columns: 1.1fr 1fr;
       gap: 14px;
+    }
+
+    .result-image {
+      width: 100%;
+      border: 1px solid #d8e0ef;
+      border-radius: 12px;
+      background: #fbfdff;
+      padding: 12px;
+    }
+
+    .result-image img {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #e2e9f7;
+      background: #fff;
+      object-fit: contain;
+    }
+
+    .result-note {
+      margin: 0;
+      border: 1px solid #d8e0ef;
+      border-radius: 12px;
+      background: #f9fbff;
+      padding: 12px 14px;
+      color: #32476c;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .result-note ul {
+      margin: 6px 0 0;
+      padding-left: 18px;
     }
 
     table {
@@ -457,46 +488,18 @@
 
     <section class="section">
       <h2>第三部分：实验结果</h2>
-      <p class="desc">以下实验基于同批模型与输入流量（30min 压测窗口），展示软调度在性能与稳定性上的改进。</p>
+      <p class="desc">以下实验基于同批模型与输入流量，展示软调度在时延和计算利用率上的改进。</p>
       <div class="result-layout">
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>指标</th>
-                <th>硬调度</th>
-                <th>软调度</th>
-                <th>提升</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td>平均时延（ms）</td><td>42.1</td><td>31.4</td><td>-25.4%</td></tr>
-              <tr><td>P99 时延（ms）</td><td>86.7</td><td>57.8</td><td>-33.3%</td></tr>
-              <tr><td>吞吐（QPS）</td><td>910</td><td>1135</td><td>+24.7%</td></tr>
-              <tr><td>CPU 占用（%）</td><td>72</td><td>61</td><td>-11pt</td></tr>
-            </tbody>
-          </table>
-          <p class="hint">结论：软调度在高并发下可明显降低尾时延，同时提升总体吞吐。</p>
+        <div class="result-image">
+          <img src="./assets/latency-result-bar.png" alt="时延结果柱状图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/latency-result-bar.png，请放入时延结果柱状图图片。</div>'" />
         </div>
-        <div class="bar-wrap">
-          <div class="bar-item">
-            <div class="top"><span>P99 时延（越低越好）</span><span>硬 86.7 / 软 57.8</span></div>
-            <div class="track"><div class="fill hard" data-width="86"></div></div>
-            <div style="height:6px"></div>
-            <div class="track"><div class="fill soft" data-width="58"></div></div>
-          </div>
-          <div class="bar-item">
-            <div class="top"><span>吞吐 QPS（越高越好）</span><span>硬 910 / 软 1135</span></div>
-            <div class="track"><div class="fill hard" data-width="80"></div></div>
-            <div style="height:6px"></div>
-            <div class="track"><div class="fill soft" data-width="100"></div></div>
-          </div>
-          <div class="bar-item">
-            <div class="top"><span>CPU 占用（越低越好）</span><span>硬 72 / 软 61</span></div>
-            <div class="track"><div class="fill hard" data-width="72"></div></div>
-            <div style="height:6px"></div>
-            <div class="track"><div class="fill soft" data-width="61"></div></div>
-          </div>
+        <div class="result-note">
+          当前测试结果显示：L1推理+L2推理+L2训练混合下发场景，软调度TWS算法满足L2时延要求最优；计算利用率提升超过30%。
+          <ul>
+            <li>L2推理按时完成率，TWS调度为99.54%，硬调度为56.91%；</li>
+            <li>三任务串行执行，端到端耗时15024223us，计算利用率为37.55%；</li>
+            <li>三任务并行下发，端到端耗时7324862us，计算利用率为86.84%，提升49.29%；</li>
+          </ul>
         </div>
       </div>
     </section>
