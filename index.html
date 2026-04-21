@@ -68,17 +68,16 @@
 
     .mini-nav {
       position: fixed;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 132px;
+      left: 16px;
       z-index: 999;
       display: flex;
+      flex-direction: column;
       gap: 10px;
-      flex-wrap: wrap;
-      padding: 8px 10px;
-      border-radius: 999px;
+      padding: 10px;
+      border-radius: 14px;
       border: 1px solid #d8e0ef;
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.94);
       box-shadow: var(--shadow-soft);
       backdrop-filter: blur(8px);
     }
@@ -105,7 +104,7 @@
 
     .section {
       margin-top: 16px;
-      scroll-margin-top: 90px;
+      scroll-margin-top: 18px;
       background: var(--panel);
       border: 1px solid #d8e0ef;
       border-radius: 14px;
@@ -494,10 +493,12 @@
 
     @media (max-width: 780px) {
       .mini-nav {
-        top: 8px;
-        width: calc(100% - 16px);
+        position: static;
+        flex-direction: row;
+        width: 100%;
         justify-content: center;
-        border-radius: 14px;
+        border-radius: 12px;
+        margin-top: 12px;
       }
 
       .container {
