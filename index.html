@@ -102,6 +102,13 @@
       color: #234278;
     }
 
+    .tag.active {
+      background: #2f66f3;
+      border-color: #2f66f3;
+      color: #fff;
+      box-shadow: 0 4px 10px rgba(47, 102, 243, 0.25);
+    }
+
     .section {
       margin-top: 16px;
       scroll-margin-top: 18px;
@@ -534,7 +541,7 @@
       <h1>ASCEND 310P 软硬调度全流程演示</h1>
       <p>把页面升级为完整 Demo：技术背景 → 技术对比 → 实验结果 → 软件适配演示。</p>
       <div class="mini-nav">
-        <a class="tag" href="#section-01">01 技术背景</a>
+        <a class="tag active" href="#section-01">01 技术背景</a>
         <a class="tag" href="#section-02">02 技术对比</a>
         <a class="tag" href="#section-03">03 实验结果</a>
         <a class="tag" href="#section-04">04 demo演示</a>
@@ -993,6 +1000,39 @@
         });
       });
     });
+    const navTags = document.querySelectorAll('.mini-nav .tag');
+    const contentSections = document.querySelectorAll('.section[id]');
+
+    function setActiveTag(targetId) {
+      navTags.forEach((tag) => {
+        const isActive = tag.getAttribute('href') === `#${targetId}`;
+        tag.classList.toggle('active', isActive);
+      });
+    }
+
+    if (contentSections.length && navTags.length) {
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveTag(entry.target.id);
+          }
+        });
+      }, {
+        root: null,
+        rootMargin: '-25% 0px -55% 0px',
+        threshold: 0
+      });
+
+      contentSections.forEach((section) => sectionObserver.observe(section));
+
+      navTags.forEach((tag) => {
+        tag.addEventListener('click', () => {
+          const targetId = tag.getAttribute('href')?.slice(1);
+          if (targetId) setActiveTag(targetId);
+        });
+      });
+    }
+
   </script>
 </body>
 </html>
