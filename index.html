@@ -163,6 +163,9 @@
       padding: 10px;
     }
 
+    .pain-card { display: none; }
+    .pain-card.active { display: block; }
+
     .bg-card h3 {
       margin: 0 0 6px;
       font-size: 15px;
@@ -407,14 +410,14 @@
         </div>
 
         <aside class="bg-side">
-          <article class="bg-card">
+          <article class="bg-card pain-card active" data-pain="pain1">
             <h3>业务痛点1-资源利用率低</h3>
             <ul>
               <li>L2独占的1951利用率为42.9%。</li>
               <li>L1独占的1951利用率为62.47%。</li>
             </ul>
           </article>
-          <article class="bg-card">
+          <article class="bg-card pain-card" data-pain="pain2">
             <h3>业务痛点2-高优先级任务被堵塞超时</h3>
             <ul>
               <li>高优先级任务时延被低优先级任务时延堵塞。</li>
@@ -808,16 +811,22 @@ $ demo run --profile edge_infer.yaml
 
     const frame = document.getElementById('pptFrame');
     const slideButtons = document.querySelectorAll('#pptSlides .ppt-btn');
+    const painCards = document.querySelectorAll('.pain-card');
     const slideTemplates = {
       slide1: '<img src="./assets/background-intro-1.png" alt="业务背景PPT-1" onerror="this.outerHTML=\'<div style=\"color:#5e6f92\">未找到 assets/background-intro-1.png，请放入第一张PPT导出图片。</div>\'" />',
       slide2: '<img src="./assets/background-intro-2.png" alt="业务背景PPT-2" onerror="this.outerHTML=\'<div style=\"color:#5e6f92\">未找到 assets/background-intro-2.png，请放入第二张PPT导出图片。</div>\'" />'
     };
+    const slideToPain = { slide1: 'pain1', slide2: 'pain2' };
 
     slideButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
         slideButtons.forEach((x) => x.classList.remove('active'));
         btn.classList.add('active');
-        frame.innerHTML = slideTemplates[btn.dataset.slide];
+        const currentSlide = btn.dataset.slide;
+        frame.innerHTML = slideTemplates[currentSlide];
+        painCards.forEach((card) => {
+          card.classList.toggle('active', card.dataset.pain === slideToPain[currentSlide]);
+        });
       });
     });
   </script>
