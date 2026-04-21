@@ -14,6 +14,7 @@
       --hard: #e74c3c;
       --soft: #27ae60;
       --shadow: 0 10px 28px rgba(14, 30, 62, 0.08);
+      --shadow-soft: 0 8px 18px rgba(22, 43, 82, 0.08);
       --primary: #2f66f3;
     }
 
@@ -29,7 +30,7 @@
 
     .container {
       width: min(1240px, 100% - 32px);
-      margin: 20px auto 36px;
+      margin: 24px auto 44px;
     }
 
     .hero {
@@ -49,6 +50,15 @@
     .hero p {
       margin: 0;
       color: var(--muted);
+    }
+
+    .hero::after {
+      content: "";
+      display: block;
+      margin-top: 14px;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, #d7e2f7, rgba(215, 226, 247, 0));
     }
 
     .mini-nav {
@@ -74,11 +84,32 @@
       border: 1px solid #d8e0ef;
       border-radius: 14px;
       box-shadow: var(--shadow);
-      padding: 18px;
+      padding: 20px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .section-index {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #2f66f3, #4f83ff);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: var(--shadow-soft);
+      flex-shrink: 0;
     }
 
     .section h2 {
-      margin: 0 0 6px;
+      margin: 0;
       font-size: 24px;
     }
 
@@ -94,7 +125,7 @@
       border: 1px solid #d8e0ef;
       background: #fbfdff;
       border-radius: 12px;
-      padding: 12px;
+      padding: 14px;
     }
 
     .ppt-tools {
@@ -123,7 +154,7 @@
     .ppt-frame {
       border: 1px solid #d8e4f8;
       border-radius: 10px;
-      min-height: 320px;
+      min-height: clamp(260px, 46vw, 640px);
       overflow: hidden;
       background: #fff;
       display: grid;
@@ -136,7 +167,7 @@
     .ppt-frame img {
       width: 100%;
       height: 100%;
-      min-height: 296px;
+      max-height: clamp(240px, 44vw, 620px);
       border: 0;
       border-radius: 8px;
       object-fit: contain;
@@ -230,7 +261,7 @@
 
     .arch-box img {
       width: 100%;
-      min-height: 220px;
+      height: clamp(220px, 28vw, 380px);
       border-radius: 8px;
       border: 1px solid #e2e9f7;
       object-fit: contain;
@@ -306,6 +337,7 @@
 
     .result-image img {
       width: 100%;
+      max-height: clamp(240px, 48vw, 680px);
       border-radius: 8px;
       border: 1px solid #e2e9f7;
       background: #fff;
@@ -389,14 +421,14 @@
       border: 1px solid #d8e0ef;
       border-radius: 12px;
       background: #fff;
-      padding: 10px;
+      padding: 12px;
       display: grid;
-      gap: 8px;
+      gap: 10px;
     }
 
     .demo-video video {
       width: 100%;
-      min-height: 220px;
+      min-height: clamp(220px, 36vw, 420px);
       border-radius: 8px;
       border: 1px solid #e2e9f7;
       background: #000;
@@ -421,40 +453,8 @@
       cursor: pointer;
     }
 
-    .demo-video {
-      border: 1px solid #d8e0ef;
-      border-radius: 12px;
-      background: #fff;
-      padding: 10px;
-      display: grid;
-      gap: 8px;
-    }
-
-    .demo-video video {
-      width: 100%;
-      min-height: 220px;
-      border-radius: 8px;
-      border: 1px solid #e2e9f7;
-      background: #000;
-    }
-
-    .video-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .play-btn {
-      border: 0;
-      border-radius: 999px;
-      background: var(--primary);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 14px;
-      cursor: pointer;
+    .play-btn:hover {
+      filter: brightness(1.06);
     }
 
     .hint { color: #4e617f; font-size: 13px; margin-top: 8px; }
@@ -464,6 +464,33 @@
       .arch-evolution { grid-template-columns: 1fr; }
       .evo-arrow { transform: rotate(90deg); }
       svg { height: 540px; }
+    }
+
+    @media (max-width: 780px) {
+      .container {
+        width: min(1240px, 100% - 18px);
+      }
+      .hero h1 {
+        font-size: 24px;
+      }
+      .section {
+        padding: 14px;
+      }
+      .section h2 {
+        font-size: 20px;
+      }
+      .section-index {
+        width: 30px;
+        height: 30px;
+        font-size: 13px;
+      }
+      .ppt-tools {
+        gap: 6px;
+      }
+      .ppt-btn {
+        padding: 4px 9px;
+        font-size: 12px;
+      }
     }
   </style>
 </head>
@@ -481,7 +508,10 @@
     </header>
 
     <section class="section">
-      <h2>业务背景：模型独立部署AI算力利用率低，混合部署不满足高优先级实时要求</h2>
+      <div class="section-head">
+        <span class="section-index">01</span>
+        <h2>业务背景：模型独立部署AI算力利用率低，混合部署不满足高优先级实时要求</h2>
+      </div>
       <p class="desc">业务背景支持两张PPT图片轮播展示，并在右侧保留关键痛点数据，便于演示时快速对齐问题与目标。</p>
       <div class="bg-layout">
         <div class="ppt-panel">
@@ -514,7 +544,10 @@
     </section>
 
     <section class="section">
-      <h2>第二部分：当前技术对比</h2>
+      <div class="section-head">
+        <span class="section-index">02</span>
+        <h2>第二部分：当前技术对比</h2>
+      </div>
       <p class="desc">保留原有可视化动画，直观看到硬调度与软调度在链路长度与可控性上的差异。</p>
 
       <div class="arch-evolution">
@@ -553,7 +586,10 @@
     </section>
 
     <section class="section">
-      <h2>第三部分：实验结果</h2>
+      <div class="section-head">
+        <span class="section-index">03</span>
+        <h2>第三部分：实验结果</h2>
+      </div>
       <p class="desc">以下实验基于同批模型与输入流量，展示软调度在时延和计算利用率上的改进。</p>
       <div class="result-layout">
         <div class="result-image">
@@ -571,7 +607,10 @@
     </section>
 
     <section class="section">
-      <h2>第四部分：实际软件运行适配演示</h2>
+      <div class="section-head">
+        <span class="section-index">04</span>
+        <h2>第四部分：实际软件运行适配演示</h2>
+      </div>
       <p class="desc">现场可直接播放完整软件适配演示视频。</p>
       <div>
         <div class="demo-video">
