@@ -25,6 +25,7 @@
 
     body {
       margin: 0;
+      padding-top: 64px;
       min-height: 100vh;
       background: linear-gradient(160deg, #eef3fc 0%, #f9fbff 100%);
       color: var(--text);
@@ -66,10 +67,20 @@
     }
 
     .mini-nav {
+      position: fixed;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
-      margin-top: 14px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid #d8e0ef;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(8px);
     }
 
     .tag {
@@ -94,6 +105,7 @@
 
     .section {
       margin-top: 16px;
+      scroll-margin-top: 90px;
       background: var(--panel);
       border: 1px solid #d8e0ef;
       border-radius: 14px;
@@ -481,6 +493,13 @@
     }
 
     @media (max-width: 780px) {
+      .mini-nav {
+        top: 8px;
+        width: calc(100% - 16px);
+        justify-content: center;
+        border-radius: 14px;
+      }
+
       .container {
         width: min(1240px, 100% - 18px);
       }
