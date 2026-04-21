@@ -404,6 +404,42 @@
       border: 1px solid #263247;
     }
 
+    .demo-video {
+      border: 1px solid #d8e0ef;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .demo-video video {
+      width: 100%;
+      min-height: 220px;
+      border-radius: 8px;
+      border: 1px solid #e2e9f7;
+      background: #000;
+    }
+
+    .video-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .play-btn {
+      border: 0;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      cursor: pointer;
+    }
+
     .hint { color: #4e617f; font-size: 13px; margin-top: 8px; }
 
     @media (max-width: 1100px) {
@@ -513,6 +549,16 @@
           <div class="step"><strong>步骤 2：</strong>下发 Scheduler 策略（优先级 + 时间窗 + 目标驱动）</div>
           <div class="step"><strong>步骤 3：</strong>运行时收集延迟、吞吐、拥塞信号并动态重排</div>
           <div class="step"><strong>步骤 4：</strong>触发异常阈值时自动降级到保底策略并告警</div>
+        </div>
+        <div class="demo-video">
+          <video id="demoVideo" preload="metadata">
+            <source src="./assets/software-demo.mp4" type="video/mp4" />
+            您的浏览器不支持视频播放，请下载 ./assets/software-demo.mp4 观看完整演示。
+          </video>
+          <div class="video-actions">
+            <button class="play-btn" id="videoPlayBtn">▶ 播放完整演示视频</button>
+            <span class="hint" style="margin:0;">视频文件路径：<code>assets/software-demo.mp4</code></span>
+          </div>
         </div>
         <div class="terminal" id="terminalPanel">
 $ demo run --profile edge_infer.yaml
@@ -805,6 +851,34 @@ $ demo run --profile edge_infer.yaml
     const softNodes = setupSoft();
     hardAnimation(hardNodes);
     softAnimation(softNodes);
+
+    const demoVideo = document.getElementById('demoVideo');
+    const videoPlayBtn = document.getElementById('videoPlayBtn');
+    if (demoVideo && videoPlayBtn) {
+      videoPlayBtn.addEventListener('click', async () => {
+        if (demoVideo.paused) {
+          try {
+            await demoVideo.play();
+            videoPlayBtn.textContent = '⏸ 暂停演示视频';
+          } catch (err) {
+            videoPlayBtn.textContent = '⚠ 请点击视频区域手动播放';
+          }
+        } else {
+          demoVideo.pause();
+          videoPlayBtn.textContent = '▶ 播放完整演示视频';
+        }
+      });
+
+      demoVideo.addEventListener('ended', () => {
+        videoPlayBtn.textContent = '▶ 重新播放完整演示视频';
+      });
+
+      demoVideo.addEventListener('pause', () => {
+        if (!demoVideo.ended) {
+          videoPlayBtn.textContent = '▶ 播放完整演示视频';
+        }
+      });
+    }
 
     document.querySelectorAll('.fill').forEach((el, index) => {
       setTimeout(() => {
