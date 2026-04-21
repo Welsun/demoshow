@@ -88,11 +88,7 @@
       font-size: 14px;
     }
 
-    .bg-layout {
-      display: grid;
-      grid-template-columns: 1.25fr 1fr;
-      gap: 12px;
-    }
+    .bg-layout { display: grid; gap: 10px; }
 
     .ppt-panel {
       border: 1px solid #d8e0ef;
@@ -147,15 +143,6 @@
       background: #f9fbff;
     }
 
-    .bg-side {
-      border: 1px solid #d8e0ef;
-      border-radius: 12px;
-      background: #fbfdff;
-      padding: 12px;
-      display: grid;
-      gap: 10px;
-    }
-
     .bg-card {
       border: 1px solid #d8e0ef;
       background: #fff;
@@ -165,6 +152,12 @@
 
     .pain-card { display: none; }
     .pain-card.active { display: block; }
+
+    .pain-stack {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
 
     .bg-card h3 {
       margin: 0 0 6px;
@@ -214,6 +207,48 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
+    }
+
+    .arch-evolution {
+      margin-bottom: 14px;
+      border: 1px solid #d8e0ef;
+      border-radius: 12px;
+      background: #fbfdff;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1fr 52px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .arch-box {
+      border: 1px solid #d8e0ef;
+      border-radius: 10px;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .arch-box img {
+      width: 100%;
+      min-height: 220px;
+      border-radius: 8px;
+      border: 1px solid #e2e9f7;
+      object-fit: contain;
+      background: #fff;
+    }
+
+    .arch-label {
+      margin: 0 0 6px;
+      font-size: 13px;
+      color: #2f4773;
+      font-weight: 700;
+    }
+
+    .evo-arrow {
+      font-size: 30px;
+      text-align: center;
+      color: #2f66f3;
+      font-weight: 700;
     }
 
     .card {
@@ -425,7 +460,9 @@
     .hint { color: #4e617f; font-size: 13px; margin-top: 8px; }
 
     @media (max-width: 1100px) {
-      .bg-layout, .boards, .result-layout { grid-template-columns: 1fr; }
+      .boards, .result-layout { grid-template-columns: 1fr; }
+      .arch-evolution { grid-template-columns: 1fr; }
+      .evo-arrow { transform: rotate(90deg); }
       svg { height: 540px; }
     }
   </style>
@@ -455,31 +492,42 @@
           <div class="ppt-frame" id="pptFrame">
             <img src="./assets/background-intro-1.png" alt="业务背景PPT-1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张PPT导出图片。</div>'" />
           </div>
+          <div class="pain-stack">
+            <article class="bg-card pain-card active" data-pain="pain1">
+              <h3>业务痛点1-资源利用率低</h3>
+              <ul>
+                <li>L2独占的1951利用率为42.9%。</li>
+                <li>L1独占的1951利用率为62.47%。</li>
+              </ul>
+            </article>
+            <article class="bg-card pain-card" data-pain="pain2">
+              <h3>业务痛点2-高优先级任务被堵塞超时</h3>
+              <ul>
+                <li>高优先级任务时延被低优先级任务时延堵塞。</li>
+                <li>最终导致高优先级任务执行超时。</li>
+              </ul>
+            </article>
+          </div>
           <p class="hint">请把两张PPT分别命名为 `assets/background-intro-1.png` 和 `assets/background-intro-2.png`。</p>
         </div>
-
-        <aside class="bg-side">
-          <article class="bg-card pain-card active" data-pain="pain1">
-            <h3>业务痛点1-资源利用率低</h3>
-            <ul>
-              <li>L2独占的1951利用率为42.9%。</li>
-              <li>L1独占的1951利用率为62.47%。</li>
-            </ul>
-          </article>
-          <article class="bg-card pain-card" data-pain="pain2">
-            <h3>业务痛点2-高优先级任务被堵塞超时</h3>
-            <ul>
-              <li>高优先级任务时延被低优先级任务时延堵塞。</li>
-              <li>最终导致高优先级任务执行超时。</li>
-            </ul>
-          </article>
-        </aside>
       </div>
     </section>
 
     <section class="section">
       <h2>第二部分：当前技术对比</h2>
       <p class="desc">保留原有可视化动画，直观看到硬调度与软调度在链路长度与可控性上的差异。</p>
+
+      <div class="arch-evolution">
+        <div class="arch-box">
+          <p class="arch-label">演进前：原有软件架构</p>
+          <img src="./assets/architecture-before.png" alt="演进前软件架构图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/architecture-before.png，请放入演进前架构图。</div>'" />
+        </div>
+        <div class="evo-arrow" aria-label="技术演进方向">→</div>
+        <div class="arch-box">
+          <p class="arch-label">演进后：软硬协同调度架构</p>
+          <img src="./assets/architecture-after.png" alt="演进后软件架构图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/architecture-after.png，请放入演进后架构图。</div>'" />
+        </div>
+      </div>
 
       <div class="legend">
         <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
