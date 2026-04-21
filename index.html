@@ -304,7 +304,8 @@
       margin: 0 0 6px;
       font-size: 13px;
       color: #2f4773;
-      font-weight: 700;
+      font-weight: 800;
+      text-align: center;
     }
 
     .evo-arrow {
@@ -491,6 +492,11 @@
 
     .hint { color: #4e617f; font-size: 13px; margin-top: 8px; }
 
+    .key-data {
+      color: #e74c3c;
+      font-weight: 700;
+    }
+
     @media (max-width: 1100px) {
       .boards, .result-layout { grid-template-columns: 1fr; }
       .arch-evolution { grid-template-columns: 1fr; }
@@ -538,7 +544,7 @@
 <body>
   <main class="container">
     <header class="hero">
-      <h1>ASCEND 310P 软硬调度全流程演示</h1>
+      <h1>RT-Infer AI推理运行时</h1>
       <p>把页面升级为完整 Demo：技术背景 → 技术对比 → 实验结果 → 软件适配演示。</p>
       <div class="mini-nav">
         <a class="tag active" href="#section-01">01 技术背景</a>
@@ -565,8 +571,8 @@
             <article class="bg-card pain-card active" data-pain="pain1">
               <h3>业务痛点1-资源利用率低</h3>
               <ul>
-                <li>L2独占的1951利用率为42.9%。</li>
-                <li>L1独占的1951利用率为62.47%。</li>
+                <li>L2独占的1951利用率为<span class="key-data">42.9%</span>。</li>
+                <li>L1独占的1951利用率为<span class="key-data">62.47%</span>。</li>
               </ul>
             </article>
             <article class="bg-card pain-card" data-pain="pain2">
@@ -613,13 +619,13 @@
         <section class="card hard">
           <h3>硬调度</h3>
           <svg id="hardSVG" viewBox="0 0 560 560"></svg>
-          <p class="metric" id="hardMetric">平均路径层级：7 层（链路较长）</p>
+          <p class="metric" id="hardMetric">平均路径层级：<span class="key-data">7 层</span>（链路较长）</p>
         </section>
 
         <section class="card soft">
           <h3>软调度</h3>
           <svg id="softSVG" viewBox="0 0 560 560"></svg>
-          <p class="metric" id="softMetric">平均路径层级：5 层（链路更短，可动态策略）</p>
+          <p class="metric" id="softMetric">平均路径层级：<span class="key-data">5 层</span>（链路更短，可动态策略）</p>
         </section>
       </div>
     </section>
@@ -635,11 +641,11 @@
           <img src="./assets/latency-result-bar.png" alt="时延结果柱状图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/latency-result-bar.png，请放入时延结果柱状图图片。</div>'" />
         </div>
         <div class="result-note">
-          当前测试结果显示：L1推理+L2推理+L2训练混合下发场景，软调度TWS算法满足L2时延要求最优；计算利用率提升超过30%。
+          当前测试结果显示：L1推理+L2推理+L2训练混合下发场景，软调度TWS算法满足L2时延要求最优；计算利用率提升超过<span class="key-data">30%</span>。
           <ul>
-            <li>L2推理按时完成率，TWS调度为99.54%，硬调度为56.91%；</li>
-            <li>三任务串行执行，端到端耗时15024223us，计算利用率为37.55%；</li>
-            <li>三任务并行下发，端到端耗时7324862us，计算利用率为86.84%，提升49.29%；</li>
+            <li>L2推理按时完成率，TWS调度为<span class="key-data">99.54%</span>，硬调度为<span class="key-data">56.91%</span>；</li>
+            <li>三任务串行执行，端到端耗时<span class="key-data">15024223us</span>，计算利用率为<span class="key-data">37.55%</span>；</li>
+            <li>三任务并行下发，端到端耗时<span class="key-data">7324862us</span>，计算利用率为<span class="key-data">86.84%</span>，提升<span class="key-data">49.29%</span>；</li>
           </ul>
         </div>
       </div>
