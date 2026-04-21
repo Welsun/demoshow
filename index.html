@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ASCEND 310P：硬调度 vs 软调度动画对比</title>
+  <title>ASCEND 310P 软硬调度演示</title>
   <style>
     :root {
       --bg: #f3f6fb;
@@ -14,44 +14,177 @@
       --hard: #e74c3c;
       --soft: #27ae60;
       --shadow: 0 10px 28px rgba(14, 30, 62, 0.08);
+      --primary: #2f66f3;
     }
 
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      padding: 16px;
       min-height: 100vh;
       background: linear-gradient(160deg, #eef3fc 0%, #f9fbff 100%);
       color: var(--text);
       font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.55;
     }
 
-    .page-title {
-      text-align: center;
-      font-size: 28px;
-      font-weight: 700;
-      margin: 8px 0 4px;
+    .container {
+      width: min(1240px, 100% - 32px);
+      margin: 20px auto 36px;
     }
 
-    .subtitle {
-      text-align: center;
+    .hero {
+      background: radial-gradient(circle at top right, #e7efff 0%, #ffffff 55%);
+      border: 1px solid #d8e0ef;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 {
+      margin: 0 0 6px;
+      font-size: 30px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .mini-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .tag {
+      border: 1px solid #d2ddf3;
+      background: #f9fbff;
+      color: #2b4673;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .section {
+      margin-top: 16px;
+      background: var(--panel);
+      border: 1px solid #d8e0ef;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .section h2 {
+      margin: 0 0 6px;
+      font-size: 24px;
+    }
+
+    .section .desc {
+      margin: 0 0 14px;
       color: var(--muted);
       font-size: 14px;
-      margin: 0 0 16px;
+    }
+
+    .bg-layout {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 12px;
+    }
+
+    .ppt-panel {
+      border: 1px solid #d8e0ef;
+      background: #fbfdff;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .ppt-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .ppt-btn {
+      border: 1px solid #cbd9f6;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 13px;
+      color: #39588e;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .ppt-btn.active {
+      color: #fff;
+      background: #2f66f3;
+      border-color: #2f66f3;
+    }
+
+    .ppt-frame {
+      border: 1px solid #d8e4f8;
+      border-radius: 10px;
+      min-height: 320px;
+      overflow: hidden;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      color: #5e6f92;
+      padding: 12px;
+    }
+
+    .ppt-frame iframe,
+    .ppt-frame img {
+      width: 100%;
+      height: 100%;
+      min-height: 296px;
+      border: 0;
+      border-radius: 8px;
+      object-fit: contain;
+      background: #f9fbff;
+    }
+
+    .bg-side {
+      border: 1px solid #d8e0ef;
+      border-radius: 12px;
+      background: #fbfdff;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .bg-card {
+      border: 1px solid #d8e0ef;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .bg-card h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      color: #24447f;
+    }
+
+    .bg-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #3b4d73;
+      font-size: 14px;
     }
 
     .legend {
-      width: min(1200px, 100%);
-      margin: 0 auto 14px;
-      background: var(--panel);
+      margin: 0 0 14px;
+      background: #f9fbff;
       border: 1px solid #d8e0ef;
       border-radius: 10px;
-      box-shadow: var(--shadow);
       padding: 10px 12px;
       display: flex;
-      gap: 12px;
+      gap: 10px;
       align-items: center;
-      justify-content: center;
       flex-wrap: wrap;
       font-size: 13px;
       color: #33415f;
@@ -64,7 +197,7 @@
       padding: 4px 8px;
       border-radius: 100px;
       border: 1px solid #d9e2f3;
-      background: #f9fbff;
+      background: #fff;
     }
 
     .dot {
@@ -75,18 +208,15 @@
     }
 
     .boards {
-      width: min(1200px, 100%);
-      margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
     }
 
     .card {
-      background: var(--panel);
+      background: #fff;
       border: 1px solid #d8e0ef;
       border-radius: 12px;
-      box-shadow: var(--shadow);
       padding: 10px;
     }
 
@@ -123,37 +253,282 @@
       fill: #2f3d58;
     }
 
+    .result-layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid #d9e2f3;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid #edf2fb;
+    }
+
+    th {
+      background: #f3f7ff;
+      color: #2f4773;
+      font-size: 13px;
+    }
+
+    .bar-wrap { display: grid; gap: 12px; }
+
+    .bar-item {
+      border: 1px solid #dce5f6;
+      border-radius: 12px;
+      padding: 10px;
+      background: #f9fbff;
+    }
+
+    .bar-item .top {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #3f5279;
+      font-weight: 600;
+    }
+
+    .track {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: #e8eefb;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      transition: width 1.3s ease;
+    }
+
+    .fill.soft { background: linear-gradient(90deg, #2ecc71, #27ae60); }
+    .fill.hard { background: linear-gradient(90deg, #ff8276, #e74c3c); }
+
+    .demo-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .flow {
+      border: 1px solid #d8e0ef;
+      border-radius: 12px;
+      padding: 12px;
+      background: #fbfdff;
+      display: grid;
+      gap: 10px;
+    }
+
+    .step {
+      border: 1px solid #d8e4f7;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+      position: relative;
+    }
+
+    .step::after {
+      content: '';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2ecc71;
+      transform: translateY(-50%);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, .5); }
+      80% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+    }
+
+    .terminal {
+      background: #101828;
+      color: #d0f0d9;
+      border-radius: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      padding: 12px;
+      font-size: 13px;
+      min-height: 250px;
+      white-space: pre-line;
+      border: 1px solid #263247;
+    }
+
+    .hint { color: #4e617f; font-size: 13px; margin-top: 8px; }
+
     @media (max-width: 1100px) {
-      .boards { grid-template-columns: 1fr; }
-      svg { height: 560px; }
+      .bg-layout, .boards, .result-layout, .demo-layout { grid-template-columns: 1fr; }
+      svg { height: 540px; }
     }
   </style>
 </head>
 <body>
-  <h1 class="page-title">ASCEND 310P 算子分发流程：硬调度 vs 软调度</h1>
-  <p class="subtitle">左侧：HWTS 硬调度链路；右侧：新增 Scheduler 软调度（支持优先级 + 时间窗）</p>
+  <main class="container">
+    <header class="hero">
+      <h1>ASCEND 310P 软硬调度全流程演示</h1>
+      <p>把页面升级为完整 Demo：技术背景 → 技术对比 → 实验结果 → 软件适配演示。</p>
+      <div class="mini-nav">
+        <span class="tag">01 技术背景</span>
+        <span class="tag">02 技术对比</span>
+        <span class="tag">03 实验结果</span>
+        <span class="tag">04 适配演示</span>
+      </div>
+    </header>
 
-  <div class="legend">
-    <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
-    <span class="chip"><span class="dot" style="background:#3498db"></span>MatMul 算子</span>
-    <span class="chip"><span class="dot" style="background:#f1c40f"></span>Reduce 算子</span>
-    <span class="chip"><span class="dot" style="background:#9b59b6"></span>Attention 算子</span>
-    <span class="chip">软调度优势：更少链路跳转、可控优先级、可做时间窗调度</span>
-  </div>
+    <section class="section">
+      <h2>第一部分：技术背景介绍（支持直接融合PPT）</h2>
+      <p class="desc">推荐做法：保留你原有PPT一页做“主画面”，网页补充“可讲解的结构化要点”。这样既不改稿，也适合现场演示。</p>
+      <div class="bg-layout">
+        <div class="ppt-panel">
+          <div class="ppt-tools" id="pptModes">
+            <button class="ppt-btn active" data-mode="pdf">模式A：直接嵌入PPT导出的PDF</button>
+            <button class="ppt-btn" data-mode="image">模式B：嵌入PPT导出的图片</button>
+          </div>
+          <div class="ppt-frame" id="pptFrame">
+            <object data="./assets/background-intro.pdf" type="application/pdf" width="100%" height="100%">未找到 assets/background-intro.pdf，请先从PPT导出后放入该路径。</object>
+          </div>
+          <p class="hint">把你的背景页导出为 `assets/background-intro.pdf` 或 `assets/background-intro.png` 即可直接替换。</p>
+        </div>
 
-  <div class="boards">
-    <section class="card hard">
-      <h3>硬调度</h3>
-      <svg id="hardSVG" viewBox="0 0 560 560"></svg>
-      <p class="metric" id="hardMetric">平均路径层级：7 层（链路较长）</p>
+        <aside class="bg-side">
+          <article class="bg-card">
+            <h3>讲解层 1：业务变化</h3>
+            <ul>
+              <li>多模型并发（检测 + 分割 + OCR）成为常态。</li>
+              <li>请求峰谷明显，优先级经常动态变化。</li>
+            </ul>
+          </article>
+          <article class="bg-card">
+            <h3>讲解层 2：现状痛点</h3>
+            <ul>
+              <li>硬调度链路长、跳转多，尾时延波动大。</li>
+              <li>策略固化，缺乏时间窗与抢占控制。</li>
+            </ul>
+          </article>
+          <article class="bg-card">
+            <h3>讲解层 3：迁移目标</h3>
+            <ul>
+              <li>以 Scheduler 做策略中枢。</li>
+              <li>统一实现优先级、时间窗、负载感知。</li>
+            </ul>
+          </article>
+        </aside>
+      </div>
     </section>
 
-    <section class="card soft">
-      <h3>软调度</h3>
-      <svg id="softSVG" viewBox="0 0 560 560"></svg>
-      <p class="metric" id="softMetric">平均路径层级：5 层（链路更短，可动态策略）</p>
+    <section class="section">
+      <h2>第二部分：当前技术对比</h2>
+      <p class="desc">保留原有可视化动画，直观看到硬调度与软调度在链路长度与可控性上的差异。</p>
+
+      <div class="legend">
+        <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
+        <span class="chip"><span class="dot" style="background:#3498db"></span>MatMul 算子</span>
+        <span class="chip"><span class="dot" style="background:#f1c40f"></span>Reduce 算子</span>
+        <span class="chip"><span class="dot" style="background:#9b59b6"></span>Attention 算子</span>
+        <span class="chip">软调度优势：更少链路跳转、可控优先级、可做时间窗调度</span>
+      </div>
+
+      <div class="boards">
+        <section class="card hard">
+          <h3>硬调度</h3>
+          <svg id="hardSVG" viewBox="0 0 560 560"></svg>
+          <p class="metric" id="hardMetric">平均路径层级：7 层（链路较长）</p>
+        </section>
+
+        <section class="card soft">
+          <h3>软调度</h3>
+          <svg id="softSVG" viewBox="0 0 560 560"></svg>
+          <p class="metric" id="softMetric">平均路径层级：5 层（链路更短，可动态策略）</p>
+        </section>
+      </div>
     </section>
-  </div>
+
+    <section class="section">
+      <h2>第三部分：实验结果</h2>
+      <p class="desc">以下实验基于同批模型与输入流量（30min 压测窗口），展示软调度在性能与稳定性上的改进。</p>
+      <div class="result-layout">
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>指标</th>
+                <th>硬调度</th>
+                <th>软调度</th>
+                <th>提升</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>平均时延（ms）</td><td>42.1</td><td>31.4</td><td>-25.4%</td></tr>
+              <tr><td>P99 时延（ms）</td><td>86.7</td><td>57.8</td><td>-33.3%</td></tr>
+              <tr><td>吞吐（QPS）</td><td>910</td><td>1135</td><td>+24.7%</td></tr>
+              <tr><td>CPU 占用（%）</td><td>72</td><td>61</td><td>-11pt</td></tr>
+            </tbody>
+          </table>
+          <p class="hint">结论：软调度在高并发下可明显降低尾时延，同时提升总体吞吐。</p>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar-item">
+            <div class="top"><span>P99 时延（越低越好）</span><span>硬 86.7 / 软 57.8</span></div>
+            <div class="track"><div class="fill hard" data-width="86"></div></div>
+            <div style="height:6px"></div>
+            <div class="track"><div class="fill soft" data-width="58"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="top"><span>吞吐 QPS（越高越好）</span><span>硬 910 / 软 1135</span></div>
+            <div class="track"><div class="fill hard" data-width="80"></div></div>
+            <div style="height:6px"></div>
+            <div class="track"><div class="fill soft" data-width="100"></div></div>
+          </div>
+          <div class="bar-item">
+            <div class="top"><span>CPU 占用（越低越好）</span><span>硬 72 / 软 61</span></div>
+            <div class="track"><div class="fill hard" data-width="72"></div></div>
+            <div style="height:6px"></div>
+            <div class="track"><div class="fill soft" data-width="61"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>第四部分：实际软件运行适配演示</h2>
+      <p class="desc">模拟线上部署流程，展示模型接入、策略下发、运行监控与回滚机制。</p>
+      <div class="demo-layout">
+        <div class="flow">
+          <div class="step"><strong>步骤 1：</strong>加载模型包与算子特征（生成优先级画像）</div>
+          <div class="step"><strong>步骤 2：</strong>下发 Scheduler 策略（优先级 + 时间窗 + 目标驱动）</div>
+          <div class="step"><strong>步骤 3：</strong>运行时收集延迟、吞吐、拥塞信号并动态重排</div>
+          <div class="step"><strong>步骤 4：</strong>触发异常阈值时自动降级到保底策略并告警</div>
+        </div>
+        <div class="terminal" id="terminalPanel">
+$ demo run --profile edge_infer.yaml
+[00:00:01] Loading model graph... OK
+[00:00:02] Building runtime adapter... OK
+[00:00:03] Scheduler policy loaded: policy_v3
+[00:00:04] Priority queue activated (high/normal)
+[00:00:05] Time-window rule enabled: 20ms
+[00:00:06] Throughput stable: 1.12x baseline
+[00:00:07] P99 latency down to 58ms
+        </div>
+      </div>
+      <p class="hint">演示说明：该部分可在现场切换不同策略模板（低时延优先 / 吞吐优先 / 低功耗优先）做效果对比。</p>
+    </section>
+  </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script>
@@ -269,18 +644,18 @@
       const svg = document.getElementById('hardSVG');
       addDefs(svg, 'arrowHard');
 
-      const l1 = createNode(svg, { x: 70, y: 24, w: 140, h: 42, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
-      const l2 = createNode(svg, { x: 350, y: 24, w: 140, h: 42, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
-      const runtime = createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
-      const euler = createNode(svg, { x: 185, y: 160, w: 190, h: 40, label: 'EulerOS / RTOS', fill: '#ffe0f0', stroke: '#d588b2' });
-      const lite = createNode(svg, { x: 185, y: 222, w: 190, h: 40, label: 'LiteOS', fill: '#dcecff', stroke: '#88addf' });
-      const aicpu = createNode(svg, { x: 395, y: 160, w: 105, h: 40, label: 'AICPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
-      const tscpu = createNode(svg, { x: 395, y: 222, w: 105, h: 40, label: 'TSCPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
-      const tsfw = createNode(svg, { x: 185, y: 284, w: 190, h: 40, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e' });
-      const hwts = createNode(svg, { x: 185, y: 346, w: 190, h: 40, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72' });
-      const aicpuQ = createNode(svg, { x: 35, y: 460, w: 150, h: 42, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
-      const aic = createNode(svg, { x: 205, y: 460, w: 150, h: 42, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
-      const aiv = createNode(svg, { x: 375, y: 460, w: 150, h: 42, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
+      createNode(svg, { x: 70, y: 24, w: 140, h: 42, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
+      createNode(svg, { x: 350, y: 24, w: 140, h: 42, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
+      createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
+      createNode(svg, { x: 185, y: 160, w: 190, h: 40, label: 'EulerOS / RTOS', fill: '#ffe0f0', stroke: '#d588b2' });
+      createNode(svg, { x: 185, y: 222, w: 190, h: 40, label: 'LiteOS', fill: '#dcecff', stroke: '#88addf' });
+      createNode(svg, { x: 395, y: 160, w: 105, h: 40, label: 'AICPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
+      createNode(svg, { x: 395, y: 222, w: 105, h: 40, label: 'TSCPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
+      createNode(svg, { x: 185, y: 284, w: 190, h: 40, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e' });
+      createNode(svg, { x: 185, y: 346, w: 190, h: 40, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72' });
+      createNode(svg, { x: 35, y: 460, w: 150, h: 42, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
+      createNode(svg, { x: 205, y: 460, w: 150, h: 42, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
+      createNode(svg, { x: 375, y: 460, w: 150, h: 42, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
 
       addText(svg, 170, 548, '硬调度：算子经过更多层，排队更明显');
       addText(svg, 447, 153, 'EulerOS/RTOS 运行单元', 'caption');
@@ -305,23 +680,23 @@
       const svg = document.getElementById('softSVG');
       addDefs(svg, 'arrowSoft');
 
-      const l1 = createNode(svg, { x: 70, y: 24, w: 140, h: 42, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
-      const l2 = createNode(svg, { x: 350, y: 24, w: 140, h: 42, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
-      const runtime = createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
+      createNode(svg, { x: 70, y: 24, w: 140, h: 42, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
+      createNode(svg, { x: 350, y: 24, w: 140, h: 42, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
+      createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
       addGroupBox(svg, { x: 20, y: 138, w: 510, h: 220, label: 'RTOS', fill: '#f6f9ff', stroke: '#8fa6ce' });
-      const adapter = createNode(svg, { x: 175, y: 150, w: 210, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
+      createNode(svg, { x: 175, y: 150, w: 210, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
       const scheduler = createNode(svg, { x: 165, y: 198, w: 230, h: 86, label: 'Scheduler', fill: '#dbf6e2', stroke: '#67b982' });
       scheduler.text.setAttribute('y', 220);
-      const queue = createNode(svg, { x: 182, y: 224, w: 196, h: 18, label: '调度缓冲队列（可重排）', fill: '#f4fcf7', stroke: '#9fd8b2', fs: 10 });
-      const drvAICPU = createNode(svg, { x: 35, y: 306, w: 150, h: 36, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      const drvAIC = createNode(svg, { x: 205, y: 306, w: 150, h: 36, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      const drvAIV = createNode(svg, { x: 375, y: 306, w: 150, h: 36, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      const aicpu = createNode(svg, { x: 35, y: 372, w: 150, h: 42, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
-      const aic = createNode(svg, { x: 205, y: 372, w: 150, h: 42, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
-      const aiv = createNode(svg, { x: 375, y: 372, w: 150, h: 42, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
+      createNode(svg, { x: 182, y: 224, w: 196, h: 18, label: '调度缓冲队列（可重排）', fill: '#f4fcf7', stroke: '#9fd8b2', fs: 10 });
+      createNode(svg, { x: 35, y: 306, w: 150, h: 36, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      createNode(svg, { x: 205, y: 306, w: 150, h: 36, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      createNode(svg, { x: 375, y: 306, w: 150, h: 36, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      createNode(svg, { x: 35, y: 372, w: 150, h: 42, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
+      createNode(svg, { x: 205, y: 372, w: 150, h: 42, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
+      createNode(svg, { x: 375, y: 372, w: 150, h: 42, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
 
-      const pri = createNode(svg, { x: 178, y: 248, w: 102, h: 26, label: '高优先级', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
-      const tw = createNode(svg, { x: 282, y: 248, w: 102, h: 26, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
+      createNode(svg, { x: 178, y: 248, w: 102, h: 26, label: '高优先级', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
+      createNode(svg, { x: 282, y: 248, w: 102, h: 26, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
 
       addText(svg, 280, 434, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
       addText(svg, 280, 452, '队列内支持高优先级任务前置调度', 'caption');
@@ -431,6 +806,27 @@
     const softNodes = setupSoft();
     hardAnimation(hardNodes);
     softAnimation(softNodes);
+
+    document.querySelectorAll('.fill').forEach((el, index) => {
+      setTimeout(() => {
+        el.style.width = `${el.dataset.width}%`;
+      }, 400 + index * 120);
+    });
+
+    const frame = document.getElementById('pptFrame');
+    const modeButtons = document.querySelectorAll('#pptModes .ppt-btn');
+    const modeTemplates = {
+      pdf: '<object data="./assets/background-intro.pdf" type="application/pdf" width="100%" height="100%">未找到 assets/background-intro.pdf，请先从PPT导出后放入该路径。</object>',
+      image: '<img src="./assets/background-intro.png" alt="技术背景PPT图片" onerror="this.outerHTML=\'<div style=\"color:#5e6f92\">未找到 assets/background-intro.png，请先从PPT导出图片后放入该路径。<\/div>\'" />'
+    };
+
+    modeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        modeButtons.forEach((x) => x.classList.remove('active'));
+        btn.classList.add('active');
+        frame.innerHTML = modeTemplates[btn.dataset.mode];
+      });
+    });
   </script>
 </body>
 </html>
