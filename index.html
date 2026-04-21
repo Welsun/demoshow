@@ -204,8 +204,6 @@
       border-radius: 0;
       object-fit: contain;
       background: transparent;
-      transform-origin: center;
-      transition: transform 0.25s ease;
     }
 
     .bg-card {
@@ -983,6 +981,8 @@
     const frame = document.getElementById('pptFrame');
     const slideButtons = document.querySelectorAll('#pptSlides .ppt-btn');
     const painCards = document.querySelectorAll('.pain-card');
+    const BASE_FRAME_MIN_HEIGHT = 200;
+    const BASE_IMAGE_MAX_HEIGHT = 400;
     const slideConfig = {
       slide1: {
         src: './assets/background-intro-1.png',
@@ -1007,7 +1007,8 @@
       const img = document.createElement('img');
       img.src = config.src;
       img.alt = config.alt;
-      img.style.transform = `scale(${config.scale || 1})`;
+      frame.style.minHeight = `${Math.round(BASE_FRAME_MIN_HEIGHT * (config.scale || 1))}px`;
+      img.style.maxHeight = `${Math.round(BASE_IMAGE_MAX_HEIGHT * (config.scale || 1))}px`;
       img.addEventListener('error', () => {
         const fallback = document.createElement('div');
         fallback.style.color = '#5e6f92';
