@@ -19,6 +19,10 @@
     }
 
     * { box-sizing: border-box; }
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
@@ -62,10 +66,19 @@
     }
 
     .mini-nav {
+      position: fixed;
+      top: 132px;
+      left: 16px;
+      z-index: 999;
       display: flex;
+      flex-direction: column;
       gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 14px;
+      padding: 10px;
+      border-radius: 14px;
+      border: 1px solid #d8e0ef;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(8px);
     }
 
     .tag {
@@ -76,10 +89,21 @@
       border-radius: 999px;
       font-size: 13px;
       font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.2s ease;
+    }
+
+    .tag:hover {
+      background: #eef4ff;
+      border-color: #b6caef;
+      color: #234278;
     }
 
     .section {
       margin-top: 16px;
+      scroll-margin-top: 18px;
       background: var(--panel);
       border: 1px solid #d8e0ef;
       border-radius: 14px;
@@ -467,6 +491,15 @@
     }
 
     @media (max-width: 780px) {
+      .mini-nav {
+        position: static;
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+        border-radius: 12px;
+        margin-top: 12px;
+      }
+
       .container {
         width: min(1240px, 100% - 18px);
       }
@@ -500,14 +533,14 @@
       <h1>ASCEND 310P 软硬调度全流程演示</h1>
       <p>把页面升级为完整 Demo：技术背景 → 技术对比 → 实验结果 → 软件适配演示。</p>
       <div class="mini-nav">
-        <span class="tag">01 技术背景</span>
-        <span class="tag">02 技术对比</span>
-        <span class="tag">03 实验结果</span>
-        <span class="tag">04 适配演示</span>
+        <a class="tag" href="#section-01">01 技术背景</a>
+        <a class="tag" href="#section-02">02 技术对比</a>
+        <a class="tag" href="#section-03">03 实验结果</a>
+        <a class="tag" href="#section-04">04 demo演示</a>
       </div>
     </header>
 
-    <section class="section">
+    <section class="section" id="section-01">
       <div class="section-head">
         <span class="section-index">01</span>
         <h2>业务背景：模型独立部署AI算力利用率低，混合部署不满足高优先级实时要求</h2>
@@ -543,7 +576,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="section-02">
       <div class="section-head">
         <span class="section-index">02</span>
         <h2>第二部分：当前技术对比</h2>
@@ -585,7 +618,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="section-03">
       <div class="section-head">
         <span class="section-index">03</span>
         <h2>第三部分：实验结果</h2>
@@ -606,7 +639,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section" id="section-04">
       <div class="section-head">
         <span class="section-index">04</span>
         <h2>第四部分：实际软件运行适配演示</h2>
