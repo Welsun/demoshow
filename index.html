@@ -350,58 +350,40 @@
     .fill.soft { background: linear-gradient(90deg, #2ecc71, #27ae60); }
     .fill.hard { background: linear-gradient(90deg, #ff8276, #e74c3c); }
 
-    .demo-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .flow {
+    .demo-video {
       border: 1px solid #d8e0ef;
       border-radius: 12px;
-      padding: 12px;
-      background: #fbfdff;
-      display: grid;
-      gap: 10px;
-    }
-
-    .step {
-      border: 1px solid #d8e4f7;
-      border-radius: 10px;
-      padding: 10px;
       background: #fff;
-      position: relative;
+      padding: 10px;
+      display: grid;
+      gap: 8px;
     }
 
-    .step::after {
-      content: '';
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #2ecc71;
-      transform: translateY(-50%);
-      animation: pulse 1.5s infinite;
+    .demo-video video {
+      width: 100%;
+      min-height: 220px;
+      border-radius: 8px;
+      border: 1px solid #e2e9f7;
+      background: #000;
     }
 
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, .5); }
-      80% { box-shadow: 0 0 0 8px rgba(46, 204, 113, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+    .video-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .terminal {
-      background: #101828;
-      color: #d0f0d9;
-      border-radius: 12px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      padding: 12px;
+    .play-btn {
+      border: 0;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
       font-size: 13px;
-      min-height: 250px;
-      white-space: pre-line;
-      border: 1px solid #263247;
+      font-weight: 600;
+      padding: 8px 14px;
+      cursor: pointer;
     }
 
     .demo-video {
@@ -443,7 +425,7 @@
     .hint { color: #4e617f; font-size: 13px; margin-top: 8px; }
 
     @media (max-width: 1100px) {
-      .bg-layout, .boards, .result-layout, .demo-layout { grid-template-columns: 1fr; }
+      .bg-layout, .boards, .result-layout { grid-template-columns: 1fr; }
       svg { height: 540px; }
     }
   </style>
@@ -542,14 +524,8 @@
 
     <section class="section">
       <h2>第四部分：实际软件运行适配演示</h2>
-      <p class="desc">模拟线上部署流程，展示模型接入、策略下发、运行监控与回滚机制。</p>
-      <div class="demo-layout">
-        <div class="flow">
-          <div class="step"><strong>步骤 1：</strong>加载模型包与算子特征（生成优先级画像）</div>
-          <div class="step"><strong>步骤 2：</strong>下发 Scheduler 策略（优先级 + 时间窗 + 目标驱动）</div>
-          <div class="step"><strong>步骤 3：</strong>运行时收集延迟、吞吐、拥塞信号并动态重排</div>
-          <div class="step"><strong>步骤 4：</strong>触发异常阈值时自动降级到保底策略并告警</div>
-        </div>
+      <p class="desc">现场可直接播放完整软件适配演示视频。</p>
+      <div>
         <div class="demo-video">
           <video id="demoVideo" preload="metadata">
             <source src="./assets/software-demo.mp4" type="video/mp4" />
@@ -560,18 +536,8 @@
             <span class="hint" style="margin:0;">视频文件路径：<code>assets/software-demo.mp4</code></span>
           </div>
         </div>
-        <div class="terminal" id="terminalPanel">
-$ demo run --profile edge_infer.yaml
-[00:00:01] Loading model graph... OK
-[00:00:02] Building runtime adapter... OK
-[00:00:03] Scheduler policy loaded: policy_v3
-[00:00:04] Priority queue activated (high/normal)
-[00:00:05] Time-window rule enabled: 20ms
-[00:00:06] Throughput stable: 1.12x baseline
-[00:00:07] P99 latency down to 58ms
-        </div>
       </div>
-      <p class="hint">演示说明：该部分可在现场切换不同策略模板（低时延优先 / 吞吐优先 / 低功耗优先）做效果对比。</p>
+      <p class="hint">演示说明：点击播放按钮即可开始完整视频演示。</p>
     </section>
   </main>
 
