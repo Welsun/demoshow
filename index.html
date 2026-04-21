@@ -88,22 +88,84 @@
       font-size: 14px;
     }
 
-    .grid-3 {
+    .bg-layout {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 1.25fr 1fr;
       gap: 12px;
+    }
+
+    .ppt-panel {
+      border: 1px solid #d8e0ef;
+      background: #fbfdff;
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .ppt-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .ppt-btn {
+      border: 1px solid #cbd9f6;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 13px;
+      color: #39588e;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .ppt-btn.active {
+      color: #fff;
+      background: #2f66f3;
+      border-color: #2f66f3;
+    }
+
+    .ppt-frame {
+      border: 1px solid #d8e4f8;
+      border-radius: 10px;
+      min-height: 320px;
+      overflow: hidden;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      color: #5e6f92;
+      padding: 12px;
+    }
+
+    .ppt-frame iframe,
+    .ppt-frame img {
+      width: 100%;
+      height: 100%;
+      min-height: 296px;
+      border: 0;
+      border-radius: 8px;
+      object-fit: contain;
+      background: #f9fbff;
+    }
+
+    .bg-side {
+      border: 1px solid #d8e0ef;
+      border-radius: 12px;
+      background: #fbfdff;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
     }
 
     .bg-card {
       border: 1px solid #d8e0ef;
-      background: #fbfdff;
-      border-radius: 12px;
-      padding: 14px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px;
     }
 
     .bg-card h3 {
-      margin: 0 0 8px;
-      font-size: 16px;
+      margin: 0 0 6px;
+      font-size: 15px;
       color: #24447f;
     }
 
@@ -311,7 +373,7 @@
     .hint { color: #4e617f; font-size: 13px; margin-top: 8px; }
 
     @media (max-width: 1100px) {
-      .grid-3, .boards, .result-layout, .demo-layout { grid-template-columns: 1fr; }
+      .bg-layout, .boards, .result-layout, .demo-layout { grid-template-columns: 1fr; }
       svg { height: 540px; }
     }
   </style>
@@ -330,33 +392,43 @@
     </header>
 
     <section class="section">
-      <h2>第一部分：技术背景介绍</h2>
-      <p class="desc">重点说明为什么需要从传统硬调度演进到可编排、可策略化的软调度链路。</p>
-      <div class="grid-3">
-        <article class="bg-card">
-          <h3>业务场景变化</h3>
-          <ul>
-            <li>多模型并发（检测 + 分割 + OCR）成为常态。</li>
-            <li>请求负载峰谷明显，算子优先级常动态变化。</li>
-            <li>对时延 SLA（例如 P99）要求更严格。</li>
-          </ul>
-        </article>
-        <article class="bg-card">
-          <h3>硬调度痛点</h3>
-          <ul>
-            <li>链路层级长，跨组件跳转多。</li>
-            <li>策略固化，难以做细粒度队列重排。</li>
-            <li>高优任务抢占与时间窗控制能力有限。</li>
-          </ul>
-        </article>
-        <article class="bg-card">
-          <h3>软调度目标</h3>
-          <ul>
-            <li>引入 Scheduler 做策略集中控制。</li>
-            <li>支持优先级、时间窗、负载感知调度。</li>
-            <li>在不改模型逻辑下提升整体吞吐与稳定性。</li>
-          </ul>
-        </article>
+      <h2>第一部分：技术背景介绍（支持直接融合PPT）</h2>
+      <p class="desc">推荐做法：保留你原有PPT一页做“主画面”，网页补充“可讲解的结构化要点”。这样既不改稿，也适合现场演示。</p>
+      <div class="bg-layout">
+        <div class="ppt-panel">
+          <div class="ppt-tools" id="pptModes">
+            <button class="ppt-btn active" data-mode="pdf">模式A：直接嵌入PPT导出的PDF</button>
+            <button class="ppt-btn" data-mode="image">模式B：嵌入PPT导出的图片</button>
+          </div>
+          <div class="ppt-frame" id="pptFrame">
+            <object data="./assets/background-intro.pdf" type="application/pdf" width="100%" height="100%">未找到 assets/background-intro.pdf，请先从PPT导出后放入该路径。</object>
+          </div>
+          <p class="hint">把你的背景页导出为 `assets/background-intro.pdf` 或 `assets/background-intro.png` 即可直接替换。</p>
+        </div>
+
+        <aside class="bg-side">
+          <article class="bg-card">
+            <h3>讲解层 1：业务变化</h3>
+            <ul>
+              <li>多模型并发（检测 + 分割 + OCR）成为常态。</li>
+              <li>请求峰谷明显，优先级经常动态变化。</li>
+            </ul>
+          </article>
+          <article class="bg-card">
+            <h3>讲解层 2：现状痛点</h3>
+            <ul>
+              <li>硬调度链路长、跳转多，尾时延波动大。</li>
+              <li>策略固化，缺乏时间窗与抢占控制。</li>
+            </ul>
+          </article>
+          <article class="bg-card">
+            <h3>讲解层 3：迁移目标</h3>
+            <ul>
+              <li>以 Scheduler 做策略中枢。</li>
+              <li>统一实现优先级、时间窗、负载感知。</li>
+            </ul>
+          </article>
+        </aside>
       </div>
     </section>
 
@@ -739,6 +811,21 @@ $ demo run --profile edge_infer.yaml
       setTimeout(() => {
         el.style.width = `${el.dataset.width}%`;
       }, 400 + index * 120);
+    });
+
+    const frame = document.getElementById('pptFrame');
+    const modeButtons = document.querySelectorAll('#pptModes .ppt-btn');
+    const modeTemplates = {
+      pdf: '<object data="./assets/background-intro.pdf" type="application/pdf" width="100%" height="100%">未找到 assets/background-intro.pdf，请先从PPT导出后放入该路径。</object>',
+      image: '<img src="./assets/background-intro.png" alt="技术背景PPT图片" onerror="this.outerHTML=\'<div style=\"color:#5e6f92\">未找到 assets/background-intro.png，请先从PPT导出图片后放入该路径。<\/div>\'" />'
+    };
+
+    modeButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        modeButtons.forEach((x) => x.classList.remove('active'));
+        btn.classList.add('active');
+        frame.innerHTML = modeTemplates[btn.dataset.mode];
+      });
     });
   </script>
 </body>
