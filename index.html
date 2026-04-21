@@ -204,6 +204,8 @@
       border-radius: 8px;
       object-fit: contain;
       background: #f9fbff;
+      transform-origin: center;
+      transition: transform 0.25s ease;
     }
 
     .bg-card {
@@ -985,11 +987,13 @@
       slide1: {
         src: './assets/background-intro-1.png',
         alt: '业务背景PPT-1',
+        scale: 1.5,
         missingText: '未找到 assets/background-intro-1.png，请放入第一张PPT导出图片。'
       },
       slide2: {
         src: './assets/background-intro-2.png',
         alt: '业务背景PPT-2',
+        scale: 0.7,
         missingText: '未找到 assets/background-intro-2.png，请放入第二张PPT导出图片。'
       }
     };
@@ -1003,6 +1007,7 @@
       const img = document.createElement('img');
       img.src = config.src;
       img.alt = config.alt;
+      img.style.transform = `scale(${config.scale || 1})`;
       img.addEventListener('error', () => {
         const fallback = document.createElement('div');
         fallback.style.color = '#5e6f92';
