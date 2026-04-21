@@ -392,40 +392,33 @@
     </header>
 
     <section class="section">
-      <h2>第一部分：技术背景介绍（支持直接融合PPT）</h2>
-      <p class="desc">推荐做法：保留你原有PPT一页做“主画面”，网页补充“可讲解的结构化要点”。这样既不改稿，也适合现场演示。</p>
+      <h2>业务背景：模型独立部署AI算力利用率低，混合部署不满足高优先级实时要求</h2>
+      <p class="desc">业务背景支持两张PPT图片轮播展示，并在右侧保留关键痛点数据，便于演示时快速对齐问题与目标。</p>
       <div class="bg-layout">
         <div class="ppt-panel">
-          <div class="ppt-tools" id="pptModes">
-            <button class="ppt-btn active" data-mode="pdf">模式A：直接嵌入PPT导出的PDF</button>
-            <button class="ppt-btn" data-mode="image">模式B：嵌入PPT导出的图片</button>
+          <div class="ppt-tools" id="pptSlides">
+            <button class="ppt-btn active" data-slide="slide1">业务背景PPT-1</button>
+            <button class="ppt-btn" data-slide="slide2">业务背景PPT-2</button>
           </div>
           <div class="ppt-frame" id="pptFrame">
-            <object data="./assets/background-intro.pdf" type="application/pdf" width="100%" height="100%">未找到 assets/background-intro.pdf，请先从PPT导出后放入该路径。</object>
+            <img src="./assets/background-intro-1.png" alt="业务背景PPT-1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张PPT导出图片。</div>'" />
           </div>
-          <p class="hint">把你的背景页导出为 `assets/background-intro.pdf` 或 `assets/background-intro.png` 即可直接替换。</p>
+          <p class="hint">请把两张PPT分别命名为 `assets/background-intro-1.png` 和 `assets/background-intro-2.png`。</p>
         </div>
 
         <aside class="bg-side">
           <article class="bg-card">
-            <h3>讲解层 1：业务变化</h3>
+            <h3>业务痛点1-资源利用率低</h3>
             <ul>
-              <li>多模型并发（检测 + 分割 + OCR）成为常态。</li>
-              <li>请求峰谷明显，优先级经常动态变化。</li>
+              <li>L2独占的1951利用率为42.9%。</li>
+              <li>L1独占的1951利用率为62.47%。</li>
             </ul>
           </article>
           <article class="bg-card">
-            <h3>讲解层 2：现状痛点</h3>
+            <h3>业务痛点2-高优先级任务被堵塞超时</h3>
             <ul>
-              <li>硬调度链路长、跳转多，尾时延波动大。</li>
-              <li>策略固化，缺乏时间窗与抢占控制。</li>
-            </ul>
-          </article>
-          <article class="bg-card">
-            <h3>讲解层 3：迁移目标</h3>
-            <ul>
-              <li>以 Scheduler 做策略中枢。</li>
-              <li>统一实现优先级、时间窗、负载感知。</li>
+              <li>高优先级任务时延被低优先级任务时延堵塞。</li>
+              <li>最终导致高优先级任务执行超时。</li>
             </ul>
           </article>
         </aside>
@@ -814,17 +807,17 @@ $ demo run --profile edge_infer.yaml
     });
 
     const frame = document.getElementById('pptFrame');
-    const modeButtons = document.querySelectorAll('#pptModes .ppt-btn');
-    const modeTemplates = {
-      pdf: '<object data="./assets/background-intro.pdf" type="application/pdf" width="100%" height="100%">未找到 assets/background-intro.pdf，请先从PPT导出后放入该路径。</object>',
-      image: '<img src="./assets/background-intro.png" alt="技术背景PPT图片" onerror="this.outerHTML=\'<div style=\"color:#5e6f92\">未找到 assets/background-intro.png，请先从PPT导出图片后放入该路径。<\/div>\'" />'
+    const slideButtons = document.querySelectorAll('#pptSlides .ppt-btn');
+    const slideTemplates = {
+      slide1: '<img src="./assets/background-intro-1.png" alt="业务背景PPT-1" onerror="this.outerHTML=\'<div style=\"color:#5e6f92\">未找到 assets/background-intro-1.png，请放入第一张PPT导出图片。</div>\'" />',
+      slide2: '<img src="./assets/background-intro-2.png" alt="业务背景PPT-2" onerror="this.outerHTML=\'<div style=\"color:#5e6f92\">未找到 assets/background-intro-2.png，请放入第二张PPT导出图片。</div>\'" />'
     };
 
-    modeButtons.forEach((btn) => {
+    slideButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
-        modeButtons.forEach((x) => x.classList.remove('active'));
+        slideButtons.forEach((x) => x.classList.remove('active'));
         btn.classList.add('active');
-        frame.innerHTML = modeTemplates[btn.dataset.mode];
+        frame.innerHTML = slideTemplates[btn.dataset.slide];
       });
     });
   </script>
