@@ -75,11 +75,18 @@
 
     .poster-grid {
       display: grid;
-      grid-template-columns: 1fr 1.35fr 1fr;
+      grid-template-columns: 0.95fr 2.05fr;
       gap: 16px;
       align-items: stretch;
       min-height: 0;
       height: 100%;
+    }
+
+    .right-stack {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 16px;
+      min-height: 0;
     }
 
     .poster-column {
@@ -98,6 +105,7 @@
       margin: 0;
       font-size: clamp(22px, 1.5vw, 30px);
       color: #21427d;
+      text-align: center;
     }
 
     .desc {
@@ -176,10 +184,9 @@
 
     .boards {
       display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: auto auto auto;
+      grid-template-columns: 1fr auto 1fr;
       gap: 12px;
-      align-content: start;
+      align-items: stretch;
       min-height: 0;
     }
 
@@ -202,7 +209,7 @@
 
     svg {
       width: 100%;
-      height: clamp(220px, 24vh, 320px);
+      height: clamp(190px, 20vh, 270px);
       background: #fbfdff;
       border-radius: 8px;
     }
@@ -225,7 +232,14 @@
     }
 
     .combo-column {
-      grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: auto auto minmax(0, 1fr);
+    }
+
+    .showcase-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      min-height: 0;
     }
 
     .result-image img {
@@ -259,7 +273,7 @@
       font-weight: 800;
       font-size: clamp(20px, 1.3vw, 28px);
       line-height: 1;
-      padding: 2px 0;
+      padding: 0 4px;
       text-shadow: 0 0 10px rgba(47, 102, 243, 0.22);
     }
 
@@ -279,8 +293,10 @@
         padding: 8px 0;
       }
       .poster-grid { grid-template-columns: 1fr; }
-      .combo-column { grid-template-rows: auto auto auto auto; }
-      .boards { grid-template-columns: 1fr; grid-template-rows: auto auto; }
+      .right-stack { grid-template-rows: auto auto; }
+      .combo-column { grid-template-rows: auto auto auto; }
+      .showcase-split { grid-template-columns: 1fr; }
+      .boards { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
       svg { height: 520px; }
     }
   </style>
@@ -294,7 +310,7 @@
 
     <section class="poster-grid">
       <article class="poster-column">
-        <h2>业务背景</h2>
+        <h2>业务背景介绍</h2>
         <p class="desc">聚焦挑战1，突出业务场景中的资源利用率问题。</p>
         <div class="panel">
           <img class="bg-image" src="./assets/background-intro-1.png" alt="业务背景挑战1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张业务背景图。</div>'" />
@@ -308,47 +324,51 @@
         </div>
       </article>
 
-      <article class="poster-column middle-column">
-        <h2>软调度 vs 硬调度</h2>
-        <p class="desc">中间栏强化对比动画，突出路径层级和策略可控性差异。</p>
-        <div class="legend">
-          <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
-          <span class="chip"><span class="dot" style="background:#3498db"></span>MatMul 算子</span>
-          <span class="chip"><span class="dot" style="background:#f1c40f"></span>Reduce 算子</span>
-          <span class="chip"><span class="dot" style="background:#9b59b6"></span>Attention 算子</span>
-        </div>
-        <div class="boards">
-          <section class="card hard">
-            <h3>硬调度</h3>
-            <svg id="hardSVG" viewBox="0 0 560 560"></svg>
-            <p class="metric">平均路径层级：<span class="highlight">7 层</span>（链路较长）</p>
-          </section>
-          <div class="compare-arrow" aria-hidden="true">
-            <span>⬇</span>
-            <small>软调度优化演进</small>
+      <div class="right-stack">
+        <article class="poster-column middle-column">
+          <h2>技术介绍</h2>
+          <p class="desc">该栏改为横向排布，对比更直观展示左右两条链路差异。</p>
+          <div class="legend">
+            <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
+            <span class="chip"><span class="dot" style="background:#3498db"></span>MatMul 算子</span>
+            <span class="chip"><span class="dot" style="background:#f1c40f"></span>Reduce 算子</span>
+            <span class="chip"><span class="dot" style="background:#9b59b6"></span>Attention 算子</span>
           </div>
-          <section class="card soft">
-            <h3>软调度</h3>
-            <svg id="softSVG" viewBox="0 0 560 560"></svg>
-            <p class="metric">平均路径层级：<span class="highlight">5 层</span>（链路更短，可动态策略）</p>
-          </section>
-        </div>
-      </article>
+          <div class="boards">
+            <section class="card hard">
+              <h3>硬调度</h3>
+              <svg id="hardSVG" viewBox="0 0 560 560"></svg>
+              <p class="metric">平均路径层级：<span class="highlight">7 层</span>（链路较长）</p>
+            </section>
+            <div class="compare-arrow" aria-hidden="true">
+              <span>→</span>
+              <small>软调度优化演进</small>
+            </div>
+            <section class="card soft">
+              <h3>软调度</h3>
+              <svg id="softSVG" viewBox="0 0 560 560"></svg>
+              <p class="metric">平均路径层级：<span class="highlight">5 层</span>（链路更短，可动态策略）</p>
+            </section>
+          </div>
+        </article>
 
-      <article class="poster-column combo-column">
-        <h2>实验结果 + 现场演示</h2>
-        <p class="desc">上半部分展示柱状图结果，下半部分循环播放对比视频。</p>
-        <div class="panel result-image">
-          <img src="./assets/latency-result-bar.png" alt="实验结果柱状图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/latency-result-bar.png，请放入实验柱状图图片。</div>'" />
-        </div>
-        <div class="panel demo-video">
-          <video id="demoVideo" preload="auto" autoplay muted loop playsinline>
-            <source src="./assets/software-demo.mp4" type="video/mp4" />
-            您的浏览器不支持视频播放，请下载 ./assets/software-demo.mp4 观看完整演示。
-          </video>
-          <p class="hint">视频路径：<code>assets/software-demo.mp4</code>（默认自动循环播放）</p>
-        </div>
-      </article>
+        <article class="poster-column combo-column">
+          <h2>效果展示</h2>
+          <p class="desc">该栏左右分区：左侧柱状图，右侧演示视频。</p>
+          <div class="showcase-split">
+            <div class="panel result-image">
+              <img src="./assets/latency-result-bar.png" alt="实验结果柱状图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/latency-result-bar.png，请放入实验柱状图图片。</div>'" />
+            </div>
+            <div class="panel demo-video">
+              <video id="demoVideo" preload="auto" autoplay muted loop playsinline>
+                <source src="./assets/software-demo.mp4" type="video/mp4" />
+                您的浏览器不支持视频播放，请下载 ./assets/software-demo.mp4 观看完整演示。
+              </video>
+              <p class="hint">视频路径：<code>assets/software-demo.mp4</code>（默认自动循环播放）</p>
+            </div>
+          </div>
+        </article>
+      </div>
     </section>
   </main>
 
