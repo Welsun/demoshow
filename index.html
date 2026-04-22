@@ -6,36 +6,40 @@
   <title>ASCEND 310P 软硬调度演示</title>
   <style>
     :root {
-      --bg: #f3f6fb;
       --panel: #ffffff;
       --text: #1f2a44;
       --muted: #5f6b84;
       --line: #b7c2d8;
       --hard: #e74c3c;
       --soft: #27ae60;
-      --shadow: 0 10px 28px rgba(14, 30, 62, 0.08);
-      --shadow-soft: 0 8px 18px rgba(22, 43, 82, 0.08);
+      --shadow: 0 12px 36px rgba(14, 30, 62, 0.1);
       --primary: #2f66f3;
     }
 
     * { box-sizing: border-box; }
-    html {
-      scroll-behavior: smooth;
+
+    html, body {
+      height: 100%;
     }
 
     body {
       margin: 0;
-      padding-top: 20px;
-      min-height: 100vh;
-      background: linear-gradient(160deg, #eef3fc 0%, #f9fbff 100%);
+      background: radial-gradient(circle at top right, #e4edff 0%, #f6f9ff 48%, #edf3ff 100%);
       color: var(--text);
       font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
       line-height: 1.55;
+      padding: 0;
+      overflow: hidden;
     }
 
     .container {
-      width: min(1240px, 100% - 32px);
-      margin: 8px auto 44px;
+      width: min(1980px, calc(100% - 24px));
+      height: 100vh;
+      margin: 0 auto;
+      padding: 12px 0;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 16px;
     }
 
     .hero {
@@ -44,21 +48,20 @@
         linear-gradient(140deg, #ffffff 0%, #f4f8ff 100%);
       border: 1px solid #d3def2;
       border-radius: 18px;
-      box-shadow: 0 14px 34px rgba(14, 30, 62, 0.1);
+      box-shadow: var(--shadow);
       padding: 28px 26px 24px;
-      margin-bottom: 18px;
     }
 
     .hero h1 {
       margin: 0 0 6px;
-      font-size: clamp(30px, 3.2vw, 42px);
+      font-size: clamp(34px, 2.2vw, 48px);
       letter-spacing: 0.4px;
     }
 
     .hero p {
       margin: 0;
       color: var(--muted);
-      font-size: 15px;
+      font-size: clamp(16px, 1vw, 20px);
     }
 
     .hero::after {
@@ -70,219 +73,86 @@
       background: linear-gradient(90deg, #d7e2f7, rgba(215, 226, 247, 0));
     }
 
-    .nav-zone {
-      position: sticky;
-      top: 12px;
-      z-index: 999;
-      margin: -4px 0 18px;
-      border: 1px solid #d8e4fb;
-      border-radius: 14px;
-      background: linear-gradient(120deg, rgba(250, 253, 255, 0.98), rgba(241, 247, 255, 0.95));
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(8px);
-      overflow-x: auto;
+    .poster-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.35fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+      min-height: 0;
+      height: 100%;
     }
 
-    .mini-nav {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0;
-      padding: 12px 14px;
-      min-width: max-content;
-    }
-
-    .tag {
-      border: 1px solid #d2ddf3;
-      background: linear-gradient(135deg, #f9fbff, #eef4ff);
-      color: #2b4673;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-
-    .nav-arrow {
-      position: relative;
-      width: 30px;
-      height: 1px;
-      margin: 0 10px;
-      background: linear-gradient(90deg, rgba(47, 102, 243, 0.25), rgba(47, 102, 243, 0.7));
-      flex-shrink: 0;
-    }
-
-    .nav-arrow::after {
-      content: "➤";
-      position: absolute;
-      right: -2px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #2f66f3;
-      font-size: 12px;
-      text-shadow: 0 0 8px rgba(47, 102, 243, 0.4);
-    }
-
-    .tag:hover {
-      background: #eef4ff;
-      border-color: #b6caef;
-      color: #234278;
-    }
-
-    .tag.active {
-      background: #2f66f3;
-      border-color: #2f66f3;
-      color: #fff;
-      box-shadow: 0 4px 10px rgba(47, 102, 243, 0.25);
-    }
-
-    .section {
-      margin-top: 16px;
-      scroll-margin-top: 18px;
+    .poster-column {
       background: var(--panel);
       border: 1px solid #d8e0ef;
-      border-radius: 14px;
+      border-radius: 16px;
       box-shadow: var(--shadow);
-      padding: 20px;
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
-
-    .section-head {
-      display: flex;
-      align-items: center;
+      padding: 16px;
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
       gap: 12px;
-      margin-bottom: 8px;
-    }
-
-    .section-index {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: linear-gradient(135deg, #2f66f3, #4f83ff);
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
-      box-shadow: var(--shadow-soft);
-      flex-shrink: 0;
-    }
-
-    .section h2 {
-      margin: 0;
-      font-size: 24px;
-    }
-
-    .section .desc {
-      margin: 0 0 14px;
-      color: var(--muted);
-      font-size: 14px;
-    }
-
-    .bg-layout { display: grid; gap: 8px; }
-
-    .ppt-panel {
-      border: 1px solid #d8e0ef;
-      background: #fbfdff;
-      border-radius: 12px;
-      padding: 12px;
-    }
-
-    .ppt-tools {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-
-    .ppt-btn {
-      border: 1px solid #cbd9f6;
-      border-radius: 999px;
-      padding: 5px 10px;
-      font-size: 13px;
-      color: #39588e;
-      background: #fff;
-      cursor: pointer;
-    }
-
-    .ppt-btn.active {
-      color: #fff;
-      background: #2f66f3;
-      border-color: #2f66f3;
-    }
-
-    .ppt-frame {
-      border: 1px solid #d8e4f8;
-      border-radius: 10px;
-      min-height: clamp(200px, 33vw, 420px);
       overflow: hidden;
-      background: #fff;
-      display: grid;
-      place-items: center;
-      color: #5e6f92;
-      padding: 0;
     }
 
-    .ppt-frame iframe,
-    .ppt-frame img {
-      width: 100%;
-      height: 100%;
-      max-height: clamp(190px, 32vw, 400px);
-      border: 0;
-      border-radius: 0;
-      object-fit: contain;
-      background: transparent;
+    .poster-column h2 {
+      margin: 0;
+      font-size: clamp(22px, 1.5vw, 30px);
+      color: #21427d;
     }
 
-    .bg-card {
+    .desc {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(13px, 0.9vw, 16px);
+    }
+
+    .panel {
       border: 1px solid #d8e0ef;
-      background: #fff;
-      border-radius: 10px;
-      padding: 8px;
+      border-radius: 12px;
+      background: #fbfdff;
+      padding: 12px;
+      min-height: 0;
     }
 
-    .pain-card { display: none; }
-    .pain-card.active { display: block; }
-
-    .pain-stack {
-      margin-top: 8px;
-      display: grid;
-      gap: 6px;
+    .bg-image {
+      width: 100%;
+      height: clamp(180px, 24vh, 460px);
+      object-fit: contain;
+      border: 1px solid #e2e9f7;
+      border-radius: 10px;
+      background: #fff;
     }
 
     .bg-card h3 {
-      margin: 0 0 4px;
-      font-size: 14px;
+      margin: 0 0 6px;
       color: #24447f;
+      font-size: 20px;
     }
 
     .bg-card ul {
       margin: 0;
-      padding-left: 18px;
+      padding-left: 20px;
       color: #3b4d73;
-      font-size: 13px;
+      font-size: 17px;
+    }
+
+    .highlight {
+      color: #e74c3c;
+      font-weight: 700;
+    }
+
+    .middle-column {
+      background: linear-gradient(180deg, #ffffff 0%, #f4f9ff 100%);
+      border-color: #bfcfee;
     }
 
     .legend {
-      margin: 0 0 14px;
-      background: #f9fbff;
-      border: 1px solid #d8e0ef;
-      border-radius: 10px;
-      padding: 10px 12px;
       display: flex;
-      gap: 10px;
-      align-items: center;
+      gap: 8px;
       flex-wrap: wrap;
       font-size: 13px;
       color: #33415f;
+      margin-top: -2px;
     }
 
     .chip {
@@ -298,57 +168,19 @@
     .dot {
       width: 10px;
       height: 10px;
+      flex: 0 0 10px;
+      aspect-ratio: 1 / 1;
       border-radius: 50%;
       display: inline-block;
     }
 
     .boards {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .arch-evolution {
-      margin-bottom: 14px;
-      border: 1px solid #d8e0ef;
-      border-radius: 12px;
-      background: #fbfdff;
-      padding: 12px;
-      display: grid;
-      grid-template-columns: 1fr 52px 1fr;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .arch-box {
-      border: 1px solid #d8e0ef;
-      border-radius: 10px;
-      background: #fff;
-      padding: 8px;
-    }
-
-    .arch-box img {
-      width: 100%;
-      height: clamp(220px, 28vw, 380px);
-      border-radius: 8px;
-      border: 1px solid #e2e9f7;
-      object-fit: contain;
-      background: #fff;
-    }
-
-    .arch-label {
-      margin: 0 0 6px;
-      font-size: 13px;
-      color: #2f4773;
-      font-weight: 800;
-      text-align: center;
-    }
-
-    .evo-arrow {
-      font-size: 30px;
-      text-align: center;
-      color: #2f66f3;
-      font-weight: 700;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 12px;
+      align-content: stretch;
+      min-height: 0;
     }
 
     .card {
@@ -360,7 +192,7 @@
 
     .card h3 {
       margin: 4px 4px 8px;
-      font-size: 18px;
+      font-size: 20px;
       text-align: center;
     }
 
@@ -369,14 +201,14 @@
 
     svg {
       width: 100%;
-      height: 560px;
+      height: clamp(260px, 30vh, 420px);
       background: #fbfdff;
       border-radius: 8px;
     }
 
     .metric {
       margin: 8px 4px 2px;
-      font-size: 13px;
+      font-size: 14px;
       color: var(--muted);
     }
 
@@ -391,189 +223,56 @@
       fill: #2f3d58;
     }
 
-    .result-layout {
-      display: grid;
-      gap: 14px;
-    }
-
-    .result-image {
-      width: 100%;
-      border: 1px solid #d8e0ef;
-      border-radius: 12px;
-      background: #fbfdff;
-      padding: 12px;
+    .combo-column {
+      grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr);
     }
 
     .result-image img {
       width: 100%;
-      max-height: clamp(240px, 48vw, 680px);
+      height: 100%;
+      object-fit: contain;
       border-radius: 8px;
       border: 1px solid #e2e9f7;
       background: #fff;
-      object-fit: contain;
-    }
-
-    .result-note {
-      margin: 0;
-      border: 1px solid #d8e0ef;
-      border-radius: 12px;
-      background: #f9fbff;
-      padding: 12px 14px;
-      color: #32476c;
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .result-note ul {
-      margin: 6px 0 0;
-      padding-left: 18px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-      overflow: hidden;
-      border-radius: 12px;
-      border: 1px solid #d9e2f3;
-    }
-
-    th, td {
-      padding: 10px 12px;
-      text-align: left;
-      border-bottom: 1px solid #edf2fb;
-    }
-
-    th {
-      background: #f3f7ff;
-      color: #2f4773;
-      font-size: 13px;
-    }
-
-    .bar-wrap { display: grid; gap: 12px; }
-
-    .bar-item {
-      border: 1px solid #dce5f6;
-      border-radius: 12px;
-      padding: 10px;
-      background: #f9fbff;
-    }
-
-    .bar-item .top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      font-size: 13px;
-      color: #3f5279;
-      font-weight: 600;
-    }
-
-    .track {
-      width: 100%;
-      height: 10px;
-      border-radius: 999px;
-      background: #e8eefb;
-      overflow: hidden;
-    }
-
-    .fill {
-      height: 100%;
-      width: 0;
-      border-radius: inherit;
-      transition: width 1.3s ease;
-    }
-
-    .fill.soft { background: linear-gradient(90deg, #2ecc71, #27ae60); }
-    .fill.hard { background: linear-gradient(90deg, #ff8276, #e74c3c); }
-
-    .demo-video {
-      border: 1px solid #d8e0ef;
-      border-radius: 12px;
-      background: #fff;
-      padding: 12px;
-      display: grid;
-      gap: 10px;
     }
 
     .demo-video video {
       width: 100%;
-      min-height: clamp(220px, 36vw, 420px);
+      height: calc(100% - 30px);
       border-radius: 8px;
       border: 1px solid #e2e9f7;
       background: #000;
+      object-fit: cover;
     }
 
-    .video-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .play-btn {
-      border: 0;
-      border-radius: 999px;
-      background: var(--primary);
-      color: #fff;
+    .hint {
+      margin: 0;
+      color: #4e617f;
       font-size: 13px;
-      font-weight: 600;
-      padding: 8px 14px;
-      cursor: pointer;
     }
 
-    .play-btn:hover {
-      filter: brightness(1.06);
-    }
-
-    .hint { color: #4e617f; font-size: 13px; margin-top: 8px; }
-
-    .key-data {
-      color: #e74c3c;
-      font-weight: 700;
-    }
-
-    @media (max-width: 1100px) {
-      .boards, .result-layout { grid-template-columns: 1fr; }
-      .arch-evolution { grid-template-columns: 1fr; }
-      .evo-arrow { transform: rotate(90deg); }
-      svg { height: 540px; }
-    }
-
-    @media (max-width: 780px) {
-      .nav-zone {
-        top: 8px;
-        margin-top: 8px;
+    @media (min-width: 2100px) {
+      .boards {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
       }
-
-      .mini-nav {
-        justify-content: flex-start;
+      svg {
+        height: clamp(300px, 33vh, 500px);
       }
+    }
 
+    @media (max-width: 1500px) {
+      body { overflow: auto; }
       .container {
-        width: min(1240px, 100% - 18px);
+        height: auto;
+        min-height: 100vh;
+        width: min(1980px, calc(100% - 16px));
+        padding: 8px 0;
       }
-      .hero h1 {
-        font-size: 26px;
-      }
-      .section {
-        padding: 14px;
-      }
-      .section h2 {
-        font-size: 20px;
-      }
-      .section-index {
-        width: 30px;
-        height: 30px;
-        font-size: 13px;
-      }
-      .ppt-tools {
-        gap: 6px;
-      }
-      .ppt-btn {
-        padding: 4px 9px;
-        font-size: 12px;
-      }
+      .poster-grid { grid-template-columns: 1fr; }
+      .combo-column { grid-template-rows: auto auto auto auto; }
+      .boards { grid-template-columns: 1fr; grid-template-rows: auto auto; }
+      svg { height: 520px; }
     }
   </style>
 </head>
@@ -583,134 +282,60 @@
       <h1>RT-Infer AI推理运行时</h1>
       <p>把页面升级为完整 Demo：技术背景 → 技术对比 → 实验结果 → 软件适配演示。</p>
     </header>
-    <div class="nav-zone" aria-label="章节导航区域">
-      <nav class="mini-nav">
-        <a class="tag active" href="#section-01">01 技术背景</a>
-        <span class="nav-arrow" aria-hidden="true"></span>
-        <a class="tag" href="#section-02">02 技术对比</a>
-        <span class="nav-arrow" aria-hidden="true"></span>
-        <a class="tag" href="#section-03">03 实验结果</a>
-        <span class="nav-arrow" aria-hidden="true"></span>
-        <a class="tag" href="#section-04">04 demo演示</a>
-      </nav>
-    </div>
 
-    <section class="section" id="section-01">
-      <div class="section-head">
-        <span class="section-index">01</span>
-        <h2>业务背景：模型独立部署AI算力利用率低，混合部署不满足高优先级实时要求</h2>
-      </div>
-      <p class="desc">业务背景支持两张PPT图片轮播展示，并在右侧保留关键痛点数据，便于演示时快速对齐问题与目标。</p>
-      <div class="bg-layout">
-        <div class="ppt-panel">
-          <div class="ppt-tools" id="pptSlides">
-            <button class="ppt-btn active" data-slide="slide1">业务背景PPT-1</button>
-            <button class="ppt-btn" data-slide="slide2">业务背景PPT-2</button>
+    <section class="poster-grid">
+      <article class="poster-column">
+        <h2>业务背景</h2>
+        <p class="desc">聚焦挑战1，突出业务场景中的资源利用率问题。</p>
+        <div class="panel">
+          <img class="bg-image" src="./assets/background-intro-1.png" alt="业务背景挑战1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张业务背景图。</div>'" />
+          <div class="bg-card" style="margin-top:10px;">
+            <h3>挑战1：资源利用率低</h3>
+            <ul>
+              <li>L2独占的1951利用率为 <span class="highlight">42.9%</span>。</li>
+              <li>L1独占的1951利用率为 <span class="highlight">62.47%</span>。</li>
+            </ul>
           </div>
-          <div class="ppt-frame" id="pptFrame"></div>
-          <div class="pain-stack">
-            <article class="bg-card pain-card active" data-pain="pain1">
-              <h3>业务痛点1-资源利用率低</h3>
-              <ul>
-                <li>L2独占的1951利用率为<span class="key-data">42.9%</span>。</li>
-                <li>L1独占的1951利用率为<span class="key-data">62.47%</span>。</li>
-              </ul>
-            </article>
-            <article class="bg-card pain-card" data-pain="pain2">
-              <h3>业务痛点2-高优先级任务被堵塞超时</h3>
-              <ul>
-                <li>高优先级任务时延被低优先级任务时延堵塞。</li>
-                <li>最终导致高优先级任务执行超时。</li>
-              </ul>
-            </article>
-          </div>
-          <p class="hint">请把两张PPT分别命名为 `assets/background-intro-1.png` 和 `assets/background-intro-2.png`。</p>
         </div>
-      </div>
-    </section>
+      </article>
 
-    <section class="section" id="section-02">
-      <div class="section-head">
-        <span class="section-index">02</span>
-        <h2>第二部分：当前技术对比</h2>
-      </div>
-      <p class="desc">保留原有可视化动画，直观看到硬调度与软调度在链路长度与可控性上的差异。</p>
-
-      <div class="arch-evolution">
-        <div class="arch-box">
-          <p class="arch-label">演进前：原有软件架构</p>
-          <img src="./assets/architecture-before.png" alt="演进前软件架构图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/architecture-before.png，请放入演进前架构图。</div>'" />
+      <article class="poster-column middle-column">
+        <h2>软调度 vs 硬调度</h2>
+        <p class="desc">中间栏强化对比动画，突出路径层级和策略可控性差异。</p>
+        <div class="legend">
+          <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
+          <span class="chip"><span class="dot" style="background:#3498db"></span>MatMul 算子</span>
+          <span class="chip"><span class="dot" style="background:#f1c40f"></span>Reduce 算子</span>
+          <span class="chip"><span class="dot" style="background:#9b59b6"></span>Attention 算子</span>
         </div>
-        <div class="evo-arrow" aria-label="技术演进方向">→</div>
-        <div class="arch-box">
-          <p class="arch-label">演进后：软硬协同调度架构</p>
-          <img src="./assets/architecture-after.png" alt="演进后软件架构图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/architecture-after.png，请放入演进后架构图。</div>'" />
+        <div class="boards">
+          <section class="card hard">
+            <h3>硬调度</h3>
+            <svg id="hardSVG" viewBox="0 0 560 560"></svg>
+            <p class="metric">平均路径层级：<span class="highlight">7 层</span>（链路较长）</p>
+          </section>
+          <section class="card soft">
+            <h3>软调度</h3>
+            <svg id="softSVG" viewBox="0 0 560 560"></svg>
+            <p class="metric">平均路径层级：<span class="highlight">5 层</span>（链路更短，可动态策略）</p>
+          </section>
         </div>
-      </div>
+      </article>
 
-      <div class="legend">
-        <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
-        <span class="chip"><span class="dot" style="background:#3498db"></span>MatMul 算子</span>
-        <span class="chip"><span class="dot" style="background:#f1c40f"></span>Reduce 算子</span>
-        <span class="chip"><span class="dot" style="background:#9b59b6"></span>Attention 算子</span>
-        <span class="chip">软调度优势：更少链路跳转、可控优先级、可做时间窗调度</span>
-      </div>
-
-      <div class="boards">
-        <section class="card hard">
-          <h3>硬调度</h3>
-          <svg id="hardSVG" viewBox="0 0 560 560"></svg>
-          <p class="metric" id="hardMetric">平均路径层级：<span class="key-data">7 层</span>（链路较长）</p>
-        </section>
-
-        <section class="card soft">
-          <h3>软调度</h3>
-          <svg id="softSVG" viewBox="0 0 560 560"></svg>
-          <p class="metric" id="softMetric">平均路径层级：<span class="key-data">5 层</span>（链路更短，可动态策略）</p>
-        </section>
-      </div>
-    </section>
-
-    <section class="section" id="section-03">
-      <div class="section-head">
-        <span class="section-index">03</span>
-        <h2>第三部分：实验结果</h2>
-      </div>
-      <p class="desc">以下实验基于同批模型与输入流量，展示软调度在时延和计算利用率上的改进。</p>
-      <div class="result-layout">
-        <div class="result-image">
-          <img src="./assets/latency-result-bar.png" alt="时延结果柱状图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/latency-result-bar.png，请放入时延结果柱状图图片。</div>'" />
+      <article class="poster-column combo-column">
+        <h2>实验结果 + 现场演示</h2>
+        <p class="desc">上半部分展示柱状图结果，下半部分循环播放对比视频。</p>
+        <div class="panel result-image">
+          <img src="./assets/latency-result-bar.png" alt="实验结果柱状图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/latency-result-bar.png，请放入实验柱状图图片。</div>'" />
         </div>
-        <div class="result-note">
-          当前测试结果显示：L1推理+L2推理+L2训练混合下发场景，软调度TWS算法满足L2时延要求最优；计算利用率提升超过<span class="key-data">30%</span>。
-          <ul>
-            <li>L2推理按时完成率，TWS调度为<span class="key-data">99.54%</span>，硬调度为<span class="key-data">56.91%</span>；</li>
-            <li>三任务串行执行，端到端耗时<span class="key-data">15024223us</span>，计算利用率为<span class="key-data">37.55%</span>；</li>
-            <li>三任务并行下发，端到端耗时<span class="key-data">7324862us</span>，计算利用率为<span class="key-data">86.84%</span>，提升<span class="key-data">49.29%</span>；</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="section-04">
-      <div class="section-head">
-        <span class="section-index">04</span>
-        <h2>第四部分：实际软件运行适配演示</h2>
-      </div>
-      <p class="desc">现场可直接播放完整软件适配演示视频。</p>
-      <div>
-        <div class="demo-video">
-          <video id="demoVideo" preload="metadata">
+        <div class="panel demo-video">
+          <video id="demoVideo" preload="auto" autoplay muted loop playsinline>
             <source src="./assets/software-demo.mp4" type="video/mp4" />
             您的浏览器不支持视频播放，请下载 ./assets/software-demo.mp4 观看完整演示。
           </video>
-          <div class="video-actions">
-            <button class="play-btn" id="videoPlayBtn">▶ 播放完整演示视频</button>
-            <span class="hint" style="margin:0;">视频文件路径：<code>assets/software-demo.mp4</code></span>
-          </div>
+          <p class="hint">视频路径：<code>assets/software-demo.mp4</code>（默认自动循环播放）</p>
         </div>
-      </div>
-      <p class="hint">演示说明：点击播放按钮即可开始完整视频演示。</p>
+      </article>
     </section>
   </main>
 
@@ -992,123 +617,11 @@
     softAnimation(softNodes);
 
     const demoVideo = document.getElementById('demoVideo');
-    const videoPlayBtn = document.getElementById('videoPlayBtn');
-    if (demoVideo && videoPlayBtn) {
-      videoPlayBtn.addEventListener('click', async () => {
-        if (demoVideo.paused) {
-          try {
-            await demoVideo.play();
-            videoPlayBtn.textContent = '⏸ 暂停演示视频';
-          } catch (err) {
-            videoPlayBtn.textContent = '⚠ 请点击视频区域手动播放';
-          }
-        } else {
-          demoVideo.pause();
-          videoPlayBtn.textContent = '▶ 播放完整演示视频';
-        }
-      });
-
-      demoVideo.addEventListener('ended', () => {
-        videoPlayBtn.textContent = '▶ 重新播放完整演示视频';
-      });
-
-      demoVideo.addEventListener('pause', () => {
-        if (!demoVideo.ended) {
-          videoPlayBtn.textContent = '▶ 播放完整演示视频';
-        }
+    if (demoVideo) {
+      demoVideo.play().catch(() => {
+        // 静音自动播放在部分浏览器策略下可能被限制。
       });
     }
-
-    document.querySelectorAll('.fill').forEach((el, index) => {
-      setTimeout(() => {
-        el.style.width = `${el.dataset.width}%`;
-      }, 400 + index * 120);
-    });
-
-    const frame = document.getElementById('pptFrame');
-    const slideButtons = document.querySelectorAll('#pptSlides .ppt-btn');
-    const painCards = document.querySelectorAll('.pain-card');
-    const BASE_FRAME_MIN_HEIGHT = 200;
-    const BASE_IMAGE_MAX_HEIGHT = 400;
-    const slideConfig = {
-      slide1: {
-        src: './assets/background-intro-1.png',
-        alt: '业务背景PPT-1',
-        scale: 1.5,
-        missingText: '未找到 assets/background-intro-1.png，请放入第一张PPT导出图片。'
-      },
-      slide2: {
-        src: './assets/background-intro-2.png',
-        alt: '业务背景PPT-2',
-        scale: 0.7,
-        missingText: '未找到 assets/background-intro-2.png，请放入第二张PPT导出图片。'
-      }
-    };
-    const slideToPain = { slide1: 'pain1', slide2: 'pain2' };
-
-    function renderSlide(slideKey) {
-      const config = slideConfig[slideKey];
-      if (!frame || !config) return;
-
-      frame.innerHTML = '';
-      const img = document.createElement('img');
-      img.src = config.src;
-      img.alt = config.alt;
-      frame.style.minHeight = `${Math.round(BASE_FRAME_MIN_HEIGHT * (config.scale || 1))}px`;
-      img.style.maxHeight = `${Math.round(BASE_IMAGE_MAX_HEIGHT * (config.scale || 1))}px`;
-      img.addEventListener('error', () => {
-        const fallback = document.createElement('div');
-        fallback.style.color = '#5e6f92';
-        fallback.textContent = config.missingText;
-        img.replaceWith(fallback);
-      });
-
-      frame.appendChild(img);
-    }
-
-    slideButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        slideButtons.forEach((x) => x.classList.remove('active'));
-        btn.classList.add('active');
-        const currentSlide = btn.dataset.slide;
-        renderSlide(currentSlide);
-        painCards.forEach((card) => {
-          card.classList.toggle('active', card.dataset.pain === slideToPain[currentSlide]);
-        });
-      });
-    });
-    renderSlide('slide1');
-    const navTags = document.querySelectorAll('.mini-nav .tag');
-    const contentSections = document.querySelectorAll('.section[id]');
-
-    function setActiveTag(targetId) {
-      navTags.forEach((tag) => {
-        const isActive = tag.getAttribute('href') === `#${targetId}`;
-        tag.classList.toggle('active', isActive);
-      });
-    }
-
-    function showSection(targetId) {
-      contentSections.forEach((section) => {
-        section.classList.toggle('active', section.id === targetId);
-      });
-      setActiveTag(targetId);
-    }
-
-    if (contentSections.length && navTags.length) {
-      const defaultSectionId = navTags[0].getAttribute('href')?.slice(1) || contentSections[0].id;
-      showSection(defaultSectionId);
-
-      navTags.forEach((tag) => {
-        tag.addEventListener('click', (event) => {
-          event.preventDefault();
-          const targetId = tag.getAttribute('href')?.slice(1);
-          if (!targetId) return;
-          showSection(targetId);
-        });
-      });
-    }
-
   </script>
 </body>
 </html>
