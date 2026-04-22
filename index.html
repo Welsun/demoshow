@@ -132,12 +132,12 @@
 
     .bg-gallery {
       display: grid;
-      grid-template-rows: 1fr 1fr;
+      grid-template-rows: 1fr;
       gap: 8px;
     }
 
     .bg-gallery .bg-image {
-      height: clamp(110px, 12vh, 220px);
+      height: clamp(280px, 38vh, 620px);
       width: 100%;
       object-fit: cover;
       display: block;
@@ -323,15 +323,6 @@
       padding-left: 18px;
     }
 
-    .chart-svg {
-      width: 100%;
-      height: 145px;
-      min-height: 145px;
-      background: #fff;
-      border: 1px solid #e2e9f7;
-      border-radius: 6px;
-    }
-
     .compare-arrow {
       display: grid;
       place-items: center;
@@ -391,7 +382,6 @@
         <div class="panel">
           <div class="bg-gallery">
             <img class="bg-image" src="./assets/background-intro-1.png" alt="业务背景挑战1-图片1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张业务背景图。</div>'" />
-            <img class="bg-image" src="./assets/background-intro-2.png" alt="业务背景挑战1-图片2" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-2.png，请放入第二张业务背景图。</div>'" />
           </div>
           <div class="bg-card" style="margin-top:10px;">
             <h3>挑战1：资源利用率低</h3>
