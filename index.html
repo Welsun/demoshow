@@ -49,13 +49,13 @@
       border: 1px solid #d3def2;
       border-radius: 18px;
       box-shadow: var(--shadow);
-      padding: 14px 20px 10px;
+      padding: 8px 16px 6px;
       text-align: center;
     }
 
     .hero h1 {
-      margin: 0 0 4px;
-      font-size: clamp(30px, 2vw, 42px);
+      margin: 0;
+      font-size: clamp(24px, 1.7vw, 34px);
       letter-spacing: 0.4px;
     }
 
@@ -68,7 +68,7 @@
     .hero::after {
       content: "";
       display: block;
-      margin-top: 8px;
+      margin-top: 6px;
       width: 100%;
       height: 1px;
       background: linear-gradient(90deg, #d7e2f7, rgba(215, 226, 247, 0));
@@ -145,34 +145,6 @@
     .middle-column {
       background: linear-gradient(180deg, #ffffff 0%, #f4f9ff 100%);
       border-color: #bfcfee;
-    }
-
-    .legend {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      font-size: 13px;
-      color: #33415f;
-      margin-top: -2px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 8px;
-      border-radius: 100px;
-      border: 1px solid #d9e2f3;
-      background: #fff;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      flex: 0 0 10px;
-      aspect-ratio: 1 / 1;
-      border-radius: 50%;
-      display: inline-block;
     }
 
     .boards {
@@ -308,7 +280,6 @@
   <main class="container">
     <header class="hero">
       <h1>RT-Infer AI推理运行时</h1>
-      <p>把页面升级为完整 Demo：技术背景 → 技术对比 → 实验结果 → 软件适配演示。</p>
     </header>
 
     <section class="poster-grid">
@@ -330,12 +301,6 @@
       <article class="poster-column middle-column">
         <h2>软调度 vs 硬调度</h2>
         <p class="desc">中间栏强化对比动画，突出路径层级和策略可控性差异。</p>
-        <div class="legend">
-          <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
-          <span class="chip"><span class="dot" style="background:#3498db"></span>MatMul 算子</span>
-          <span class="chip"><span class="dot" style="background:#f1c40f"></span>Reduce 算子</span>
-          <span class="chip"><span class="dot" style="background:#9b59b6"></span>Attention 算子</span>
-        </div>
         <div class="boards">
           <section class="card hard">
             <div class="flow-row">
