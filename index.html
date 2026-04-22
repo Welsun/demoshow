@@ -532,9 +532,9 @@
       createNode(layer, { x: 422, y: 44, w: 220, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
       const scheduler = createNode(layer, { x: 422, y: 94, w: 220, h: 84, label: 'Scheduler', fill: '#dbf6e2', stroke: '#67b982' });
       scheduler.text.setAttribute('y', 116);
+      createNode(layer, { x: 434, y: 118, w: 196, h: 22, label: '调度缓冲队列（可重排）', fill: '#fff4e6', stroke: '#e0a75a', fs: 10 });
       createNode(layer, { x: 434, y: 146, w: 96, h: 22, label: '高优先级', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
       createNode(layer, { x: 536, y: 146, w: 94, h: 22, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
-      createNode(layer, { x: 434, y: 120, w: 196, h: 22, label: '调度缓冲队列（可重排）', fill: '#fff4e6', stroke: '#e0a75a', fs: 10 });
       createNode(layer, { x: 708, y: 34, w: 108, h: 34, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
       createNode(layer, { x: 708, y: 84, w: 108, h: 34, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
       createNode(layer, { x: 708, y: 134, w: 108, h: 34, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
@@ -544,16 +544,14 @@
 
       addText(layer, 470, 218, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
       addText(layer, 470, 234, '队列内支持高优先级任务前置调度', 'caption');
-      addText(layer, 734, 171, '传输中可优先级重排后再分发', 'caption');
 
       connect(layer, { x: 158, y: 54 }, { x: 196, y: 86 }, 'arrowSoft');
       connect(layer, { x: 158, y: 124 }, { x: 196, y: 94 }, 'arrowSoft');
       connect(layer, { x: 366, y: 90 }, { x: 422, y: 64 }, 'arrowSoft');
       connect(layer, { x: 366, y: 90 }, { x: 422, y: 114 }, 'arrowSoft');
-      connect(layer, { x: 642, y: 140 }, { x: 735, y: 176 }, 'arrowSoft');
-      connect(layer, { x: 735, y: 176 }, { x: 708, y: 51 }, 'arrowSoft');
-      connect(layer, { x: 735, y: 176 }, { x: 708, y: 101 }, 'arrowSoft');
-      connect(layer, { x: 735, y: 176 }, { x: 708, y: 151 }, 'arrowSoft');
+      connect(layer, { x: 642, y: 116 }, { x: 708, y: 51 }, 'arrowSoft');
+      connect(layer, { x: 642, y: 136 }, { x: 708, y: 101 }, 'arrowSoft');
+      connect(layer, { x: 642, y: 156 }, { x: 708, y: 151 }, 'arrowSoft');
       connect(layer, { x: 816, y: 51 }, { x: 834, y: 51 }, 'arrowSoft');
       connect(layer, { x: 816, y: 101 }, { x: 834, y: 101 }, 'arrowSoft');
       connect(layer, { x: 816, y: 151 }, { x: 834, y: 151 }, 'arrowSoft');
