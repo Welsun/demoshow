@@ -534,6 +534,7 @@
       scheduler.text.setAttribute('y', 116);
       createNode(layer, { x: 434, y: 122, w: 96, h: 24, label: '高优先级', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
       createNode(layer, { x: 536, y: 122, w: 94, h: 24, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
+      createNode(layer, { x: 650, y: 176, w: 170, h: 28, label: '调度缓冲队列（可重排）', fill: '#fff4e6', stroke: '#e0a75a', fs: 10 });
       createNode(layer, { x: 708, y: 34, w: 108, h: 34, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
       createNode(layer, { x: 708, y: 84, w: 108, h: 34, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
       createNode(layer, { x: 708, y: 134, w: 108, h: 34, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
@@ -543,14 +544,16 @@
 
       addText(layer, 470, 218, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
       addText(layer, 470, 234, '队列内支持高优先级任务前置调度', 'caption');
+      addText(layer, 734, 171, '传输中可优先级重排后再分发', 'caption');
 
       connect(layer, { x: 158, y: 54 }, { x: 196, y: 86 }, 'arrowSoft');
       connect(layer, { x: 158, y: 124 }, { x: 196, y: 94 }, 'arrowSoft');
       connect(layer, { x: 366, y: 90 }, { x: 422, y: 64 }, 'arrowSoft');
       connect(layer, { x: 366, y: 90 }, { x: 422, y: 114 }, 'arrowSoft');
-      connect(layer, { x: 642, y: 114 }, { x: 708, y: 51 }, 'arrowSoft');
-      connect(layer, { x: 642, y: 136 }, { x: 708, y: 101 }, 'arrowSoft');
-      connect(layer, { x: 642, y: 156 }, { x: 708, y: 151 }, 'arrowSoft');
+      connect(layer, { x: 642, y: 140 }, { x: 735, y: 176 }, 'arrowSoft');
+      connect(layer, { x: 735, y: 176 }, { x: 708, y: 51 }, 'arrowSoft');
+      connect(layer, { x: 735, y: 176 }, { x: 708, y: 101 }, 'arrowSoft');
+      connect(layer, { x: 735, y: 176 }, { x: 708, y: 151 }, 'arrowSoft');
       connect(layer, { x: 816, y: 51 }, { x: 834, y: 51 }, 'arrowSoft');
       connect(layer, { x: 816, y: 101 }, { x: 834, y: 101 }, 'arrowSoft');
       connect(layer, { x: 816, y: 151 }, { x: 834, y: 151 }, 'arrowSoft');
@@ -564,6 +567,7 @@
         scheduler: { x: 532, y: 114 },
         queueHigh: { x: 482, y: 134 },
         queueNormal: { x: 582, y: 134 },
+        bufferQueue: { x: 735, y: 190 },
         drvAICPU: { x: 762, y: 51 },
         drvAIC: { x: 762, y: 101 },
         drvAIV: { x: 762, y: 151 },
@@ -625,6 +629,10 @@
               cx: cfg.pri ? nodes.queueHigh.x : nodes.queueNormal.x,
               cy: cfg.pri ? nodes.queueHigh.y : nodes.queueNormal.y
             }
+          })
+          .to(c, {
+            duration: 0.35,
+            attr: { cx: nodes.bufferQueue.x, cy: nodes.bufferQueue.y }
           })
           .to(c, {
             duration: cfg.pri ? 0.35 : 0.55,
