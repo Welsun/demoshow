@@ -138,6 +138,9 @@
 
     .bg-gallery .bg-image {
       height: clamp(110px, 12vh, 220px);
+      width: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .bg-card h3 {
@@ -363,6 +366,11 @@
             <ul>
               <li>L2独占的1951利用率为 <span class="highlight">42.9%</span>。</li>
               <li>L1独占的1951利用率为 <span class="highlight">62.47%</span>。</li>
+            </ul>
+            <h3 style="margin-top:10px;">挑战2：任务并发调度受限</h3>
+            <ul>
+              <li>多任务并行场景下，算子抢占与排队导致时延波动明显。</li>
+              <li>需要更灵活的调度策略以提升按时完成率与资源利用率。</li>
             </ul>
           </div>
         </div>
