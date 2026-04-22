@@ -97,13 +97,14 @@
       padding: 16px;
       display: grid;
       grid-template-rows: auto auto minmax(0, 1fr);
-      gap: 12px;
+      gap: 8px;
       overflow: hidden;
     }
 
     .poster-column h2 {
       margin: 0;
-      font-size: clamp(22px, 1.5vw, 30px);
+      font-size: clamp(18px, 1.2vw, 24px);
+      line-height: 1.15;
       color: #21427d;
       text-align: center;
     }
@@ -209,7 +210,7 @@
 
     svg {
       width: 100%;
-      height: clamp(190px, 20vh, 270px);
+      height: clamp(280px, 31vh, 430px);
       background: #fbfdff;
       border-radius: 8px;
     }
@@ -328,17 +329,10 @@
         <article class="poster-column middle-column">
           <h2>技术介绍</h2>
           <p class="desc">该栏改为横向排布，对比更直观展示左右两条链路差异。</p>
-          <div class="legend">
-            <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
-            <span class="chip"><span class="dot" style="background:#3498db"></span>MatMul 算子</span>
-            <span class="chip"><span class="dot" style="background:#f1c40f"></span>Reduce 算子</span>
-            <span class="chip"><span class="dot" style="background:#9b59b6"></span>Attention 算子</span>
-          </div>
           <div class="boards">
             <section class="card hard">
               <h3>硬调度</h3>
               <svg id="hardSVG" viewBox="0 0 560 560"></svg>
-              <p class="metric">平均路径层级：<span class="highlight">7 层</span>（链路较长）</p>
             </section>
             <div class="compare-arrow" aria-hidden="true">
               <span>→</span>
@@ -347,7 +341,6 @@
             <section class="card soft">
               <h3>软调度</h3>
               <svg id="softSVG" viewBox="0 0 560 560"></svg>
-              <p class="metric">平均路径层级：<span class="highlight">5 层</span>（链路更短，可动态策略）</p>
             </section>
           </div>
         </article>
