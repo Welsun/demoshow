@@ -215,17 +215,31 @@
 
     .result-image {
       display: grid;
-      grid-template-rows: minmax(0, 1fr) auto;
+      grid-template-rows: auto auto;
       gap: 10px;
+      align-content: start;
     }
 
     .result-image img {
       width: 100%;
-      height: clamp(180px, 28vh, 360px);
+      height: clamp(150px, 22vh, 300px);
       object-fit: contain;
       border-radius: 8px;
       border: 1px solid #e2e9f7;
       background: #fff;
+      align-self: start;
+    }
+
+    .result-summary {
+      margin: 0;
+      padding-left: 18px;
+      color: #334a73;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .result-summary li + li {
+      margin-top: 4px;
     }
 
     .result-summary {
