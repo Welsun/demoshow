@@ -177,9 +177,9 @@
     .boards {
       display: grid;
       grid-template-columns: 1fr;
-      grid-template-rows: 1fr 1fr;
+      grid-template-rows: auto auto auto;
       gap: 12px;
-      align-content: stretch;
+      align-content: start;
       min-height: 0;
     }
 
@@ -188,6 +188,7 @@
       border: 1px solid #d8e0ef;
       border-radius: 12px;
       padding: 10px;
+      min-height: 0;
     }
 
     .card h3 {
@@ -201,7 +202,7 @@
 
     svg {
       width: 100%;
-      height: clamp(260px, 30vh, 420px);
+      height: clamp(220px, 24vh, 320px);
       background: #fbfdff;
       border-radius: 8px;
     }
@@ -251,14 +252,22 @@
       font-size: 13px;
     }
 
-    @media (min-width: 2100px) {
-      .boards {
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: 1fr;
-      }
-      svg {
-        height: clamp(300px, 33vh, 500px);
-      }
+    .compare-arrow {
+      display: grid;
+      place-items: center;
+      color: #2f66f3;
+      font-weight: 800;
+      font-size: clamp(20px, 1.3vw, 28px);
+      line-height: 1;
+      padding: 2px 0;
+      text-shadow: 0 0 10px rgba(47, 102, 243, 0.22);
+    }
+
+    .compare-arrow small {
+      color: #4d6492;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 2px;
     }
 
     @media (max-width: 1500px) {
@@ -314,6 +323,10 @@
             <svg id="hardSVG" viewBox="0 0 560 560"></svg>
             <p class="metric">平均路径层级：<span class="highlight">7 层</span>（链路较长）</p>
           </section>
+          <div class="compare-arrow" aria-hidden="true">
+            <span>⬇</span>
+            <small>软调度优化演进</small>
+          </div>
           <section class="card soft">
             <h3>软调度</h3>
             <svg id="softSVG" viewBox="0 0 560 560"></svg>
