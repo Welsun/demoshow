@@ -198,20 +198,14 @@
       border-radius: 8px;
     }
 
-    .metric {
-      margin: 8px 4px 2px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-
     .badge {
-      font-size: 12px;
+      font-size: 18px;
       fill: #102243;
       font-weight: 600;
     }
 
     .caption {
-      font-size: 11px;
+      font-size: 16px;
       fill: #2f3d58;
     }
 
@@ -219,13 +213,31 @@
       grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr);
     }
 
+    .result-image {
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      gap: 10px;
+    }
+
     .result-image img {
       width: 100%;
-      height: 100%;
+      height: clamp(180px, 28vh, 360px);
       object-fit: contain;
       border-radius: 8px;
       border: 1px solid #e2e9f7;
       background: #fff;
+    }
+
+    .result-summary {
+      margin: 0;
+      padding-left: 18px;
+      color: #334a73;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .result-summary li + li {
+      margin-top: 4px;
     }
 
     .demo-video video {
@@ -300,14 +312,13 @@
 
       <article class="poster-column middle-column">
         <h2>软调度 vs 硬调度</h2>
-        <p class="desc">中间栏强化对比动画，突出路径层级和策略可控性差异。</p>
+        <p class="desc">中间栏强化对比动画，突出策略可控性与执行链路差异。</p>
         <div class="boards">
           <section class="card hard">
             <div class="flow-row">
               <div class="flow-title">硬调度</div>
-              <svg id="hardSVG" viewBox="0 0 940 240"></svg>
+              <svg id="hardSVG" viewBox="0 0 1410 360"></svg>
             </div>
-            <p class="metric">平均路径层级：<span class="highlight">7 层</span>（链路较长）</p>
           </section>
           <div class="compare-arrow" aria-hidden="true">
             <span>⬇</span>
@@ -316,9 +327,8 @@
           <section class="card soft">
             <div class="flow-row">
               <div class="flow-title">软调度</div>
-              <svg id="softSVG" viewBox="0 0 940 240"></svg>
+              <svg id="softSVG" viewBox="0 0 1410 360"></svg>
             </div>
-            <p class="metric">平均路径层级：<span class="highlight">5 层</span>（链路更短，可动态策略）</p>
           </section>
         </div>
       </article>
@@ -328,6 +338,12 @@
         <p class="desc">上半部分展示柱状图结果，下半部分循环播放对比视频。</p>
         <div class="panel result-image">
           <img src="./assets/latency-result-bar.png" alt="实验结果柱状图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/latency-result-bar.png，请放入实验柱状图图片。</div>'" />
+          <ul class="result-summary">
+            <li>L1推理 + L2推理 + L2训练混合下发场景下，软调度TWS算法满足L2时延要求最优，计算利用率提升超过30%。</li>
+            <li>L2推理按时完成率：TWS调度为99.54%，硬调度为56.91%。</li>
+            <li>三任务串行执行：端到端耗时15024223us，计算利用率为37.55%。</li>
+            <li>三任务并行下发：端到端耗时7324862us，计算利用率为86.84%，提升49.29%。</li>
+          </ul>
         </div>
         <div class="panel demo-video">
           <video id="demoVideo" preload="auto" autoplay muted loop playsinline>
@@ -404,6 +420,13 @@
       svg.appendChild(defs);
     }
 
+    function createDiagramLayer(svg, scale = 1.5) {
+      const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      g.setAttribute('transform', `scale(${scale})`);
+      svg.appendChild(g);
+      return g;
+    }
+
     function connect(svg, p1, p2, markerId, dashed = false) {
       const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
       line.setAttribute('x1', p1.x);
@@ -453,32 +476,33 @@
     function setupHard() {
       const svg = document.getElementById('hardSVG');
       addDefs(svg, 'arrowHard');
+      const layer = createDiagramLayer(svg);
 
-      createNode(svg, { x: 20, y: 24, w: 120, h: 34, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f', fs: 13 });
-      createNode(svg, { x: 20, y: 90, w: 120, h: 34, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f', fs: 13 });
-      createNode(svg, { x: 176, y: 56, w: 150, h: 40, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
-      createNode(svg, { x: 362, y: 20, w: 150, h: 40, label: 'EulerOS', fill: '#ffe0f0', stroke: '#d588b2' });
-      createNode(svg, { x: 362, y: 86, w: 150, h: 40, label: 'LiteOS', fill: '#dcecff', stroke: '#88addf' });
-      createNode(svg, { x: 544, y: 24, w: 126, h: 34, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e', fs: 13 });
-      createNode(svg, { x: 544, y: 90, w: 126, h: 34, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72', fs: 13 });
-      createNode(svg, { x: 716, y: 20, w: 130, h: 34, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8', fs: 13 });
-      createNode(svg, { x: 716, y: 74, w: 130, h: 34, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8', fs: 13 });
-      createNode(svg, { x: 716, y: 128, w: 130, h: 34, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8', fs: 13 });
+      createNode(layer, { x: 20, y: 24, w: 120, h: 34, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f', fs: 13 });
+      createNode(layer, { x: 20, y: 90, w: 120, h: 34, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f', fs: 13 });
+      createNode(layer, { x: 176, y: 56, w: 150, h: 40, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
+      createNode(layer, { x: 362, y: 20, w: 150, h: 40, label: 'EulerOS', fill: '#ffe0f0', stroke: '#d588b2' });
+      createNode(layer, { x: 362, y: 86, w: 150, h: 40, label: 'LiteOS', fill: '#dcecff', stroke: '#88addf' });
+      createNode(layer, { x: 544, y: 24, w: 126, h: 34, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e', fs: 13 });
+      createNode(layer, { x: 544, y: 90, w: 126, h: 34, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72', fs: 13 });
+      createNode(layer, { x: 716, y: 20, w: 130, h: 34, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8', fs: 13 });
+      createNode(layer, { x: 716, y: 74, w: 130, h: 34, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8', fs: 13 });
+      createNode(layer, { x: 716, y: 128, w: 130, h: 34, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8', fs: 13 });
 
-      addText(svg, 432, 214, '硬调度：CANN Runtime → EulerOS → LiteOS → TSFW/HWTS → 执行单元');
+      addText(layer, 432, 214, '硬调度：CANN Runtime → EulerOS → LiteOS → TSFW/HWTS → 执行单元');
 
-      connect(svg, { x: 140, y: 41 }, { x: 176, y: 76 }, 'arrowHard');
-      connect(svg, { x: 140, y: 107 }, { x: 176, y: 76 }, 'arrowHard');
-      connect(svg, { x: 326, y: 76 }, { x: 362, y: 40 }, 'arrowHard');
-      connect(svg, { x: 438, y: 60 }, { x: 438, y: 86 }, 'arrowHard');
-      connect(svg, { x: 512, y: 106 }, { x: 544, y: 41 }, 'arrowHard');
-      connect(svg, { x: 607, y: 58 }, { x: 607, y: 90 }, 'arrowHard');
-      connect(svg, { x: 670, y: 107 }, { x: 716, y: 37 }, 'arrowHard');
-      connect(svg, { x: 670, y: 107 }, { x: 716, y: 91 }, 'arrowHard');
-      connect(svg, { x: 670, y: 107 }, { x: 716, y: 145 }, 'arrowHard');
+      connect(layer, { x: 140, y: 41 }, { x: 176, y: 76 }, 'arrowHard');
+      connect(layer, { x: 140, y: 107 }, { x: 176, y: 76 }, 'arrowHard');
+      connect(layer, { x: 326, y: 76 }, { x: 362, y: 40 }, 'arrowHard');
+      connect(layer, { x: 438, y: 60 }, { x: 438, y: 86 }, 'arrowHard');
+      connect(layer, { x: 512, y: 106 }, { x: 544, y: 41 }, 'arrowHard');
+      connect(layer, { x: 607, y: 58 }, { x: 607, y: 90 }, 'arrowHard');
+      connect(layer, { x: 670, y: 107 }, { x: 716, y: 37 }, 'arrowHard');
+      connect(layer, { x: 670, y: 107 }, { x: 716, y: 91 }, 'arrowHard');
+      connect(layer, { x: 670, y: 107 }, { x: 716, y: 145 }, 'arrowHard');
 
       return {
-        svg,
+        svg: layer,
         pointsA: { x: 80, y: 41 },
         pointsB: { x: 80, y: 107 },
         runtime: { x: 252, y: 76 },
@@ -495,39 +519,40 @@
     function setupSoft() {
       const svg = document.getElementById('softSVG');
       addDefs(svg, 'arrowSoft');
+      const layer = createDiagramLayer(svg);
 
-      createNode(svg, { x: 28, y: 34, w: 130, h: 40, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
-      createNode(svg, { x: 28, y: 104, w: 130, h: 40, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
-      createNode(svg, { x: 196, y: 68, w: 170, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
-      addGroupBox(svg, { x: 394, y: 20, w: 440, h: 206, label: 'RTOS', fill: '#f6f9ff', stroke: '#8fa6ce' });
-      createNode(svg, { x: 422, y: 44, w: 220, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
-      const scheduler = createNode(svg, { x: 422, y: 94, w: 220, h: 84, label: 'Scheduler', fill: '#dbf6e2', stroke: '#67b982' });
+      createNode(layer, { x: 28, y: 34, w: 130, h: 40, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
+      createNode(layer, { x: 28, y: 104, w: 130, h: 40, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
+      createNode(layer, { x: 196, y: 68, w: 170, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
+      addGroupBox(layer, { x: 394, y: 20, w: 440, h: 206, label: 'RTOS', fill: '#f6f9ff', stroke: '#8fa6ce' });
+      createNode(layer, { x: 422, y: 44, w: 220, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
+      const scheduler = createNode(layer, { x: 422, y: 94, w: 220, h: 84, label: 'Scheduler', fill: '#dbf6e2', stroke: '#67b982' });
       scheduler.text.setAttribute('y', 116);
-      createNode(svg, { x: 434, y: 122, w: 96, h: 24, label: '高优先级', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
-      createNode(svg, { x: 536, y: 122, w: 94, h: 24, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
-      createNode(svg, { x: 708, y: 34, w: 108, h: 34, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      createNode(svg, { x: 708, y: 84, w: 108, h: 34, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      createNode(svg, { x: 708, y: 134, w: 108, h: 34, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      createNode(svg, { x: 834, y: 34, w: 80, h: 34, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
-      createNode(svg, { x: 834, y: 84, w: 80, h: 34, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
-      createNode(svg, { x: 834, y: 134, w: 80, h: 34, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
+      createNode(layer, { x: 434, y: 122, w: 96, h: 24, label: '高优先级', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
+      createNode(layer, { x: 536, y: 122, w: 94, h: 24, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
+      createNode(layer, { x: 708, y: 34, w: 108, h: 34, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      createNode(layer, { x: 708, y: 84, w: 108, h: 34, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      createNode(layer, { x: 708, y: 134, w: 108, h: 34, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      createNode(layer, { x: 834, y: 34, w: 80, h: 34, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
+      createNode(layer, { x: 834, y: 84, w: 80, h: 34, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
+      createNode(layer, { x: 834, y: 134, w: 80, h: 34, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
 
-      addText(svg, 470, 218, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
-      addText(svg, 470, 234, '队列内支持高优先级任务前置调度', 'caption');
+      addText(layer, 470, 218, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
+      addText(layer, 470, 234, '队列内支持高优先级任务前置调度', 'caption');
 
-      connect(svg, { x: 158, y: 54 }, { x: 196, y: 86 }, 'arrowSoft');
-      connect(svg, { x: 158, y: 124 }, { x: 196, y: 94 }, 'arrowSoft');
-      connect(svg, { x: 366, y: 90 }, { x: 422, y: 64 }, 'arrowSoft');
-      connect(svg, { x: 366, y: 90 }, { x: 422, y: 114 }, 'arrowSoft');
-      connect(svg, { x: 642, y: 114 }, { x: 708, y: 51 }, 'arrowSoft');
-      connect(svg, { x: 642, y: 136 }, { x: 708, y: 101 }, 'arrowSoft');
-      connect(svg, { x: 642, y: 156 }, { x: 708, y: 151 }, 'arrowSoft');
-      connect(svg, { x: 816, y: 51 }, { x: 834, y: 51 }, 'arrowSoft');
-      connect(svg, { x: 816, y: 101 }, { x: 834, y: 101 }, 'arrowSoft');
-      connect(svg, { x: 816, y: 151 }, { x: 834, y: 151 }, 'arrowSoft');
+      connect(layer, { x: 158, y: 54 }, { x: 196, y: 86 }, 'arrowSoft');
+      connect(layer, { x: 158, y: 124 }, { x: 196, y: 94 }, 'arrowSoft');
+      connect(layer, { x: 366, y: 90 }, { x: 422, y: 64 }, 'arrowSoft');
+      connect(layer, { x: 366, y: 90 }, { x: 422, y: 114 }, 'arrowSoft');
+      connect(layer, { x: 642, y: 114 }, { x: 708, y: 51 }, 'arrowSoft');
+      connect(layer, { x: 642, y: 136 }, { x: 708, y: 101 }, 'arrowSoft');
+      connect(layer, { x: 642, y: 156 }, { x: 708, y: 151 }, 'arrowSoft');
+      connect(layer, { x: 816, y: 51 }, { x: 834, y: 51 }, 'arrowSoft');
+      connect(layer, { x: 816, y: 101 }, { x: 834, y: 101 }, 'arrowSoft');
+      connect(layer, { x: 816, y: 151 }, { x: 834, y: 151 }, 'arrowSoft');
 
       return {
-        svg,
+        svg: layer,
         pointsA: { x: 92, y: 54 },
         pointsB: { x: 92, y: 124 },
         runtime: { x: 282, y: 90 },
