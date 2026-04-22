@@ -168,15 +168,18 @@
     .dot {
       width: 10px;
       height: 10px;
+      flex: 0 0 10px;
+      aspect-ratio: 1 / 1;
       border-radius: 50%;
       display: inline-block;
     }
 
     .boards {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
       gap: 12px;
-      align-content: start;
+      align-content: stretch;
       min-height: 0;
     }
 
@@ -198,7 +201,7 @@
 
     svg {
       width: 100%;
-      height: clamp(300px, 38vh, 520px);
+      height: clamp(260px, 30vh, 420px);
       background: #fbfdff;
       border-radius: 8px;
     }
@@ -248,6 +251,16 @@
       font-size: 13px;
     }
 
+    @media (min-width: 2100px) {
+      .boards {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr;
+      }
+      svg {
+        height: clamp(300px, 33vh, 500px);
+      }
+    }
+
     @media (max-width: 1500px) {
       body { overflow: auto; }
       .container {
@@ -258,7 +271,7 @@
       }
       .poster-grid { grid-template-columns: 1fr; }
       .combo-column { grid-template-rows: auto auto auto auto; }
-      .boards { grid-template-columns: 1fr; }
+      .boards { grid-template-columns: 1fr; grid-template-rows: auto auto; }
       svg { height: 520px; }
     }
   </style>
