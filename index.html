@@ -18,20 +18,27 @@
 
     * { box-sizing: border-box; }
 
+    html, body {
+      height: 100%;
+    }
+
     body {
       margin: 0;
-      min-height: 100vh;
       background: radial-gradient(circle at top right, #e4edff 0%, #f6f9ff 48%, #edf3ff 100%);
       color: var(--text);
       font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
       line-height: 1.55;
-      padding: 16px;
+      padding: 0;
+      overflow: hidden;
     }
 
     .container {
-      width: min(1980px, 100%);
+      width: min(1980px, calc(100% - 24px));
+      height: 100vh;
       margin: 0 auto;
+      padding: 12px 0;
       display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
       gap: 16px;
     }
 
@@ -71,7 +78,8 @@
       grid-template-columns: 1fr 1.35fr 1fr;
       gap: 16px;
       align-items: stretch;
-      min-height: calc(100vh - 210px);
+      min-height: 0;
+      height: 100%;
     }
 
     .poster-column {
@@ -81,7 +89,7 @@
       box-shadow: var(--shadow);
       padding: 16px;
       display: grid;
-      grid-template-rows: auto auto 1fr;
+      grid-template-rows: auto auto minmax(0, 1fr);
       gap: 12px;
       overflow: hidden;
     }
@@ -103,11 +111,12 @@
       border-radius: 12px;
       background: #fbfdff;
       padding: 12px;
+      min-height: 0;
     }
 
     .bg-image {
       width: 100%;
-      height: clamp(250px, 35vh, 520px);
+      height: clamp(180px, 24vh, 460px);
       object-fit: contain;
       border: 1px solid #e2e9f7;
       border-radius: 10px;
@@ -168,6 +177,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
       align-content: start;
+      min-height: 0;
     }
 
     .card {
@@ -188,7 +198,7 @@
 
     svg {
       width: 100%;
-      height: min(56vh, 620px);
+      height: clamp(300px, 38vh, 520px);
       background: #fbfdff;
       border-radius: 8px;
     }
@@ -211,12 +221,12 @@
     }
 
     .combo-column {
-      grid-template-rows: auto auto 1fr 1fr;
+      grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr);
     }
 
     .result-image img {
       width: 100%;
-      height: clamp(220px, 27vh, 420px);
+      height: 100%;
       object-fit: contain;
       border-radius: 8px;
       border: 1px solid #e2e9f7;
@@ -225,7 +235,7 @@
 
     .demo-video video {
       width: 100%;
-      height: clamp(260px, 31vh, 460px);
+      height: calc(100% - 30px);
       border-radius: 8px;
       border: 1px solid #e2e9f7;
       background: #000;
@@ -239,6 +249,13 @@
     }
 
     @media (max-width: 1500px) {
+      body { overflow: auto; }
+      .container {
+        height: auto;
+        min-height: 100vh;
+        width: min(1980px, calc(100% - 16px));
+        padding: 8px 0;
+      }
       .poster-grid { grid-template-columns: 1fr; }
       .combo-column { grid-template-rows: auto auto auto auto; }
       .boards { grid-template-columns: 1fr; }
