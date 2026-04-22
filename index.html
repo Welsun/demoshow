@@ -544,14 +544,16 @@
 
       addText(layer, 470, 218, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
       addText(layer, 470, 234, '队列内支持高优先级任务前置调度', 'caption');
+      addText(layer, 734, 171, '传输中可优先级重排后再分发', 'caption');
 
       connect(layer, { x: 158, y: 54 }, { x: 196, y: 86 }, 'arrowSoft');
       connect(layer, { x: 158, y: 124 }, { x: 196, y: 94 }, 'arrowSoft');
       connect(layer, { x: 366, y: 90 }, { x: 422, y: 64 }, 'arrowSoft');
       connect(layer, { x: 366, y: 90 }, { x: 422, y: 114 }, 'arrowSoft');
-      connect(layer, { x: 642, y: 114 }, { x: 708, y: 51 }, 'arrowSoft');
-      connect(layer, { x: 642, y: 136 }, { x: 708, y: 101 }, 'arrowSoft');
-      connect(layer, { x: 642, y: 156 }, { x: 708, y: 151 }, 'arrowSoft');
+      connect(layer, { x: 642, y: 140 }, { x: 735, y: 176 }, 'arrowSoft');
+      connect(layer, { x: 735, y: 176 }, { x: 708, y: 51 }, 'arrowSoft');
+      connect(layer, { x: 735, y: 176 }, { x: 708, y: 101 }, 'arrowSoft');
+      connect(layer, { x: 735, y: 176 }, { x: 708, y: 151 }, 'arrowSoft');
       connect(layer, { x: 816, y: 51 }, { x: 834, y: 51 }, 'arrowSoft');
       connect(layer, { x: 816, y: 101 }, { x: 834, y: 101 }, 'arrowSoft');
       connect(layer, { x: 816, y: 151 }, { x: 834, y: 151 }, 'arrowSoft');
