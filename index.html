@@ -49,12 +49,13 @@
       border: 1px solid #d3def2;
       border-radius: 18px;
       box-shadow: var(--shadow);
-      padding: 28px 26px 24px;
+      padding: 14px 20px 10px;
+      text-align: center;
     }
 
     .hero h1 {
-      margin: 0 0 6px;
-      font-size: clamp(34px, 2.2vw, 48px);
+      margin: 0 0 4px;
+      font-size: clamp(30px, 2vw, 42px);
       letter-spacing: 0.4px;
     }
 
@@ -67,7 +68,7 @@
     .hero::after {
       content: "";
       display: block;
-      margin-top: 14px;
+      margin-top: 8px;
       width: 100%;
       height: 1px;
       background: linear-gradient(90deg, #d7e2f7, rgba(215, 226, 247, 0));
@@ -191,11 +192,29 @@
       min-height: 0;
     }
 
-    .card h3 {
-      margin: 4px 4px 8px;
-      font-size: 20px;
-      text-align: center;
+    .flow-row {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 10px;
+      align-items: stretch;
     }
+
+    .flow-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 1px;
+      border-radius: 8px;
+      border: 1px solid #d8e0ef;
+      background: #f8fbff;
+    }
+
+    .hard .flow-title { color: var(--hard); }
+    .soft .flow-title { color: var(--soft); }
 
     .hard h3 { color: var(--hard); }
     .soft h3 { color: var(--soft); }
@@ -319,8 +338,10 @@
         </div>
         <div class="boards">
           <section class="card hard">
-            <h3>硬调度</h3>
-            <svg id="hardSVG" viewBox="0 0 940 300"></svg>
+            <div class="flow-row">
+              <div class="flow-title">硬调度</div>
+              <svg id="hardSVG" viewBox="0 0 940 240"></svg>
+            </div>
             <p class="metric">平均路径层级：<span class="highlight">7 层</span>（链路较长）</p>
           </section>
           <div class="compare-arrow" aria-hidden="true">
@@ -328,8 +349,10 @@
             <small>软调度优化演进</small>
           </div>
           <section class="card soft">
-            <h3>软调度</h3>
-            <svg id="softSVG" viewBox="0 0 940 300"></svg>
+            <div class="flow-row">
+              <div class="flow-title">软调度</div>
+              <svg id="softSVG" viewBox="0 0 940 240"></svg>
+            </div>
             <p class="metric">平均路径层级：<span class="highlight">5 层</span>（链路更短，可动态策略）</p>
           </section>
         </div>
@@ -466,46 +489,41 @@
       const svg = document.getElementById('hardSVG');
       addDefs(svg, 'arrowHard');
 
-      createNode(svg, { x: 28, y: 34, w: 130, h: 40, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
-      createNode(svg, { x: 28, y: 104, w: 130, h: 40, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
-      createNode(svg, { x: 200, y: 68, w: 170, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
-      createNode(svg, { x: 412, y: 34, w: 170, h: 40, label: 'EulerOS / RTOS', fill: '#ffe0f0', stroke: '#d588b2' });
-      createNode(svg, { x: 412, y: 104, w: 170, h: 40, label: 'LiteOS', fill: '#dcecff', stroke: '#88addf' });
-      createNode(svg, { x: 606, y: 34, w: 118, h: 40, label: 'AICPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
-      createNode(svg, { x: 606, y: 104, w: 118, h: 40, label: 'TSCPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
-      createNode(svg, { x: 606, y: 178, w: 132, h: 40, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e' });
-      createNode(svg, { x: 760, y: 178, w: 132, h: 40, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72' });
-      createNode(svg, { x: 760, y: 24, w: 132, h: 40, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
-      createNode(svg, { x: 760, y: 82, w: 132, h: 40, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
-      createNode(svg, { x: 760, y: 140, w: 132, h: 40, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
+      createNode(svg, { x: 20, y: 24, w: 120, h: 34, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f', fs: 13 });
+      createNode(svg, { x: 20, y: 90, w: 120, h: 34, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f', fs: 13 });
+      createNode(svg, { x: 176, y: 56, w: 150, h: 40, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
+      createNode(svg, { x: 362, y: 20, w: 150, h: 40, label: 'EulerOS', fill: '#ffe0f0', stroke: '#d588b2' });
+      createNode(svg, { x: 362, y: 86, w: 150, h: 40, label: 'LiteOS', fill: '#dcecff', stroke: '#88addf' });
+      createNode(svg, { x: 544, y: 24, w: 126, h: 34, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e', fs: 13 });
+      createNode(svg, { x: 544, y: 90, w: 126, h: 34, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72', fs: 13 });
+      createNode(svg, { x: 716, y: 20, w: 130, h: 34, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8', fs: 13 });
+      createNode(svg, { x: 716, y: 74, w: 130, h: 34, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8', fs: 13 });
+      createNode(svg, { x: 716, y: 128, w: 130, h: 34, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8', fs: 13 });
 
-      addText(svg, 460, 278, '硬调度：算子经过更多层，排队更明显（链路深度高）');
-      addText(svg, 670, 28, 'EulerOS/RTOS 与 LiteOS 运行单元', 'caption');
+      addText(svg, 432, 214, '硬调度：CANN Runtime → EulerOS → LiteOS → TSFW/HWTS → 执行单元');
 
-      connect(svg, { x: 158, y: 54 }, { x: 200, y: 86 }, 'arrowHard');
-      connect(svg, { x: 158, y: 124 }, { x: 200, y: 94 }, 'arrowHard');
-      connect(svg, { x: 370, y: 86 }, { x: 412, y: 54 }, 'arrowHard');
-      connect(svg, { x: 370, y: 94 }, { x: 412, y: 124 }, 'arrowHard');
-      connect(svg, { x: 582, y: 54 }, { x: 606, y: 54 }, 'arrowHard', true);
-      connect(svg, { x: 582, y: 124 }, { x: 606, y: 124 }, 'arrowHard', true);
-      connect(svg, { x: 582, y: 89 }, { x: 606, y: 198 }, 'arrowHard');
-      connect(svg, { x: 738, y: 198 }, { x: 760, y: 198 }, 'arrowHard');
-      connect(svg, { x: 826, y: 198 }, { x: 826, y: 44 }, 'arrowHard');
-      connect(svg, { x: 826, y: 198 }, { x: 826, y: 102 }, 'arrowHard');
-      connect(svg, { x: 826, y: 198 }, { x: 826, y: 160 }, 'arrowHard');
+      connect(svg, { x: 140, y: 41 }, { x: 176, y: 76 }, 'arrowHard');
+      connect(svg, { x: 140, y: 107 }, { x: 176, y: 76 }, 'arrowHard');
+      connect(svg, { x: 326, y: 76 }, { x: 362, y: 40 }, 'arrowHard');
+      connect(svg, { x: 438, y: 60 }, { x: 438, y: 86 }, 'arrowHard');
+      connect(svg, { x: 512, y: 106 }, { x: 544, y: 41 }, 'arrowHard');
+      connect(svg, { x: 512, y: 106 }, { x: 544, y: 107 }, 'arrowHard');
+      connect(svg, { x: 670, y: 41 }, { x: 716, y: 37 }, 'arrowHard');
+      connect(svg, { x: 670, y: 107 }, { x: 716, y: 91 }, 'arrowHard');
+      connect(svg, { x: 670, y: 107 }, { x: 716, y: 145 }, 'arrowHard');
 
       return {
         svg,
-        pointsA: { x: 92, y: 46 },
-        pointsB: { x: 92, y: 116 },
-        runtime: { x: 286, y: 78 },
-        euler: { x: 496, y: 44 },
-        lite: { x: 496, y: 114 },
-        tsfw: { x: 672, y: 188 },
-        hwts: { x: 826, y: 188 },
-        aicpuQ: { x: 826, y: 34 },
-        aic: { x: 826, y: 92 },
-        aiv: { x: 826, y: 150 }
+        pointsA: { x: 80, y: 41 },
+        pointsB: { x: 80, y: 107 },
+        runtime: { x: 252, y: 76 },
+        euler: { x: 438, y: 40 },
+        lite: { x: 438, y: 106 },
+        tsfw: { x: 607, y: 41 },
+        hwts: { x: 607, y: 107 },
+        aicpuQ: { x: 781, y: 37 },
+        aic: { x: 781, y: 91 },
+        aiv: { x: 781, y: 145 }
       };
     }
 
@@ -516,7 +534,7 @@
       createNode(svg, { x: 28, y: 34, w: 130, h: 40, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
       createNode(svg, { x: 28, y: 104, w: 130, h: 40, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
       createNode(svg, { x: 196, y: 68, w: 170, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
-      addGroupBox(svg, { x: 394, y: 20, w: 308, h: 206, label: 'RTOS', fill: '#f6f9ff', stroke: '#8fa6ce' });
+      addGroupBox(svg, { x: 394, y: 20, w: 440, h: 206, label: 'RTOS', fill: '#f6f9ff', stroke: '#8fa6ce' });
       createNode(svg, { x: 422, y: 44, w: 220, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
       const scheduler = createNode(svg, { x: 422, y: 94, w: 220, h: 84, label: 'Scheduler', fill: '#dbf6e2', stroke: '#67b982' });
       scheduler.text.setAttribute('y', 116);
@@ -529,8 +547,8 @@
       createNode(svg, { x: 834, y: 84, w: 80, h: 34, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
       createNode(svg, { x: 834, y: 134, w: 80, h: 34, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
 
-      addText(svg, 470, 256, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
-      addText(svg, 470, 274, '队列内支持高优先级任务前置调度', 'caption');
+      addText(svg, 470, 218, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
+      addText(svg, 470, 234, '队列内支持高优先级任务前置调度', 'caption');
 
       connect(svg, { x: 158, y: 54 }, { x: 196, y: 86 }, 'arrowSoft');
       connect(svg, { x: 158, y: 124 }, { x: 196, y: 94 }, 'arrowSoft');
