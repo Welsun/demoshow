@@ -121,6 +121,11 @@
       border-radius: 14px;
       box-shadow: var(--shadow);
       padding: 20px;
+      display: none;
+    }
+
+    .section.active {
+      display: block;
     }
 
     .section-head {
@@ -1051,25 +1056,23 @@
       });
     }
 
-    if (contentSections.length && navTags.length) {
-      const sectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveTag(entry.target.id);
-          }
-        });
-      }, {
-        root: null,
-        rootMargin: '-25% 0px -55% 0px',
-        threshold: 0
+    function showSection(targetId) {
+      contentSections.forEach((section) => {
+        section.classList.toggle('active', section.id === targetId);
       });
+      setActiveTag(targetId);
+    }
 
-      contentSections.forEach((section) => sectionObserver.observe(section));
+    if (contentSections.length && navTags.length) {
+      const defaultSectionId = navTags[0].getAttribute('href')?.slice(1) || contentSections[0].id;
+      showSection(defaultSectionId);
 
       navTags.forEach((tag) => {
-        tag.addEventListener('click', () => {
+        tag.addEventListener('click', (event) => {
+          event.preventDefault();
           const targetId = tag.getAttribute('href')?.slice(1);
-          if (targetId) setActiveTag(targetId);
+          if (!targetId) return;
+          showSection(targetId);
         });
       });
     }
