@@ -105,6 +105,7 @@
       margin: 0;
       font-size: clamp(22px, 1.5vw, 30px);
       color: #21427d;
+      text-align: center;
     }
 
     .desc {
@@ -231,7 +232,14 @@
     }
 
     .combo-column {
-      grid-template-rows: auto auto minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-rows: auto auto minmax(0, 1fr);
+    }
+
+    .showcase-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      min-height: 0;
     }
 
     .result-image img {
@@ -286,7 +294,8 @@
       }
       .poster-grid { grid-template-columns: 1fr; }
       .right-stack { grid-template-rows: auto auto; }
-      .combo-column { grid-template-rows: auto auto auto auto; }
+      .combo-column { grid-template-rows: auto auto auto; }
+      .showcase-split { grid-template-columns: 1fr; }
       .boards { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
       svg { height: 520px; }
     }
@@ -301,7 +310,7 @@
 
     <section class="poster-grid">
       <article class="poster-column">
-        <h2>业务背景</h2>
+        <h2>业务背景介绍</h2>
         <p class="desc">聚焦挑战1，突出业务场景中的资源利用率问题。</p>
         <div class="panel">
           <img class="bg-image" src="./assets/background-intro-1.png" alt="业务背景挑战1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张业务背景图。</div>'" />
@@ -317,7 +326,7 @@
 
       <div class="right-stack">
         <article class="poster-column middle-column">
-          <h2>软调度 vs 硬调度</h2>
+          <h2>技术介绍</h2>
           <p class="desc">该栏改为横向排布，对比更直观展示左右两条链路差异。</p>
           <div class="legend">
             <span class="chip"><span class="dot" style="background:#e74c3c"></span>Conv 算子</span>
@@ -344,17 +353,19 @@
         </article>
 
         <article class="poster-column combo-column">
-          <h2>实验结果 + 现场演示</h2>
-          <p class="desc">上半部分展示柱状图结果，下半部分循环播放对比视频。</p>
-          <div class="panel result-image">
-            <img src="./assets/latency-result-bar.png" alt="实验结果柱状图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/latency-result-bar.png，请放入实验柱状图图片。</div>'" />
-          </div>
-          <div class="panel demo-video">
-            <video id="demoVideo" preload="auto" autoplay muted loop playsinline>
-              <source src="./assets/software-demo.mp4" type="video/mp4" />
-              您的浏览器不支持视频播放，请下载 ./assets/software-demo.mp4 观看完整演示。
-            </video>
-            <p class="hint">视频路径：<code>assets/software-demo.mp4</code>（默认自动循环播放）</p>
+          <h2>效果展示</h2>
+          <p class="desc">该栏左右分区：左侧柱状图，右侧演示视频。</p>
+          <div class="showcase-split">
+            <div class="panel result-image">
+              <img src="./assets/latency-result-bar.png" alt="实验结果柱状图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/latency-result-bar.png，请放入实验柱状图图片。</div>'" />
+            </div>
+            <div class="panel demo-video">
+              <video id="demoVideo" preload="auto" autoplay muted loop playsinline>
+                <source src="./assets/software-demo.mp4" type="video/mp4" />
+                您的浏览器不支持视频播放，请下载 ./assets/software-demo.mp4 观看完整演示。
+              </video>
+              <p class="hint">视频路径：<code>assets/software-demo.mp4</code>（默认自动循环播放）</p>
+            </div>
           </div>
         </article>
       </div>
