@@ -233,38 +233,66 @@
     }
 
     .combo-column {
-      grid-template-rows: auto auto minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
     }
 
-    .showcase-split {
+    .showcase-layout {
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      gap: 12px;
+      min-height: 0;
+      height: 100%;
+    }
+
+    .vertical-title {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      border: 1px solid #d8e0ef;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #eef4ff 0%, #e4efff 100%);
+      color: #21427d;
+      font-weight: 700;
+      letter-spacing: 2px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+    }
+
+    .chart-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
       gap: 12px;
       min-height: 0;
     }
 
-    .result-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+    .chart-card {
+      border: 1px solid #d8e0ef;
       border-radius: 8px;
-      border: 1px solid #e2e9f7;
+      background: #fbfdff;
+      padding: 10px;
+      min-height: 0;
+    }
+
+    .chart-card h4 {
+      margin: 0 0 6px;
+      text-align: center;
+      color: #2a467d;
+      font-size: 15px;
+    }
+
+    .chart-card.wide {
+      grid-column: 1 / -1;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: calc(100% - 24px);
+      min-height: 170px;
       background: #fff;
-    }
-
-    .demo-video video {
-      width: 100%;
-      height: calc(100% - 30px);
-      border-radius: 8px;
       border: 1px solid #e2e9f7;
-      background: #000;
-      object-fit: cover;
-    }
-
-    .hint {
-      margin: 0;
-      color: #4e617f;
-      font-size: 13px;
+      border-radius: 6px;
     }
 
     .compare-arrow {
@@ -295,8 +323,15 @@
       }
       .poster-grid { grid-template-columns: 1fr; }
       .right-stack { grid-template-rows: auto auto; }
-      .combo-column { grid-template-rows: auto auto auto; }
-      .showcase-split { grid-template-columns: 1fr; }
+      .combo-column { grid-template-rows: auto; }
+      .showcase-layout { grid-template-columns: 1fr; }
+      .vertical-title {
+        writing-mode: horizontal-tb;
+        transform: none;
+        font-size: 18px;
+        letter-spacing: 1px;
+        min-height: 42px;
+      }
       .boards { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
       svg { height: 520px; }
     }
@@ -346,18 +381,60 @@
         </article>
 
         <article class="poster-column combo-column">
-          <h2>效果展示</h2>
-          <p class="desc">该栏左右分区：左侧柱状图，右侧演示视频。</p>
-          <div class="showcase-split">
-            <div class="panel result-image">
-              <img src="./assets/latency-result-bar.png" alt="实验结果柱状图" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/latency-result-bar.png，请放入实验柱状图图片。</div>'" />
-            </div>
-            <div class="panel demo-video">
-              <video id="demoVideo" preload="auto" autoplay muted loop playsinline>
-                <source src="./assets/software-demo.mp4" type="video/mp4" />
-                您的浏览器不支持视频播放，请下载 ./assets/software-demo.mp4 观看完整演示。
-              </video>
-              <p class="hint">视频路径：<code>assets/software-demo.mp4</code>（默认自动循环播放）</p>
+          <div class="showcase-layout">
+            <div class="vertical-title">效果展示</div>
+            <div class="chart-grid">
+              <section class="chart-card">
+                <h4>按时完成率（%）</h4>
+                <svg class="chart-svg" viewBox="0 0 560 260" aria-label="四种算法按时完成率柱状图">
+                  <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                  <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                  <rect x="88" y="103" width="78" height="117" fill="#e74c3c" rx="8"/>
+                  <rect x="202" y="43" width="78" height="177" fill="#3498db" rx="8"/>
+                  <rect x="316" y="21" width="78" height="199" fill="#27ae60" rx="8"/>
+                  <rect x="430" y="163" width="78" height="57" fill="#f39c12" rx="8"/>
+                  <text x="127" y="95" text-anchor="middle" font-size="14" fill="#243b66">56.91%</text>
+                  <text x="241" y="35" text-anchor="middle" font-size="14" fill="#243b66">86.05%</text>
+                  <text x="355" y="15" text-anchor="middle" font-size="14" fill="#243b66">99.54%</text>
+                  <text x="469" y="155" text-anchor="middle" font-size="14" fill="#243b66">27.86%</text>
+                  <text x="127" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">硬调度</text>
+                  <text x="241" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">FIFO</text>
+                  <text x="355" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">TWS</text>
+                  <text x="469" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">NICE</text>
+                </svg>
+              </section>
+              <section class="chart-card">
+                <h4>端到端耗时（s）</h4>
+                <svg class="chart-svg" viewBox="0 0 560 260" aria-label="四种算法端到端耗时柱状图">
+                  <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                  <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                  <rect x="88" y="90" width="78" height="130" fill="#e74c3c" rx="8"/>
+                  <rect x="202" y="20" width="78" height="200" fill="#3498db" rx="8"/>
+                  <rect x="316" y="123" width="78" height="97" fill="#27ae60" rx="8"/>
+                  <rect x="430" y="72" width="78" height="148" fill="#f39c12" rx="8"/>
+                  <text x="127" y="82" text-anchor="middle" font-size="14" fill="#243b66">6.75s</text>
+                  <text x="241" y="14" text-anchor="middle" font-size="14" fill="#243b66">10.37s</text>
+                  <text x="355" y="115" text-anchor="middle" font-size="14" fill="#243b66">5.02s</text>
+                  <text x="469" y="64" text-anchor="middle" font-size="14" fill="#243b66">7.7s</text>
+                  <text x="127" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">硬调度</text>
+                  <text x="241" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">FIFO</text>
+                  <text x="355" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">TWS</text>
+                  <text x="469" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">NICE</text>
+                </svg>
+              </section>
+              <section class="chart-card wide">
+                <h4>计算利用率（%）</h4>
+                <svg class="chart-svg" viewBox="0 0 560 260" aria-label="计算利用率柱状图">
+                  <line x1="72" y1="16" x2="72" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                  <line x1="72" y1="220" x2="520" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                  <rect x="140" y="145" width="130" height="75" fill="#8e44ad" rx="10"/>
+                  <rect x="332" y="46" width="130" height="174" fill="#16a085" rx="10"/>
+                  <text x="205" y="137" text-anchor="middle" font-size="16" fill="#243b66">37.55%</text>
+                  <text x="397" y="38" text-anchor="middle" font-size="16" fill="#243b66">86.84%</text>
+                  <text x="205" y="244" text-anchor="middle" font-size="13" fill="#4a5b7d">三任务串行</text>
+                  <text x="397" y="244" text-anchor="middle" font-size="13" fill="#4a5b7d">三任务并行</text>
+                </svg>
+              </section>
             </div>
           </div>
         </article>
