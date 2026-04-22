@@ -207,7 +207,7 @@
 
     svg {
       width: 100%;
-      height: clamp(250px, 33vh, 360px);
+      height: clamp(290px, 37vh, 420px);
       background: #fbfdff;
       border-radius: 8px;
     }
@@ -480,7 +480,7 @@
     function setupHard() {
       const svg = document.getElementById('hardSVG');
       addDefs(svg, 'arrowHard');
-      const layer = createDiagramLayer(svg);
+      const layer = createDiagramLayer(svg, 1.6);
 
       createNode(layer, { x: 20, y: 24, w: 120, h: 34, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f', fs: 13 });
       createNode(layer, { x: 20, y: 90, w: 120, h: 34, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f', fs: 13 });
@@ -523,7 +523,7 @@
     function setupSoft() {
       const svg = document.getElementById('softSVG');
       addDefs(svg, 'arrowSoft');
-      const layer = createDiagramLayer(svg);
+      const layer = createDiagramLayer(svg, 1.53);
 
       createNode(layer, { x: 28, y: 34, w: 130, h: 40, label: 'L1 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
       createNode(layer, { x: 28, y: 104, w: 130, h: 40, label: 'L2 AI任务', fill: '#ffe7b8', stroke: '#e2b35f' });
