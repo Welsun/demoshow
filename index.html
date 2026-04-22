@@ -543,9 +543,9 @@
       createNode(layer, { x: 652, y: 34, w: 100, h: 34, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
       createNode(layer, { x: 652, y: 84, w: 100, h: 34, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
       createNode(layer, { x: 652, y: 134, w: 100, h: 34, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      createNode(layer, { x: 770, y: 34, w: 74, h: 34, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
-      createNode(layer, { x: 770, y: 84, w: 74, h: 34, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
-      createNode(layer, { x: 770, y: 134, w: 74, h: 34, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
+      createNode(layer, { x: 806, y: 34, w: 74, h: 34, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
+      createNode(layer, { x: 806, y: 84, w: 74, h: 34, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
+      createNode(layer, { x: 806, y: 134, w: 74, h: 34, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8', fs: 12 });
 
       addText(layer, 470, 218, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
       addText(layer, 470, 234, '队列内支持高优先级任务前置调度', 'caption');
@@ -553,13 +553,12 @@
       connect(layer, { x: 185, y: 46 }, { x: 258, y: 86 }, 'arrowSoft');
       connect(layer, { x: 345, y: 46 }, { x: 312, y: 90 }, 'arrowSoft');
       connect(layer, { x: 370, y: 90 }, { x: 424, y: 64 }, 'arrowSoft');
-      connect(layer, { x: 370, y: 90 }, { x: 424, y: 114 }, 'arrowSoft');
       connect(layer, { x: 620, y: 116 }, { x: 652, y: 51 }, 'arrowSoft');
       connect(layer, { x: 620, y: 136 }, { x: 652, y: 101 }, 'arrowSoft');
       connect(layer, { x: 620, y: 156 }, { x: 652, y: 151 }, 'arrowSoft');
-      connect(layer, { x: 752, y: 51 }, { x: 770, y: 51 }, 'arrowSoft');
-      connect(layer, { x: 752, y: 101 }, { x: 770, y: 101 }, 'arrowSoft');
-      connect(layer, { x: 752, y: 151 }, { x: 770, y: 151 }, 'arrowSoft');
+      connect(layer, { x: 752, y: 51 }, { x: 806, y: 51 }, 'arrowSoft');
+      connect(layer, { x: 752, y: 101 }, { x: 806, y: 101 }, 'arrowSoft');
+      connect(layer, { x: 752, y: 151 }, { x: 806, y: 151 }, 'arrowSoft');
 
       return {
         svg: layer,
@@ -574,9 +573,9 @@
         drvAICPU: { x: 702, y: 51 },
         drvAIC: { x: 702, y: 101 },
         drvAIV: { x: 702, y: 151 },
-        aicpu: { x: 807, y: 51 },
-        aic: { x: 807, y: 101 },
-        aiv: { x: 807, y: 151 }
+        aicpu: { x: 843, y: 51 },
+        aic: { x: 843, y: 101 },
+        aiv: { x: 843, y: 151 }
       };
     }
 
