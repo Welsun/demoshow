@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <title>ASCEND 310P 软硬调度演示</title>
   <style>
     :root {
@@ -14,6 +17,17 @@
       --soft: #27ae60;
       --shadow: 0 12px 36px rgba(14, 30, 62, 0.1);
       --primary: #2f66f3;
+      /* 字体体系：标题用系统无衬线粗体，正文用Inter */
+      --font-heading: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --font-body: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+      /* 统一字号阶梯（4K基准） */
+      --fs-hero: clamp(22px, 2.4vh, 52px);
+      --fs-section: clamp(16px, 1.7vh, 36px);
+      --fs-subsection: clamp(14px, 1.4vh, 30px);
+      --fs-body: clamp(13px, 1.15vh, 26px);
+      --fs-small: clamp(11px, 1vh, 22px);
+      --fs-tiny: clamp(10px, 0.85vh, 18px);
     }
 
     * { box-sizing: border-box; }
@@ -26,20 +40,22 @@
       margin: 0;
       background: radial-gradient(circle at top right, #e4edff 0%, #f6f9ff 48%, #edf3ff 100%);
       color: var(--text);
-      font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      font-family: var(--font-body);
+      font-size: var(--fs-body);
       line-height: 1.55;
       padding: 0;
       overflow: hidden;
     }
 
     .container {
-      width: min(1980px, calc(100% - 24px));
+      width: calc(100% - 48px);
+      max-width: 3840px;
       height: 100vh;
       margin: 0 auto;
-      padding: 12px 0;
+      padding: 1vh 0;
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
-      gap: 16px;
+      gap: 1.2vh;
     }
 
     .hero {
@@ -47,15 +63,17 @@
         radial-gradient(circle at top right, #dbe8ff 0%, rgba(219, 232, 255, 0) 46%),
         linear-gradient(140deg, #ffffff 0%, #f4f8ff 100%);
       border: 1px solid #d3def2;
-      border-radius: 18px;
+      border-radius: clamp(12px, 1.2vw, 18px);
       box-shadow: var(--shadow);
-      padding: 8px 16px 6px;
+      padding: clamp(6px, 0.5vh, 10px) clamp(12px, 1vw, 24px) clamp(4px, 0.4vh, 8px);
     }
 
     .hero h1 {
       margin: 0;
-      font-size: clamp(20px, 1.3vw, 26px);
-      letter-spacing: 0.4px;
+      font-family: var(--font-heading);
+      font-size: var(--fs-hero);
+      font-weight: 800;
+      letter-spacing: 0.6px;
     }
 
     .hero::after {
@@ -69,8 +87,8 @@
 
     .poster-grid {
       display: grid;
-      grid-template-columns: 0.95fr 2.05fr;
-      gap: 16px;
+      grid-template-columns: 0.8fr 2.2fr;
+      gap: clamp(10px, 1vh, 20px);
       align-items: stretch;
       min-height: 0;
       height: 100%;
@@ -79,93 +97,103 @@
     .right-stack {
       display: grid;
       grid-template-rows: 1.35fr 0.65fr;
-      gap: 16px;
+      gap: clamp(10px, 1vh, 20px);
       min-height: 0;
     }
 
     .poster-column {
       background: var(--panel);
       border: 1px solid #d8e0ef;
-      border-radius: 16px;
+      border-radius: clamp(10px, 1vw, 16px);
       box-shadow: var(--shadow);
-      padding: 16px;
+      padding: clamp(10px, 1.2vh, 24px);
       display: grid;
       grid-template-rows: auto auto minmax(0, 1fr);
-      gap: 8px;
+      gap: clamp(4px, 0.6vh, 12px);
       overflow: hidden;
     }
 
     .poster-column h2 {
       margin: 0;
-      font-size: clamp(18px, 1.2vw, 24px);
+      font-family: var(--font-heading);
+      font-size: var(--fs-section);
+      font-weight: 700;
       line-height: 1.15;
       color: #21427d;
       text-align: center;
       border: 1px solid #d8e0ef;
-      border-radius: 12px;
+      border-radius: clamp(8px, 0.7vw, 12px);
       background: linear-gradient(180deg, #eef4ff 0%, #e4efff 100%);
-      padding: 6px 10px;
+      padding: clamp(4px, 0.5vh, 10px) clamp(8px, 0.6vw, 14px);
     }
 
     .desc {
       margin: 0;
       color: var(--muted);
-      font-size: clamp(13px, 0.9vw, 16px);
+      font-size: var(--fs-body);
+      font-weight: 500;
     }
 
     .panel {
       border: 1px solid #d8e0ef;
-      border-radius: 12px;
+      border-radius: clamp(8px, 0.7vw, 12px);
       background: #fbfdff;
-      padding: 12px;
+      padding: clamp(8px, 0.8vh, 18px);
       min-height: 0;
     }
 
     .bg-panel {
-      display: grid;
-      grid-template-rows: 75% 25%;
-      gap: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(6px, 0.7vh, 14px);
       height: 100%;
+      min-height: 0;
+    }
+
+    .bg-gallery {
+      flex: 1 1 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(4px, 0.5vh, 10px);
     }
 
     .bg-image {
       width: 100%;
-      height: clamp(180px, 24vh, 460px);
+      min-height: 0;
       object-fit: contain;
       border: 1px solid #e2e9f7;
-      border-radius: 10px;
+      border-radius: clamp(6px, 0.6vw, 10px);
       background: #fff;
     }
 
-    .bg-gallery {
-      display: grid;
-      grid-template-rows: 1fr;
-      gap: 8px;
-    }
-
     .bg-gallery .bg-image {
-      height: 100%;
+      height: auto;
+      flex: 1 1 0;
       width: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
     }
 
     .bg-panel .bg-card {
       margin-top: 0 !important;
       overflow: auto;
+      flex: 0 0 auto;
     }
 
     .bg-card h3 {
-      margin: 0 0 6px;
+      margin: 0 0 0.4vh;
       color: #24447f;
-      font-size: 20px;
+      font-family: var(--font-heading);
+      font-size: var(--fs-subsection);
+      font-weight: 600;
     }
 
     .bg-card ul {
       margin: 0;
-      padding-left: 20px;
+      padding-left: clamp(14px, 1.2vw, 24px);
       color: #3b4d73;
-      font-size: 17px;
+      font-size: var(--fs-body);
     }
 
     .highlight {
@@ -178,38 +206,10 @@
       border-color: #bfcfee;
     }
 
-    .legend {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      font-size: 13px;
-      color: #33415f;
-      margin-top: -2px;
-    }
-
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 8px;
-      border-radius: 100px;
-      border: 1px solid #d9e2f3;
-      background: #fff;
-    }
-
-    .dot {
-      width: 10px;
-      height: 10px;
-      flex: 0 0 10px;
-      aspect-ratio: 1 / 1;
-      border-radius: 50%;
-      display: inline-block;
-    }
-
     .boards {
       display: grid;
       grid-template-columns: 1fr auto 1fr;
-      gap: 12px;
+      gap: clamp(8px, 0.8vw, 16px);
       align-items: stretch;
       min-height: 0;
     }
@@ -217,41 +217,49 @@
     .card {
       background: #fff;
       border: 1px solid #d8e0ef;
-      border-radius: 12px;
-      padding: 10px;
+      border-radius: clamp(8px, 0.7vw, 12px);
+      padding: clamp(6px, 0.7vh, 16px);
       min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .card h3 {
-      margin: 4px 4px 8px;
-      font-size: 20px;
+      margin: 0.3vh 0.3vw 0.5vh;
+      font-family: var(--font-heading);
+      font-size: var(--fs-subsection);
+      font-weight: 700;
       text-align: center;
+      flex: 0 0 auto;
     }
 
     .hard h3 { color: var(--hard); }
     .soft h3 { color: var(--soft); }
 
-    svg {
+    .card svg {
+      flex: 1 1 0;
+      min-height: 0;
       width: 100%;
-      height: clamp(280px, 31vh, 430px);
       background: #fbfdff;
-      border-radius: 8px;
+      border-radius: clamp(4px, 0.5vw, 8px);
     }
 
     .metric {
-      margin: 8px 4px 2px;
-      font-size: 14px;
+      margin: 0.5vh 0.3vw 0.1vh;
+      font-size: var(--fs-small);
+      font-family: var(--font-mono);
       color: var(--muted);
     }
 
     .badge {
-      font-size: 12px;
+      font-size: var(--fs-small);
       fill: #102243;
       font-weight: 600;
+      font-family: var(--font-body);
     }
 
     .caption {
-      font-size: 11px;
+      font-size: var(--fs-tiny);
       fill: #2f3d58;
     }
 
@@ -261,8 +269,8 @@
 
     .showcase-layout {
       display: grid;
-      grid-template-columns: 64px minmax(0, 1.45fr) minmax(200px, 0.55fr);
-      gap: 12px;
+      grid-template-columns: clamp(48px, 3.5vw, 72px) minmax(0, 1.45fr) minmax(200px, 0.55fr);
+      gap: clamp(8px, 0.7vw, 16px);
       min-height: 0;
       height: 100%;
     }
@@ -271,14 +279,15 @@
       writing-mode: vertical-lr;
       text-orientation: mixed;
       border: 1px solid #d8e0ef;
-      border-radius: 12px;
+      border-radius: clamp(8px, 0.7vw, 12px);
       background: linear-gradient(180deg, #eef4ff 0%, #e4efff 100%);
       color: #21427d;
+      font-family: var(--font-heading);
       font-weight: 700;
       letter-spacing: 2px;
       display: grid;
       place-items: center;
-      font-size: 22px;
+      font-size: var(--fs-subsection);
     }
 
     .chart-grid {
@@ -291,48 +300,64 @@
 
     .chart-card {
       border: 1px solid #d8e0ef;
-      border-radius: 8px;
+      border-radius: clamp(6px, 0.5vw, 8px);
       background: #fbfdff;
-      padding: 8px;
+      padding: clamp(6px, 0.6vh, 12px);
       min-height: 0;
+      display: flex;
+      flex-direction: column;
     }
 
     .chart-card h4 {
-      margin: 0 0 6px;
+      margin: 0 0 0.4vh;
       text-align: center;
       color: #2a467d;
-      font-size: 13px;
+      font-family: var(--font-heading);
+      font-size: var(--fs-small);
+      font-weight: 600;
+      flex: 0 0 auto;
     }
 
     .chart-svg {
+      flex: 1 1 0;
+      min-height: 80px;
       width: 100%;
-      height: 132px;
-      min-height: 132px;
       background: #fff;
       border: 1px solid #e2e9f7;
-      border-radius: 6px;
+      border-radius: clamp(4px, 0.4vw, 6px);
     }
 
     .showcase-summary {
       border: 1px dashed #bfcfee;
-      border-radius: 10px;
+      border-radius: clamp(6px, 0.6vw, 10px);
       background: #f7faff;
-      padding: 10px;
+      padding: clamp(8px, 0.8vh, 16px);
       color: #40557d;
-      font-size: 13px;
+      font-size: var(--fs-body);
       line-height: 1.5;
       min-height: 0;
     }
 
     .showcase-summary h4 {
-      margin: 0 0 6px;
-      font-size: 14px;
+      margin: 0 0 0.4vh;
+      font-family: var(--font-heading);
+      font-size: var(--fs-subsection);
+      font-weight: 600;
       color: #25437b;
     }
 
     .showcase-summary ul {
       margin: 0;
-      padding-left: 18px;
+      padding-left: clamp(14px, 1.2vw, 20px);
+    }
+
+    /* 柱状图 hover */
+    .bar {
+      cursor: pointer;
+      transition: filter 0.15s;
+    }
+    .bar:hover {
+      filter: brightness(1.15);
     }
 
     .compare-arrow {
@@ -340,17 +365,149 @@
       place-items: center;
       color: #2f66f3;
       font-weight: 800;
-      font-size: clamp(20px, 1.3vw, 28px);
+      font-size: var(--fs-hero);
       line-height: 1;
-      padding: 0 4px;
+      padding: 0 clamp(2px, 0.3vw, 6px);
       text-shadow: 0 0 10px rgba(47, 102, 243, 0.22);
     }
 
     .compare-arrow small {
       color: #4d6492;
-      font-size: 12px;
+      font-size: var(--fs-small);
       font-weight: 600;
       margin-top: 2px;
+    }
+
+    /* ===== Lightbox ===== */
+    .lightbox-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(8, 16, 38, 0.78);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+    }
+    .lightbox-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .lightbox-inner {
+      position: relative;
+      overflow: hidden;
+      width: 88vw;
+      height: 84vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-content-wrap {
+      transform-origin: center center;
+      transition: none;
+      will-change: transform;
+    }
+    .lightbox-content-wrap img,
+    .lightbox-content-wrap svg {
+      display: block;
+      max-width: 88vw;
+      max-height: 84vh;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 16px 60px rgba(0, 0, 0, 0.35);
+      background: #fff;
+    }
+    .lightbox-content-wrap svg {
+      width: 88vw;
+      height: auto;
+      max-height: 84vh;
+      padding: 16px;
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      font-size: var(--fs-subsection);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.2s;
+      line-height: 1;
+      z-index: 10001;
+    }
+    .lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
+    .lightbox-toolbar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 10001;
+      background: rgba(20, 30, 56, 0.72);
+      backdrop-filter: blur(8px);
+      padding: 6px 10px;
+      border-radius: 100px;
+    }
+    .lightbox-toolbar button {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: var(--fs-subsection);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background 0.15s;
+      line-height: 1;
+    }
+    .lightbox-toolbar button:hover {
+      background: rgba(255, 255, 255, 0.28);
+    }
+    .lightbox-toolbar .zoom-level {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: var(--fs-small);
+      min-width: 48px;
+      text-align: center;
+      line-height: 36px;
+      user-select: none;
+    }
+    .lightbox-hint {
+      position: fixed;
+      bottom: 68px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.45);
+      font-size: var(--fs-small);
+      white-space: nowrap;
+      z-index: 10001;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .lightbox-overlay.active .lightbox-hint.hidden-hint {
+      opacity: 0;
+    }
+
+    /* 可点击元素提示 */
+    .zoomable {
+      cursor: zoom-in;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .zoomable:hover {
+      box-shadow: 0 0 0 3px rgba(47, 102, 243, 0.35);
+      transform: scale(1.005);
     }
 
     @media (max-width: 1500px) {
@@ -358,7 +515,8 @@
       .container {
         height: auto;
         min-height: 100vh;
-        width: min(1980px, calc(100% - 16px));
+        width: calc(100% - 16px);
+        max-width: 3840px;
         padding: 8px 0;
       }
       .poster-grid { grid-template-columns: 1fr; }
@@ -367,7 +525,7 @@
       .showcase-layout { grid-template-columns: 1fr; }
       .vertical-title {
         writing-mode: horizontal-tb;
-        font-size: 18px;
+        font-size: var(--fs-subsection);
         letter-spacing: 1px;
         min-height: 42px;
       }
@@ -377,7 +535,8 @@
       }
       .showcase-summary { min-height: auto; }
       .boards { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
-      svg { height: 520px; }
+      .card svg { flex: 0 0 auto; height: 520px; }
+      .chart-svg { flex: 0 0 auto; height: 180px; }
     }
   </style>
 </head>
@@ -394,6 +553,7 @@
         <div class="panel bg-panel">
           <div class="bg-gallery">
             <img class="bg-image" src="./assets/background-intro-1.png" alt="业务背景挑战1-图片1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张业务背景图。</div>'" />
+            <img class="bg-image" src="./assets/background-intro-2.png" alt="业务背景挑战2-图片2" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-2.png，请放入第二张业务背景图。</div>'" />
           </div>
           <div class="bg-card">
             <h3>挑战1：资源利用率低</h3>
@@ -439,12 +599,12 @@
                 <svg class="chart-svg" viewBox="0 0 560 260" aria-label="硬调度与TWS按时完成率柱状图">
                   <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
                   <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
-                  <rect x="160" y="103" width="100" height="117" fill="#e74c3c" rx="8"/>
-                  <rect x="320" y="21" width="100" height="199" fill="#27ae60" rx="8"/>
-                  <text x="210" y="95" text-anchor="middle" font-size="14" fill="#243b66">56.91%</text>
-                  <text x="370" y="15" text-anchor="middle" font-size="14" fill="#243b66">99.54%</text>
-                  <text x="210" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">硬调度</text>
-                  <text x="370" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">TWS</text>
+                  <rect class="bar bar-hard" x="160" y="103" width="100" height="117" fill="#e74c3c" rx="8"/>
+                  <rect class="bar bar-soft" x="320" y="21" width="100" height="199" fill="#27ae60" rx="8"/>
+                  <text x="210" y="95" text-anchor="middle" font-size="16" font-weight="600" font-family="Inter, sans-serif" fill="#243b66">56.91%</text>
+                  <text x="370" y="15" text-anchor="middle" font-size="16" font-weight="600" font-family="Inter, sans-serif" fill="#243b66">99.54%</text>
+                  <text x="210" y="242" text-anchor="middle" font-size="13" font-weight="500" font-family="Inter, "PingFang SC", sans-serif" fill="#4a5b7d">硬调度</text>
+                  <text x="370" y="242" text-anchor="middle" font-size="13" font-weight="500" font-family="Inter, sans-serif" fill="#4a5b7d">TWS</text>
                 </svg>
               </section>
               <section class="chart-card">
@@ -452,12 +612,12 @@
                 <svg class="chart-svg" viewBox="0 0 560 260" aria-label="硬调度与TWS端到端耗时柱状图">
                   <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
                   <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
-                  <rect x="160" y="90" width="100" height="130" fill="#e74c3c" rx="8"/>
-                  <rect x="320" y="123" width="100" height="97" fill="#27ae60" rx="8"/>
-                  <text x="210" y="82" text-anchor="middle" font-size="14" fill="#243b66">6.75s</text>
-                  <text x="370" y="115" text-anchor="middle" font-size="14" fill="#243b66">5.02s</text>
-                  <text x="210" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">硬调度</text>
-                  <text x="370" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">TWS</text>
+                  <rect class="bar bar-hard" x="160" y="90" width="100" height="130" fill="#e74c3c" rx="8"/>
+                  <rect class="bar bar-soft" x="320" y="123" width="100" height="97" fill="#27ae60" rx="8"/>
+                  <text x="210" y="82" text-anchor="middle" font-size="16" font-weight="600" font-family="Inter, sans-serif" fill="#243b66">6.75s</text>
+                  <text x="370" y="115" text-anchor="middle" font-size="16" font-weight="600" font-family="Inter, sans-serif" fill="#243b66">5.02s</text>
+                  <text x="210" y="242" text-anchor="middle" font-size="13" font-weight="500" font-family="Inter, "PingFang SC", sans-serif" fill="#4a5b7d">硬调度</text>
+                  <text x="370" y="242" text-anchor="middle" font-size="13" font-weight="500" font-family="Inter, sans-serif" fill="#4a5b7d">TWS</text>
                 </svg>
               </section>
             </div>
@@ -474,6 +634,23 @@
       </div>
     </section>
   </main>
+
+  <!-- Lightbox overlay -->
+  <div class="lightbox-overlay" id="lightbox">
+    <div class="lightbox-inner">
+      <div class="lightbox-content-wrap" id="lightboxContentWrap">
+        <div id="lightboxContent"></div>
+      </div>
+    </div>
+    <button class="lightbox-close" id="lightboxClose" aria-label="关闭">&times;</button>
+    <div class="lightbox-toolbar">
+      <button id="lbZoomOut" aria-label="缩小" title="缩小">&#8722;</button>
+      <span class="zoom-level" id="lbZoomLevel">100%</span>
+      <button id="lbZoomIn" aria-label="放大" title="放大">+</button>
+      <button id="lbZoomReset" aria-label="重置" title="重置缩放">&#8634;</button>
+    </div>
+    <span class="lightbox-hint" id="lbHint">滚轮缩放 · 拖拽平移 · 双击切换 · Esc 关闭</span>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script>
@@ -503,6 +680,7 @@
       text.setAttribute('text-anchor', 'middle');
       text.setAttribute('font-size', cfg.fs || 14);
       text.setAttribute('font-weight', '600');
+      text.setAttribute('font-family', 'Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif');
       text.setAttribute('fill', '#1f2a44');
       text.textContent = cfg.label;
 
@@ -518,6 +696,7 @@
       t.setAttribute('y', y);
       t.setAttribute('class', cls);
       t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('font-family', 'Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif');
       t.textContent = txt;
       svg.appendChild(t);
     }
@@ -578,6 +757,7 @@
       const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
       text.setAttribute('x', cfg.x + 10);
       text.setAttribute('y', cfg.y + 18);
+      text.setAttribute('font-family', 'Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif');
       text.setAttribute('font-size', '12');
       text.setAttribute('font-weight', '700');
       text.setAttribute('fill', '#344c7a');
@@ -594,15 +774,15 @@
       createNode(svg, { x: 185, y: 92, w: 190, h: 44, label: 'CANN Runtime', fill: '#d8f0ff', stroke: '#7eb9db' });
       createNode(svg, { x: 185, y: 160, w: 190, h: 40, label: 'EulerOS / RTOS', fill: '#ffe0f0', stroke: '#d588b2' });
       createNode(svg, { x: 185, y: 222, w: 190, h: 40, label: 'LiteOS', fill: '#dcecff', stroke: '#88addf' });
-      createNode(svg, { x: 395, y: 160, w: 105, h: 40, label: 'AICPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
-      createNode(svg, { x: 395, y: 222, w: 105, h: 40, label: 'TSCPU', fill: '#eef5ff', stroke: '#89a6d1', fs: 13 });
+      createNode(svg, { x: 395, y: 160, w: 105, h: 40, label: 'AICPU', fill: '#eef5ff', stroke: '#89a6d1' });
+      createNode(svg, { x: 395, y: 222, w: 105, h: 40, label: 'TSCPU', fill: '#eef5ff', stroke: '#89a6d1' });
       createNode(svg, { x: 185, y: 284, w: 190, h: 40, label: 'TSFW', fill: '#ffeac0', stroke: '#d8b05e' });
       createNode(svg, { x: 185, y: 346, w: 190, h: 40, label: 'HWTS', fill: '#ffd1cc', stroke: '#dd7d72' });
       createNode(svg, { x: 35, y: 460, w: 150, h: 42, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
       createNode(svg, { x: 205, y: 460, w: 150, h: 42, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
       createNode(svg, { x: 375, y: 460, w: 150, h: 42, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
 
-      addText(svg, 170, 548, '硬调度：算子经过更多层，排队更明显');
+      addText(svg, 170, 540, '硬调度：算子经过更多层，排队更明显');
       addText(svg, 447, 153, 'EulerOS/RTOS 运行单元', 'caption');
       addText(svg, 447, 215, 'LiteOS 运行单元', 'caption');
 
@@ -632,16 +812,16 @@
       createNode(svg, { x: 175, y: 150, w: 210, h: 40, label: 'Runtime-Adapter', fill: '#e7f6ff', stroke: '#79afcf' });
       const scheduler = createNode(svg, { x: 165, y: 198, w: 230, h: 86, label: 'Scheduler', fill: '#dbf6e2', stroke: '#67b982' });
       scheduler.text.setAttribute('y', 220);
-      createNode(svg, { x: 182, y: 224, w: 196, h: 18, label: '调度缓冲队列（可重排）', fill: '#f4fcf7', stroke: '#9fd8b2', fs: 10 });
-      createNode(svg, { x: 35, y: 306, w: 150, h: 36, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      createNode(svg, { x: 205, y: 306, w: 150, h: 36, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
-      createNode(svg, { x: 375, y: 306, w: 150, h: 36, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8', fs: 12 });
+      createNode(svg, { x: 182, y: 224, w: 196, h: 18, label: '调度缓冲队列（可重排）', fill: '#f4fcf7', stroke: '#9fd8b2' });
+      createNode(svg, { x: 35, y: 306, w: 150, h: 36, label: 'AICPU 驱动', fill: '#f0f6ff', stroke: '#8ea8d8' });
+      createNode(svg, { x: 205, y: 306, w: 150, h: 36, label: 'AIC 驱动', fill: '#f0f6ff', stroke: '#8ea8d8' });
+      createNode(svg, { x: 375, y: 306, w: 150, h: 36, label: 'AIV 驱动', fill: '#f0f6ff', stroke: '#8ea8d8' });
       createNode(svg, { x: 35, y: 372, w: 150, h: 42, label: 'AICPU', fill: '#eceff5', stroke: '#aab5c8' });
       createNode(svg, { x: 205, y: 372, w: 150, h: 42, label: 'AICore', fill: '#eceff5', stroke: '#aab5c8' });
       createNode(svg, { x: 375, y: 372, w: 150, h: 42, label: 'AIVector', fill: '#eceff5', stroke: '#aab5c8' });
 
-      createNode(svg, { x: 178, y: 248, w: 102, h: 26, label: '高优先级', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
-      createNode(svg, { x: 282, y: 248, w: 102, h: 26, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b', fs: 11 });
+      createNode(svg, { x: 178, y: 248, w: 102, h: 26, label: '高优先级', fill: '#eefaf1', stroke: '#84c89b' });
+      createNode(svg, { x: 282, y: 248, w: 102, h: 26, label: '时间窗', fill: '#eefaf1', stroke: '#84c89b' });
 
       addText(svg, 280, 434, '软调度：可控策略 + 多驱动对接（绕过 TSFW/HWTS）', 'badge');
       addText(svg, 280, 452, '队列内支持高优先级任务前置调度', 'caption');
@@ -752,12 +932,367 @@
     hardAnimation(hardNodes);
     softAnimation(softNodes);
 
-    const demoVideo = document.getElementById('demoVideo');
-    if (demoVideo) {
-      demoVideo.play().catch(() => {
-        // 静音自动播放在部分浏览器策略下可能被限制。
+    // ===== 入场动画 =====
+    (function initEntrance() {
+      // 初始隐藏所有动画目标
+      const hero = document.querySelector('.hero');
+      const leftCol = document.querySelector('.poster-column');
+      const rightStack = document.querySelector('.right-stack');
+      const elements = [hero, leftCol, rightStack];
+
+      gsap.set(elements, { opacity: 0, y: 30 });
+
+      // hero 从顶部滑入
+      gsap.to(hero, {
+        opacity: 1, y: 0, duration: 0.6, ease: 'power2.out'
       });
-    }
+
+      // 左栏从左滑入
+      gsap.to(leftCol, {
+        opacity: 1, y: 0, duration: 0.7, ease: 'power2.out', delay: 0.15
+      });
+
+      // 右侧整体从右滑入
+      gsap.from(rightStack, {
+        opacity: 0, x: 50, duration: 0.7, ease: 'power2.out', delay: 0.15
+      });
+      gsap.to(rightStack, {
+        opacity: 1, duration: 0.7, ease: 'power2.out', delay: 0.15
+      });
+
+      // 右侧内部子元素依次出现
+      const techCard = rightStack.querySelector('.middle-column');
+      const comboCard = rightStack.querySelector('.combo-column');
+
+      gsap.set([techCard, comboCard], { opacity: 0, y: 20 });
+      gsap.to(techCard, {
+        opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.4
+      });
+      gsap.to(comboCard, {
+        opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.55
+      });
+
+      // 效果展示内部：图表卡片依次弹入
+      const chartCards = comboCard.querySelectorAll('.chart-card');
+      const summary = comboCard.querySelector('.showcase-summary');
+      const vertTitle = comboCard.querySelector('.vertical-title');
+
+      gsap.set(chartCards, { opacity: 0, scale: 0.9 });
+      gsap.set(summary, { opacity: 0, x: 20 });
+      gsap.set(vertTitle, { opacity: 0 });
+
+      chartCards.forEach((card, i) => {
+        gsap.to(card, {
+          opacity: 1, scale: 1, duration: 0.4, ease: 'back.out(1.4)', delay: 0.7 + i * 0.12
+        });
+      });
+
+      gsap.to(vertTitle, {
+        opacity: 1, duration: 0.4, ease: 'power2.out', delay: 0.7
+      });
+
+      gsap.to(summary, {
+        opacity: 1, x: 0, duration: 0.5, ease: 'power2.out', delay: 0.95
+      });
+
+      // 左栏内部：图片和文字依次浮现
+      const bgImages = leftCol.querySelectorAll('.bg-image');
+      const bgCard = leftCol.querySelector('.bg-card');
+
+      gsap.set(bgImages, { opacity: 0, scale: 0.95 });
+      gsap.set(bgCard, { opacity: 0, y: 15 });
+
+      bgImages.forEach((img, i) => {
+        gsap.to(img, {
+          opacity: 1, scale: 1, duration: 0.5, ease: 'power2.out', delay: 0.3 + i * 0.15
+        });
+      });
+
+      gsap.to(bgCard, {
+        opacity: 1, y: 0, duration: 0.5, ease: 'power2.out', delay: 0.6
+      });
+    })();
+
+    // ===== 柱状图 hover 高亮 =====
+    (function initChartHover() {
+      document.querySelectorAll('.bar').forEach(bar => {
+        const origFill = bar.getAttribute('fill');
+        const hardHover = '#ff6b5a';
+        const softHover = '#3dd97a';
+
+        bar.addEventListener('mouseenter', function () {
+          const hoverFill = this.classList.contains('bar-hard') ? hardHover : softHover;
+          gsap.to(this, {
+            attr: { fill: hoverFill },
+            duration: 0.2,
+            ease: 'power2.out'
+          });
+          gsap.to(this, {
+            attr: { 'stroke-width': 2.5, stroke: '#1f2a44' },
+            duration: 0.2,
+            ease: 'power2.out'
+          });
+          // 轻微上浮效果
+          gsap.to(this, {
+            attr: { y: +this.getAttribute('y') - 3 },
+            duration: 0.2,
+            ease: 'power2.out'
+          });
+        });
+
+        bar.addEventListener('mouseleave', function () {
+          gsap.to(this, {
+            attr: { fill: origFill },
+            duration: 0.25,
+            ease: 'power2.inOut'
+          });
+          gsap.to(this, {
+            attr: { 'stroke-width': 0, stroke: 'none' },
+            duration: 0.25,
+            ease: 'power2.inOut'
+          });
+          gsap.to(this, {
+            attr: { y: +this.getAttribute('y') + 3 },
+            duration: 0.25,
+            ease: 'power2.inOut'
+          });
+        });
+      });
+    })();
+
+    // ===== Lightbox =====
+    (function initLightbox() {
+      const overlay = document.getElementById('lightbox');
+      const inner = overlay.querySelector('.lightbox-inner');
+      const wrap = document.getElementById('lightboxContentWrap');
+      const content = document.getElementById('lightboxContent');
+      const closeBtn = document.getElementById('lightboxClose');
+      const zoomInBtn = document.getElementById('lbZoomIn');
+      const zoomOutBtn = document.getElementById('lbZoomOut');
+      const zoomResetBtn = document.getElementById('lbZoomReset');
+      const zoomLevelEl = document.getElementById('lbZoomLevel');
+      const hintEl = document.getElementById('lbHint');
+
+      let isOpen = false;
+      let scale = 1;
+      let panX = 0, panY = 0;
+      let isDragging = false;
+      let dragStartX, dragStartY, panStartX, panStartY;
+      let hintTimer = null;
+
+      const MIN_SCALE = 0.5;
+      const MAX_SCALE = 5;
+      const ZOOM_STEP = 0.25;
+
+      function updateTransform(animated) {
+        const tl = gsap.timeline();
+        if (animated) {
+          tl.to(wrap, { scale, x: panX, y: panY, duration: 0.25, ease: 'power2.out' });
+        } else {
+          gsap.set(wrap, { scale, x: panX, y: panY });
+        }
+        zoomLevelEl.textContent = Math.round(scale * 100) + '%';
+        // 缩放>1时显示grab光标
+        inner.style.cursor = scale > 1.02 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in';
+      }
+
+      function openLightbox(clone, sourceRect) {
+        if (isOpen) return;
+        isOpen = true;
+        scale = 1;
+        panX = 0;
+        panY = 0;
+
+        content.innerHTML = '';
+        content.appendChild(clone);
+        gsap.set(wrap, { scale: 1, x: 0, y: 0, opacity: 1 });
+
+        gsap.set(overlay, { opacity: 0, visibility: 'visible' });
+        gsap.set(clone, {
+          position: 'fixed',
+          left: sourceRect.left,
+          top: sourceRect.top,
+          width: sourceRect.width,
+          height: sourceRect.height,
+          zIndex: 10000,
+          margin: 0
+        });
+
+        overlay.classList.add('active');
+        gsap.to(overlay, { opacity: 1, duration: 0.3, ease: 'power2.out' });
+        gsap.to(clone, {
+          left: 'auto',
+          top: 'auto',
+          width: 'auto',
+          height: 'auto',
+          position: 'static',
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+
+        updateTransform(false);
+        zoomLevelEl.textContent = '100%';
+
+        // 提示3秒后淡出
+        hintEl.classList.remove('hidden-hint');
+        clearTimeout(hintTimer);
+        hintTimer = setTimeout(() => hintEl.classList.add('hidden-hint'), 3000);
+      }
+
+      function closeLightbox() {
+        if (!isOpen) return;
+        isOpen = false;
+        clearTimeout(hintTimer);
+        const clone = content.firstElementChild;
+        if (clone) {
+          gsap.to(overlay, { opacity: 0, duration: 0.25, ease: 'power2.in' });
+          gsap.to(wrap, { scale: 0.92, opacity: 0, duration: 0.25, ease: 'power2.in', onComplete() {
+            overlay.classList.remove('active');
+            overlay.style.visibility = 'hidden';
+            content.innerHTML = '';
+          }});
+        } else {
+          overlay.classList.remove('active');
+          overlay.style.visibility = 'hidden';
+        }
+      }
+
+      function zoomTo(newScale, anchorX, anchorY, animated) {
+        newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
+        if (anchorX !== undefined && anchorY !== undefined) {
+          // 以锚点为中心缩放：保持锚点下的内容位置不变
+          panX = anchorX - (anchorX - panX) * (newScale / scale);
+          panY = anchorY - (anchorY - panY) * (newScale / scale);
+        } else {
+          // 以屏幕中心为锚点
+          const cx = inner.clientWidth / 2;
+          const cy = inner.clientHeight / 2;
+          panX = cx - (cx - panX) * (newScale / scale);
+          panY = cy - (cy - panY) * (newScale / scale);
+        }
+        scale = newScale;
+        updateTransform(animated);
+      }
+
+      // ===== 滚轮缩放 =====
+      inner.addEventListener('wheel', function (e) {
+        if (!isOpen) return;
+        e.preventDefault();
+        const rect = inner.getBoundingClientRect();
+        const anchorX = e.clientX - rect.left;
+        const anchorY = e.clientY - rect.top;
+        const delta = e.deltaY > 0 ? -ZOOM_STEP : ZOOM_STEP;
+        zoomTo(scale + delta, anchorX, anchorY, false);
+      }, { passive: false });
+
+      // ===== 拖拽平移 =====
+      inner.addEventListener('mousedown', function (e) {
+        if (!isOpen || e.button !== 0) return;
+        // 仅缩放>1时允许拖拽
+        if (scale <= 1.02) return;
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        panStartX = panX;
+        panStartY = panY;
+        inner.style.cursor = 'grabbing';
+        e.preventDefault();
+      });
+      window.addEventListener('mousemove', function (e) {
+        if (!isDragging) return;
+        panX = panStartX + (e.clientX - dragStartX);
+        panY = panStartY + (e.clientY - dragStartY);
+        gsap.set(wrap, { x: panX, y: panY });
+      });
+      window.addEventListener('mouseup', function () {
+        if (isDragging) {
+          isDragging = false;
+          inner.style.cursor = scale > 1.02 ? 'grab' : 'zoom-in';
+        }
+      });
+
+      // ===== 双击切换缩放 =====
+      inner.addEventListener('dblclick', function (e) {
+        if (!isOpen) return;
+        if (scale > 1.02) {
+          // 还原
+          scale = 1;
+          panX = 0;
+          panY = 0;
+          updateTransform(true);
+        } else {
+          // 放大到2x，以双击点为锚点
+          const rect = inner.getBoundingClientRect();
+          zoomTo(2, e.clientX - rect.left, e.clientY - rect.top, true);
+        }
+      });
+
+      // ===== 工具栏按钮 =====
+      zoomInBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        zoomTo(scale + ZOOM_STEP, undefined, undefined, true);
+      });
+      zoomOutBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        zoomTo(scale - ZOOM_STEP, undefined, undefined, true);
+      });
+      zoomResetBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        scale = 1;
+        panX = 0;
+        panY = 0;
+        updateTransform(true);
+      });
+
+      // ===== 绑定图片 =====
+      document.querySelectorAll('img.bg-image').forEach(img => {
+        img.classList.add('zoomable');
+        img.addEventListener('click', function () {
+          const rect = this.getBoundingClientRect();
+          const clone = this.cloneNode(true);
+          clone.classList.remove('zoomable');
+          clone.style.maxWidth = '88vw';
+          clone.style.maxHeight = '84vh';
+          openLightbox(clone, rect);
+        });
+      });
+
+      // ===== 绑定SVG =====
+      document.querySelectorAll('svg#hardSVG, svg#softSVG, svg.chart-svg').forEach(svg => {
+        svg.classList.add('zoomable');
+        svg.addEventListener('click', function (e) {
+          if (e.target.tagName === 'circle') return;
+          const rect = this.getBoundingClientRect();
+          const clone = this.cloneNode(true);
+          clone.classList.remove('zoomable');
+          clone.removeAttribute('id');
+          clone.removeAttribute('class');
+          clone.style.maxWidth = '88vw';
+          clone.style.maxHeight = '84vh';
+          clone.style.width = '88vw';
+          clone.style.height = 'auto';
+          openLightbox(clone, rect);
+        });
+      });
+
+      // ===== 关闭事件 =====
+      // 点击内容区域且缩放=1时关闭；缩放>1时不关（允许拖拽）
+      inner.addEventListener('click', function (e) {
+        if (!isOpen) return;
+        if (scale <= 1.02) closeLightbox();
+      });
+      overlay.addEventListener('click', function (e) {
+        if (e.target === overlay) closeLightbox();
+      });
+      closeBtn.addEventListener('click', closeLightbox);
+      document.addEventListener('keydown', function (e) {
+        if (!isOpen) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === '+' || e.key === '=') zoomTo(scale + ZOOM_STEP, undefined, undefined, true);
+        if (e.key === '-' || e.key === '_') zoomTo(scale - ZOOM_STEP, undefined, undefined, true);
+        if (e.key === '0') { scale = 1; panX = 0; panY = 0; updateTransform(true); }
+      });
+    })();
   </script>
 </body>
 </html>
