@@ -1096,7 +1096,7 @@
         inner.style.cursor = scale > 1.02 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in';
       }
 
-      function openLightbox(clone, sourceRect) {
+      function openLightbox(clone, sourceRect, targetW, targetH) {
         if (isOpen) return;
         isOpen = true;
         scale = 1;
@@ -1105,32 +1105,36 @@
 
         content.innerHTML = '';
         content.appendChild(clone);
-        gsap.set(wrap, { scale: 1, x: 0, y: 0, opacity: 1 });
 
+        // 初始状态：wrap缩小并偏移到源元素位置
+        const startScale = Math.min(sourceRect.width / targetW, sourceRect.height / targetH);
+        gsap.set(wrap, { scale: startScale, x: 0, y: 0, opacity: 0 });
         gsap.set(overlay, { opacity: 0, visibility: 'visible' });
-        gsap.set(clone, {
-          position: 'fixed',
-          left: sourceRect.left,
-          top: sourceRect.top,
-          width: sourceRect.width,
-          height: sourceRect.height,
-          zIndex: 10000,
-          margin: 0
-        });
 
         overlay.classList.add('active');
+
+        // 计算源中心相对于lightbox-inner中心的偏移
+        // wrap被flex居中，x/y transform相对于其居中位置
+        const innerRect = inner.getBoundingClientRect();
+        const innerCenterX = innerRect.left + innerRect.width / 2;
+        const innerCenterY = innerRect.top + innerRect.height / 2;
+        const srcCenterX = sourceRect.left + sourceRect.width / 2;
+        const srcCenterY = sourceRect.top + sourceRect.height / 2;
+        const offsetX = (srcCenterX - innerCenterX) / startScale;
+        const offsetY = (srcCenterY - innerCenterY) / startScale;
+
+        gsap.set(wrap, { x: offsetX, y: offsetY, opacity: 1 });
+
         gsap.to(overlay, { opacity: 1, duration: 0.3, ease: 'power2.out' });
-        gsap.to(clone, {
-          left: 'auto',
-          top: 'auto',
-          width: 'auto',
-          height: 'auto',
-          position: 'static',
+        gsap.to(wrap, {
+          scale: 1,
+          x: 0,
+          y: 0,
+          opacity: 1,
           duration: 0.4,
           ease: 'power2.out'
         });
 
-        updateTransform(false);
         zoomLevelEl.textContent = '100%';
 
         // 提示3秒后淡出
@@ -1251,9 +1255,26 @@
           const rect = this.getBoundingClientRect();
           const clone = this.cloneNode(true);
           clone.classList.remove('zoomable');
+          // 计算图片目标尺寸
+          const natW = this.naturalWidth || rect.width;
+          const natH = this.naturalHeight || rect.height;
+          const aspect = natW / natH;
+          const maxW = window.innerWidth * 0.88;
+          const maxH = window.innerHeight * 0.84;
+          let targetW, targetH;
+          if (maxW / aspect <= maxH) {
+            targetW = maxW;
+            targetH = maxW / aspect;
+          } else {
+            targetH = maxH;
+            targetW = maxH * aspect;
+          }
+          clone.style.width = targetW + 'px';
+          clone.style.height = targetH + 'px';
           clone.style.maxWidth = '88vw';
           clone.style.maxHeight = '84vh';
-          openLightbox(clone, rect);
+          clone.style.objectFit = 'contain';
+          openLightbox(clone, rect, targetW, targetH);
         });
       });
 
@@ -1267,11 +1288,23 @@
           clone.classList.remove('zoomable');
           clone.removeAttribute('id');
           clone.removeAttribute('class');
+          // SVG 需要明确尺寸，auto会导致尺寸为0
+          const aspect = this.viewBox.baseVal.width / this.viewBox.baseVal.height;
+          const maxW = window.innerWidth * 0.88;
+          const maxH = window.innerHeight * 0.84;
+          let targetW, targetH;
+          if (maxW / aspect <= maxH) {
+            targetW = maxW;
+            targetH = maxW / aspect;
+          } else {
+            targetH = maxH;
+            targetW = maxH * aspect;
+          }
+          clone.style.width = targetW + 'px';
+          clone.style.height = targetH + 'px';
           clone.style.maxWidth = '88vw';
           clone.style.maxHeight = '84vh';
-          clone.style.width = '88vw';
-          clone.style.height = 'auto';
-          openLightbox(clone, rect);
+          openLightbox(clone, rect, targetW, targetH);
         });
       });
 
