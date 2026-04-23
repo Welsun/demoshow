@@ -138,16 +138,46 @@
     }
 
     .bg-gallery {
-      display: grid;
-      grid-template-rows: 1fr;
-      gap: 8px;
+      position: relative;
+      border: 1px solid #e2e9f7;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+      overflow: hidden;
+      min-height: clamp(180px, 24vh, 460px);
     }
 
     .bg-gallery .bg-image {
       height: 100%;
       width: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
+    }
+
+    .bg-item {
+      position: absolute;
+      cursor: move;
+      border: 2px solid #9eb6e5;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(21, 54, 112, 0.14);
+      background: #fff;
+      user-select: none;
+      touch-action: none;
+    }
+
+    .bg-item.active {
+      border-color: #2f66f3;
+      box-shadow: 0 0 0 2px rgba(47, 102, 243, 0.18), 0 10px 24px rgba(21, 54, 112, 0.2);
+    }
+
+    .resize-handle {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 16px;
+      height: 16px;
+      background: linear-gradient(135deg, transparent 0 30%, #2f66f3 30% 100%);
+      cursor: nwse-resize;
     }
 
     .bg-panel .bg-card {
@@ -231,11 +261,11 @@
     .hard h3 { color: var(--hard); }
     .soft h3 { color: var(--soft); }
 
-    svg {
+    .svg-stage svg {
       width: 100%;
-      height: clamp(280px, 31vh, 430px);
-      background: #fbfdff;
-      border-radius: 8px;
+      height: 100%;
+      background: transparent;
+      border-radius: 0;
     }
 
     .metric {
@@ -257,6 +287,71 @@
 
     .combo-column {
       grid-template-rows: minmax(0, 1fr);
+    }
+
+    .controls-panel {
+      border: 1px solid #d8e0ef;
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #f8fbff;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    .controls-panel h4 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      color: #24447f;
+    }
+
+    .controls-grid {
+      display: grid;
+      gap: 6px;
+    }
+
+    .control-row {
+      display: grid;
+      grid-template-columns: 48px 1fr 42px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .control-row label {
+      color: #445a85;
+      font-weight: 600;
+    }
+
+    .control-row output {
+      text-align: right;
+      color: #2f66f3;
+      font-weight: 700;
+    }
+
+    .control-inline {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .control-inline button {
+      border: 1px solid #c5d3ee;
+      border-radius: 999px;
+      background: #fff;
+      color: #2a487f;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .svg-stage {
+      width: 100%;
+      height: clamp(280px, 31vh, 430px);
+      border-radius: 8px;
+      border: 1px solid #e2e9f7;
+      background: #fbfdff;
+      overflow: hidden;
+      position: relative;
     }
 
     .showcase-layout {
@@ -377,7 +472,7 @@
       }
       .showcase-summary { min-height: auto; }
       .boards { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
-      svg { height: 520px; }
+      .svg-stage { height: 520px; }
     }
   </style>
 </head>
@@ -393,7 +488,29 @@
         <p class="desc">聚焦挑战1，突出业务场景中的资源利用率问题。</p>
         <div class="panel bg-panel">
           <div class="bg-gallery">
-            <img class="bg-image" src="./assets/background-intro-1.png" alt="业务背景挑战1-图片1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张业务背景图。</div>'" />
+            <div class="bg-item active" id="bgItem1" data-item="1" style="left:5%; top:8%; width:44%; height:80%;">
+              <img class="bg-image" src="./assets/background-intro-1.png" alt="业务背景挑战-图片1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92;padding:10px;font-size:13px;&quot;>未找到 assets/background-intro-1.png，请放入第一张业务背景图。</div>'" />
+              <span class="resize-handle" aria-hidden="true"></span>
+            </div>
+            <div class="bg-item" id="bgItem2" data-item="2" style="left:51%; top:12%; width:44%; height:74%;">
+              <img class="bg-image" src="./assets/background-intro-2.png" alt="业务背景挑战-图片2" onerror="this.outerHTML='<div style=&quot;color:#5e6f92;padding:10px;font-size:13px;&quot;>未找到 assets/background-intro-2.png，请放入第二张业务背景图。</div>'" />
+              <span class="resize-handle" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div class="controls-panel">
+            <h4>背景图片编辑（拖拽移动，右下角缩放）</h4>
+            <div class="control-inline">
+              <button type="button" id="focusImg1">编辑图片1</button>
+              <button type="button" id="focusImg2">编辑图片2</button>
+              <button type="button" id="resetBg">重置布局</button>
+            </div>
+            <div class="controls-grid">
+              <div class="control-row">
+                <label for="bgScale">缩放</label>
+                <input id="bgScale" type="range" min="40" max="140" value="100" />
+                <output id="bgScaleOut">100%</output>
+              </div>
+            </div>
           </div>
           <div class="bg-card">
             <h3>挑战1：资源利用率低</h3>
@@ -417,7 +534,9 @@
           <div class="boards">
             <section class="card hard">
               <h3>硬调度</h3>
-              <svg id="hardSVG" viewBox="0 0 560 560"></svg>
+              <div class="svg-stage" id="hardStage">
+                <svg id="hardSVG" viewBox="0 0 560 560"></svg>
+              </div>
             </section>
             <div class="compare-arrow" aria-hidden="true">
               <span>→</span>
@@ -425,8 +544,35 @@
             </div>
             <section class="card soft">
               <h3>软调度</h3>
-              <svg id="softSVG" viewBox="0 0 560 560"></svg>
+              <div class="svg-stage" id="softStage">
+                <svg id="softSVG" viewBox="0 0 560 560"></svg>
+              </div>
             </section>
+          </div>
+          <div class="controls-panel">
+            <h4>技术介绍SVG编辑</h4>
+            <div class="control-inline">
+              <button type="button" id="focusHard">编辑硬调度</button>
+              <button type="button" id="focusSoft">编辑软调度</button>
+              <button type="button" id="resetSvg">重置视图</button>
+            </div>
+            <div class="controls-grid">
+              <div class="control-row">
+                <label for="svgScale">缩放</label>
+                <input id="svgScale" type="range" min="60" max="160" value="100" />
+                <output id="svgScaleOut">100%</output>
+              </div>
+              <div class="control-row">
+                <label for="svgX">横向</label>
+                <input id="svgX" type="range" min="-160" max="160" value="0" />
+                <output id="svgXOut">0</output>
+              </div>
+              <div class="control-row">
+                <label for="svgY">纵向</label>
+                <input id="svgY" type="range" min="-160" max="160" value="0" />
+                <output id="svgYOut">0</output>
+              </div>
+            </div>
           </div>
         </article>
 
@@ -751,6 +897,173 @@
     const softNodes = setupSoft();
     hardAnimation(hardNodes);
     softAnimation(softNodes);
+
+    const stageState = {
+      hardStage: { scale: 100, x: 0, y: 0 },
+      softStage: { scale: 100, x: 0, y: 0 }
+    };
+    let activeStage = 'hardStage';
+    const svgScale = document.getElementById('svgScale');
+    const svgX = document.getElementById('svgX');
+    const svgY = document.getElementById('svgY');
+    const svgScaleOut = document.getElementById('svgScaleOut');
+    const svgXOut = document.getElementById('svgXOut');
+    const svgYOut = document.getElementById('svgYOut');
+
+    function applyStageTransform(stageId) {
+      const stage = document.getElementById(stageId);
+      const svg = stage.querySelector('svg');
+      const s = stageState[stageId];
+      svg.style.transformOrigin = 'center center';
+      svg.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale / 100})`;
+    }
+
+    function syncStageControls() {
+      const s = stageState[activeStage];
+      svgScale.value = s.scale;
+      svgX.value = s.x;
+      svgY.value = s.y;
+      svgScaleOut.value = `${s.scale}%`;
+      svgXOut.value = `${s.x}`;
+      svgYOut.value = `${s.y}`;
+    }
+
+    function updateActiveStage(partial) {
+      Object.assign(stageState[activeStage], partial);
+      applyStageTransform(activeStage);
+      syncStageControls();
+    }
+
+    document.getElementById('focusHard').addEventListener('click', () => { activeStage = 'hardStage'; syncStageControls(); });
+    document.getElementById('focusSoft').addEventListener('click', () => { activeStage = 'softStage'; syncStageControls(); });
+    document.getElementById('resetSvg').addEventListener('click', () => {
+      stageState.hardStage = { scale: 100, x: 0, y: 0 };
+      stageState.softStage = { scale: 100, x: 0, y: 0 };
+      applyStageTransform('hardStage');
+      applyStageTransform('softStage');
+      syncStageControls();
+    });
+    svgScale.addEventListener('input', () => updateActiveStage({ scale: Number(svgScale.value) }));
+    svgX.addEventListener('input', () => updateActiveStage({ x: Number(svgX.value) }));
+    svgY.addEventListener('input', () => updateActiveStage({ y: Number(svgY.value) }));
+    applyStageTransform('hardStage');
+    applyStageTransform('softStage');
+    syncStageControls();
+
+    const bgGallery = document.querySelector('.bg-gallery');
+    const bgItems = [...document.querySelectorAll('.bg-item')];
+    const bgScale = document.getElementById('bgScale');
+    const bgScaleOut = document.getElementById('bgScaleOut');
+    let activeBgItem = bgItems[0];
+
+    function clamp(val, min, max) { return Math.min(max, Math.max(min, val)); }
+
+    function setActiveBgItem(item) {
+      activeBgItem = item;
+      bgItems.forEach((el) => el.classList.toggle('active', el === item));
+      const current = Number(item.dataset.scale || 100);
+      bgScale.value = current;
+      bgScaleOut.value = `${current}%`;
+    }
+
+    function applyScaleToItem(item, scale) {
+      const baseW = Number(item.dataset.baseW || parseFloat(item.style.width));
+      const baseH = Number(item.dataset.baseH || parseFloat(item.style.height));
+      item.dataset.baseW = baseW;
+      item.dataset.baseH = baseH;
+      item.dataset.scale = scale;
+      item.style.width = `${clamp(baseW * scale / 100, 18, 95)}%`;
+      item.style.height = `${clamp(baseH * scale / 100, 18, 95)}%`;
+      keepItemInBounds(item);
+    }
+
+    function keepItemInBounds(item) {
+      const left = parseFloat(item.style.left);
+      const top = parseFloat(item.style.top);
+      const width = parseFloat(item.style.width);
+      const height = parseFloat(item.style.height);
+      item.style.left = `${clamp(left, 0, 100 - width)}%`;
+      item.style.top = `${clamp(top, 0, 100 - height)}%`;
+    }
+
+    function attachDrag(item) {
+      let mode = null;
+      let startX = 0;
+      let startY = 0;
+      let startLeft = 0;
+      let startTop = 0;
+      let startW = 0;
+      let startH = 0;
+
+      item.addEventListener('pointerdown', (e) => {
+        setActiveBgItem(item);
+        item.setPointerCapture(e.pointerId);
+        const rect = bgGallery.getBoundingClientRect();
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = parseFloat(item.style.left);
+        startTop = parseFloat(item.style.top);
+        startW = parseFloat(item.style.width);
+        startH = parseFloat(item.style.height);
+        mode = e.target.classList.contains('resize-handle') ? 'resize' : 'drag';
+
+        const onMove = (evt) => {
+          const dxPct = ((evt.clientX - startX) / rect.width) * 100;
+          const dyPct = ((evt.clientY - startY) / rect.height) * 100;
+          if (mode === 'drag') {
+            item.style.left = `${clamp(startLeft + dxPct, 0, 100 - parseFloat(item.style.width))}%`;
+            item.style.top = `${clamp(startTop + dyPct, 0, 100 - parseFloat(item.style.height))}%`;
+          } else {
+            item.style.width = `${clamp(startW + dxPct, 18, 95)}%`;
+            item.style.height = `${clamp(startH + dyPct, 18, 95)}%`;
+            keepItemInBounds(item);
+          }
+        };
+
+        const onUp = () => {
+          item.removeEventListener('pointermove', onMove);
+          item.removeEventListener('pointerup', onUp);
+          item.removeEventListener('pointercancel', onUp);
+        };
+
+        item.addEventListener('pointermove', onMove);
+        item.addEventListener('pointerup', onUp);
+        item.addEventListener('pointercancel', onUp);
+      });
+    }
+
+    bgItems.forEach((item) => {
+      item.dataset.baseW = parseFloat(item.style.width);
+      item.dataset.baseH = parseFloat(item.style.height);
+      item.dataset.scale = 100;
+      attachDrag(item);
+    });
+
+    document.getElementById('focusImg1').addEventListener('click', () => setActiveBgItem(document.getElementById('bgItem1')));
+    document.getElementById('focusImg2').addEventListener('click', () => setActiveBgItem(document.getElementById('bgItem2')));
+    document.getElementById('resetBg').addEventListener('click', () => {
+      const init = [
+        { id: 'bgItem1', left: '5%', top: '8%', width: '44%', height: '80%' },
+        { id: 'bgItem2', left: '51%', top: '12%', width: '44%', height: '74%' }
+      ];
+      init.forEach((cfg) => {
+        const item = document.getElementById(cfg.id);
+        item.style.left = cfg.left;
+        item.style.top = cfg.top;
+        item.style.width = cfg.width;
+        item.style.height = cfg.height;
+        item.dataset.baseW = parseFloat(cfg.width);
+        item.dataset.baseH = parseFloat(cfg.height);
+        item.dataset.scale = 100;
+      });
+      setActiveBgItem(document.getElementById('bgItem1'));
+    });
+    bgScale.addEventListener('input', () => {
+      const val = Number(bgScale.value);
+      bgScaleOut.value = `${val}%`;
+      applyScaleToItem(activeBgItem, val);
+    });
+    setActiveBgItem(document.getElementById('bgItem1'));
 
     const demoVideo = document.getElementById('demoVideo');
     if (demoVideo) {
