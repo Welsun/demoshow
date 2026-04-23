@@ -121,6 +121,13 @@
       min-height: 0;
     }
 
+    .bg-panel {
+      display: grid;
+      grid-template-rows: 75% 25%;
+      gap: 10px;
+      height: 100%;
+    }
+
     .bg-image {
       width: 100%;
       height: clamp(180px, 24vh, 460px);
@@ -137,10 +144,15 @@
     }
 
     .bg-gallery .bg-image {
-      height: clamp(280px, 38vh, 620px);
+      height: 100%;
       width: 100%;
       object-fit: cover;
       display: block;
+    }
+
+    .bg-panel .bg-card {
+      margin-top: 0 !important;
+      overflow: auto;
     }
 
     .bg-card h3 {
@@ -271,7 +283,7 @@
 
     .chart-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       grid-template-rows: 1fr;
       gap: 8px;
       min-height: 0;
@@ -379,11 +391,11 @@
       <article class="poster-column">
         <h2>业务背景介绍</h2>
         <p class="desc">聚焦挑战1，突出业务场景中的资源利用率问题。</p>
-        <div class="panel">
+        <div class="panel bg-panel">
           <div class="bg-gallery">
             <img class="bg-image" src="./assets/background-intro-1.png" alt="业务背景挑战1-图片1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张业务背景图。</div>'" />
           </div>
-          <div class="bg-card" style="margin-top:10px;">
+          <div class="bg-card">
             <h3>挑战1：资源利用率低</h3>
             <ul>
               <li>L2独占的1951利用率为 <span class="highlight">42.9%</span>。</li>
@@ -424,53 +436,28 @@
             <div class="chart-grid">
               <section class="chart-card">
                 <h4>按时完成率（%）</h4>
-                <svg class="chart-svg" viewBox="0 0 560 260" aria-label="四种算法按时完成率柱状图">
+                <svg class="chart-svg" viewBox="0 0 560 260" aria-label="硬调度与TWS按时完成率柱状图">
                   <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
                   <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
-                  <rect x="88" y="103" width="78" height="117" fill="#e74c3c" rx="8"/>
-                  <rect x="202" y="43" width="78" height="177" fill="#3498db" rx="8"/>
-                  <rect x="316" y="21" width="78" height="199" fill="#27ae60" rx="8"/>
-                  <rect x="430" y="163" width="78" height="57" fill="#f39c12" rx="8"/>
-                  <text x="127" y="95" text-anchor="middle" font-size="14" fill="#243b66">56.91%</text>
-                  <text x="241" y="35" text-anchor="middle" font-size="14" fill="#243b66">86.05%</text>
-                  <text x="355" y="15" text-anchor="middle" font-size="14" fill="#243b66">99.54%</text>
-                  <text x="469" y="155" text-anchor="middle" font-size="14" fill="#243b66">27.86%</text>
-                  <text x="127" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">硬调度</text>
-                  <text x="241" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">FIFO</text>
-                  <text x="355" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">TWS</text>
-                  <text x="469" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">NICE</text>
+                  <rect x="160" y="103" width="100" height="117" fill="#e74c3c" rx="8"/>
+                  <rect x="320" y="21" width="100" height="199" fill="#27ae60" rx="8"/>
+                  <text x="210" y="95" text-anchor="middle" font-size="14" fill="#243b66">56.91%</text>
+                  <text x="370" y="15" text-anchor="middle" font-size="14" fill="#243b66">99.54%</text>
+                  <text x="210" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">硬调度</text>
+                  <text x="370" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">TWS</text>
                 </svg>
               </section>
               <section class="chart-card">
                 <h4>端到端耗时（s）</h4>
-                <svg class="chart-svg" viewBox="0 0 560 260" aria-label="四种算法端到端耗时柱状图">
+                <svg class="chart-svg" viewBox="0 0 560 260" aria-label="硬调度与TWS端到端耗时柱状图">
                   <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
                   <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
-                  <rect x="88" y="90" width="78" height="130" fill="#e74c3c" rx="8"/>
-                  <rect x="202" y="20" width="78" height="200" fill="#3498db" rx="8"/>
-                  <rect x="316" y="123" width="78" height="97" fill="#27ae60" rx="8"/>
-                  <rect x="430" y="72" width="78" height="148" fill="#f39c12" rx="8"/>
-                  <text x="127" y="82" text-anchor="middle" font-size="14" fill="#243b66">6.75s</text>
-                  <text x="241" y="14" text-anchor="middle" font-size="14" fill="#243b66">10.37s</text>
-                  <text x="355" y="115" text-anchor="middle" font-size="14" fill="#243b66">5.02s</text>
-                  <text x="469" y="64" text-anchor="middle" font-size="14" fill="#243b66">7.7s</text>
-                  <text x="127" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">硬调度</text>
-                  <text x="241" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">FIFO</text>
-                  <text x="355" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">TWS</text>
-                  <text x="469" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">NICE</text>
-                </svg>
-              </section>
-              <section class="chart-card">
-                <h4>计算利用率（%）</h4>
-                <svg class="chart-svg" viewBox="0 0 560 260" aria-label="计算利用率柱状图">
-                  <line x1="72" y1="16" x2="72" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
-                  <line x1="72" y1="220" x2="520" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
-                  <rect x="140" y="145" width="130" height="75" fill="#8e44ad" rx="10"/>
-                  <rect x="332" y="46" width="130" height="174" fill="#16a085" rx="10"/>
-                  <text x="205" y="137" text-anchor="middle" font-size="16" fill="#243b66">37.55%</text>
-                  <text x="397" y="38" text-anchor="middle" font-size="16" fill="#243b66">86.84%</text>
-                  <text x="205" y="244" text-anchor="middle" font-size="13" fill="#4a5b7d">三任务串行</text>
-                  <text x="397" y="244" text-anchor="middle" font-size="13" fill="#4a5b7d">三任务并行</text>
+                  <rect x="160" y="90" width="100" height="130" fill="#e74c3c" rx="8"/>
+                  <rect x="320" y="123" width="100" height="97" fill="#27ae60" rx="8"/>
+                  <text x="210" y="82" text-anchor="middle" font-size="14" fill="#243b66">6.75s</text>
+                  <text x="370" y="115" text-anchor="middle" font-size="14" fill="#243b66">5.02s</text>
+                  <text x="210" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">硬调度</text>
+                  <text x="370" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">TWS</text>
                 </svg>
               </section>
             </div>
