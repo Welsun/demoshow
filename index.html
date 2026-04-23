@@ -68,8 +68,7 @@
     }
 
     .poster-grid {
-      display: grid;
-      grid-template-columns: 0.95fr 2.05fr;
+      display: flex;
       gap: 16px;
       align-items: stretch;
       min-height: 0;
@@ -77,8 +76,9 @@
     }
 
     .right-stack {
-      display: grid;
-      grid-template-rows: 1.35fr 0.65fr;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
       gap: 16px;
       min-height: 0;
     }
@@ -294,6 +294,27 @@
       grid-template-rows: minmax(0, 1fr);
     }
 
+    .pane-resizer {
+      flex: 0 0 8px;
+      align-self: stretch;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #d2def5 0%, #b8c9ea 100%);
+      cursor: col-resize;
+      box-shadow: inset 0 0 0 1px #a8bbdf;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    .pane-resizer:hover { opacity: 1; }
+
+    .pane-resizer.horizontal {
+      flex: 0 0 8px;
+      min-height: 8px;
+      width: 100%;
+      cursor: row-resize;
+      background: linear-gradient(90deg, #d2def5 0%, #b8c9ea 100%);
+    }
+
     .svg-stage {
       width: 100%;
       height: 100%;
@@ -428,7 +449,8 @@
         padding: 8px 0;
       }
       .poster-grid { grid-template-columns: 1fr; }
-      .right-stack { grid-template-rows: auto auto; }
+      .poster-grid { flex-direction: column; }
+      .right-stack { gap: 12px; }
       .combo-column { grid-template-rows: auto; }
       .showcase-layout { grid-template-columns: 1fr; }
       .vertical-title {
@@ -444,6 +466,7 @@
       .showcase-summary { min-height: auto; }
       .boards { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
       .svg-stage { height: 520px; }
+      .pane-resizer { display: none; }
     }
   </style>
 </head>
@@ -454,7 +477,7 @@
     </header>
 
     <section class="poster-grid">
-      <article class="poster-column">
+      <article class="poster-column" id="bgColumn" style="flex:0 0 32%;">
         <h2>业务背景介绍</h2>
         <p class="desc">聚焦挑战1，突出业务场景中的资源利用率问题。</p>
         <div class="panel bg-panel">
@@ -481,9 +504,10 @@
           </div>
         </div>
       </article>
+      <div class="pane-resizer vertical" id="mainSplitter" title="拖拽调整左侧与右侧区域宽度"></div>
 
-      <div class="right-stack">
-        <article class="poster-column middle-column">
+      <div class="right-stack" id="rightStack">
+        <article class="poster-column middle-column" id="techColumn" style="flex:0 0 64%;">
           <h2>技术介绍</h2>
           <p class="desc">该栏改为横向排布，对比更直观展示左右两条链路差异。</p>
           <div class="boards">
@@ -505,8 +529,9 @@
             </section>
           </div>
         </article>
+        <div class="pane-resizer horizontal" id="rightSplitter" title="拖拽调整技术介绍与效果展示高度"></div>
 
-        <article class="poster-column combo-column">
+        <article class="poster-column combo-column" id="effectColumn" style="flex:1 1 auto;">
           <div class="showcase-layout">
             <div class="vertical-title">效果展示</div>
             <div class="chart-grid">
@@ -989,6 +1014,45 @@
     });
 
     setActiveBgItem(document.getElementById('bgItem1'));
+
+    function setupPaneResizer(splitter, primaryPane, secondaryPane, direction = 'vertical') {
+      let dragging = false;
+      let start = 0;
+      let startPrimary = 0;
+      let startSecondary = 0;
+
+      splitter.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        splitter.setPointerCapture(e.pointerId);
+        start = direction === 'vertical' ? e.clientX : e.clientY;
+        const pRect = primaryPane.getBoundingClientRect();
+        const sRect = secondaryPane.getBoundingClientRect();
+        startPrimary = direction === 'vertical' ? pRect.width : pRect.height;
+        startSecondary = direction === 'vertical' ? sRect.width : sRect.height;
+      });
+
+      splitter.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const delta = (direction === 'vertical' ? e.clientX : e.clientY) - start;
+        const total = startPrimary + startSecondary;
+        const min = total * 0.2;
+        const newPrimary = clamp(startPrimary + delta, min, total - min);
+        const newSecondary = total - newPrimary;
+        primaryPane.style.flex = `0 0 ${newPrimary}px`;
+        secondaryPane.style.flex = `0 0 ${newSecondary}px`;
+      });
+
+      const stopDrag = () => { dragging = false; };
+      splitter.addEventListener('pointerup', stopDrag);
+      splitter.addEventListener('pointercancel', stopDrag);
+    }
+
+    const bgColumn = document.getElementById('bgColumn');
+    const rightStack = document.getElementById('rightStack');
+    const techColumn = document.getElementById('techColumn');
+    const effectColumn = document.getElementById('effectColumn');
+    setupPaneResizer(document.getElementById('mainSplitter'), bgColumn, rightStack, 'vertical');
+    setupPaneResizer(document.getElementById('rightSplitter'), techColumn, effectColumn, 'horizontal');
 
     const demoVideo = document.getElementById('demoVideo');
     if (demoVideo) {
