@@ -334,9 +334,10 @@
     .chart-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-template-rows: 1fr;
+      grid-template-rows: minmax(0, 1fr);
       gap: 8px;
       min-height: 0;
+      height: 100%;
     }
 
     .chart-card {
@@ -344,6 +345,8 @@
       border-radius: 8px;
       background: #fbfdff;
       padding: 8px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
       min-height: 0;
     }
 
@@ -356,8 +359,8 @@
 
     .chart-svg {
       width: 100%;
-      height: 132px;
-      min-height: 132px;
+      height: 100%;
+      min-height: 0;
       background: #fff;
       border: 1px solid #e2e9f7;
       border-radius: 6px;
@@ -899,8 +902,8 @@
     let activeBgItem = bgItems[0];
 
     function setActiveBgItem(item) {
-      activeBgItem = item;
-      bgItems.forEach((el) => el.classList.toggle('active', el === item));
+      activeBgItem = item || null;
+      bgItems.forEach((el) => el.classList.toggle('active', !!item && el === item));
     }
 
     function keepItemInBounds(item) {
@@ -922,6 +925,8 @@
       let startH = 0;
 
       item.addEventListener('pointerdown', (e) => {
+        const wasActive = activeBgItem === item;
+        let moved = false;
         setActiveBgItem(item);
         item.setPointerCapture(e.pointerId);
         const rect = bgPanel.getBoundingClientRect();
@@ -936,6 +941,7 @@
         const onMove = (evt) => {
           const dxPct = ((evt.clientX - startX) / rect.width) * 100;
           const dyPct = ((evt.clientY - startY) / rect.height) * 100;
+          if (Math.abs(dxPct) > 0.2 || Math.abs(dyPct) > 0.2) moved = true;
           if (mode === 'drag') {
             item.style.left = `${clamp(startLeft + dxPct, 0, 100 - parseFloat(item.style.width))}%`;
             item.style.top = `${clamp(startTop + dyPct, 0, 100 - parseFloat(item.style.height))}%`;
@@ -947,6 +953,7 @@
         };
 
         const onUp = () => {
+          if (!moved && wasActive) setActiveBgItem(null);
           item.removeEventListener('pointermove', onMove);
           item.removeEventListener('pointerup', onUp);
           item.removeEventListener('pointercancel', onUp);
