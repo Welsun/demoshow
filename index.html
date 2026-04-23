@@ -29,12 +29,13 @@
       font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
       line-height: 1.55;
       padding: 0;
-      overflow: hidden;
+      overflow: auto;
     }
 
     .container {
       width: min(1980px, calc(100% - 24px));
-      height: 100vh;
+      min-height: 100vh;
+      height: auto;
       margin: 0 auto;
       padding: 12px 0;
       display: grid;
@@ -71,8 +72,8 @@
       display: flex;
       gap: 16px;
       align-items: stretch;
-      min-height: 0;
-      height: 100%;
+      min-height: calc(100vh - 120px);
+      height: auto;
     }
 
     .right-stack {
@@ -292,6 +293,9 @@
 
     .combo-column {
       grid-template-rows: minmax(0, 1fr);
+      resize: vertical;
+      overflow: auto;
+      min-height: 240px;
     }
 
     .pane-resizer {
