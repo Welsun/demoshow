@@ -29,12 +29,13 @@
       font-family: Inter, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
       line-height: 1.55;
       padding: 0;
-      overflow: hidden;
+      overflow: auto;
     }
 
     .container {
       width: min(1980px, calc(100% - 24px));
-      height: 100vh;
+      min-height: 100vh;
+      height: auto;
       margin: 0 auto;
       padding: 12px 0;
       display: grid;
@@ -68,17 +69,17 @@
     }
 
     .poster-grid {
-      display: grid;
-      grid-template-columns: 0.95fr 2.05fr;
+      display: flex;
       gap: 16px;
       align-items: stretch;
-      min-height: 0;
-      height: 100%;
+      min-height: calc(100vh - 120px);
+      height: auto;
     }
 
     .right-stack {
-      display: grid;
-      grid-template-rows: 1.35fr 0.65fr;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
       gap: 16px;
       min-height: 0;
     }
@@ -122,10 +123,12 @@
     }
 
     .bg-panel {
+      position: relative;
       display: grid;
       grid-template-rows: 75% 25%;
       gap: 10px;
       height: 100%;
+      overflow: hidden;
     }
 
     .bg-image {
@@ -138,16 +141,47 @@
     }
 
     .bg-gallery {
-      display: grid;
-      grid-template-rows: 1fr;
-      gap: 8px;
+      position: relative;
+      border: 1px solid #e2e9f7;
+      border-radius: 10px;
+      background: linear-gradient(180deg, #ffffff 0%, #f7faff 100%);
+      overflow: hidden;
+      min-height: clamp(180px, 24vh, 460px);
     }
 
     .bg-gallery .bg-image {
       height: 100%;
       width: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
+    }
+
+    .bg-item {
+      position: absolute;
+      cursor: move;
+      border: 2px solid #9eb6e5;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 10px 20px rgba(21, 54, 112, 0.14);
+      background: #fff;
+      user-select: none;
+      touch-action: none;
+      z-index: 2;
+    }
+
+    .bg-item.active {
+      border-color: #2f66f3;
+      box-shadow: 0 0 0 2px rgba(47, 102, 243, 0.18), 0 10px 24px rgba(21, 54, 112, 0.2);
+    }
+
+    .resize-handle {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 16px;
+      height: 16px;
+      background: linear-gradient(135deg, transparent 0 30%, #2f66f3 30% 100%);
+      cursor: nwse-resize;
     }
 
     .bg-panel .bg-card {
@@ -219,6 +253,8 @@
       border: 1px solid #d8e0ef;
       border-radius: 12px;
       padding: 10px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
       min-height: 0;
     }
 
@@ -231,11 +267,11 @@
     .hard h3 { color: var(--hard); }
     .soft h3 { color: var(--soft); }
 
-    svg {
+    .svg-stage svg {
       width: 100%;
-      height: clamp(280px, 31vh, 430px);
-      background: #fbfdff;
-      border-radius: 8px;
+      height: 100%;
+      background: transparent;
+      border-radius: 0;
     }
 
     .metric {
@@ -257,6 +293,45 @@
 
     .combo-column {
       grid-template-rows: minmax(0, 1fr);
+      resize: vertical;
+      overflow: auto;
+      min-height: 240px;
+    }
+
+    .pane-resizer {
+      flex: 0 0 8px;
+      align-self: stretch;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #d2def5 0%, #b8c9ea 100%);
+      cursor: col-resize;
+      box-shadow: inset 0 0 0 1px #a8bbdf;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    .pane-resizer:hover { opacity: 1; }
+
+    .pane-resizer.horizontal {
+      flex: 0 0 8px;
+      min-height: 8px;
+      width: 100%;
+      cursor: row-resize;
+      background: linear-gradient(90deg, #d2def5 0%, #b8c9ea 100%);
+    }
+
+    .svg-stage {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
+      border: 1px solid #e2e9f7;
+      background: #fbfdff;
+      overflow: hidden;
+      position: relative;
+      cursor: grab;
+    }
+
+    .svg-stage.dragging {
+      cursor: grabbing;
     }
 
     .showcase-layout {
@@ -283,10 +358,11 @@
 
     .chart-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-template-rows: 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: minmax(0, 1fr);
       gap: 8px;
       min-height: 0;
+      height: 100%;
     }
 
     .chart-card {
@@ -294,6 +370,8 @@
       border-radius: 8px;
       background: #fbfdff;
       padding: 8px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
       min-height: 0;
     }
 
@@ -306,10 +384,20 @@
 
     .chart-svg {
       width: 100%;
-      height: 132px;
-      min-height: 132px;
+      height: 100%;
+      min-height: 0;
       background: #fff;
       border: 1px solid #e2e9f7;
+      border-radius: 6px;
+    }
+
+    .chart-canvas {
+      width: 100%;
+      height: 100%;
+      min-height: 150px;
+      min-width: 180px;
+      resize: both;
+      overflow: hidden;
       border-radius: 6px;
     }
 
@@ -337,6 +425,8 @@
 
     .compare-arrow {
       display: grid;
+      align-self: stretch;
+      grid-template-rows: 1fr auto;
       place-items: center;
       color: #2f66f3;
       font-weight: 800;
@@ -350,7 +440,8 @@
       color: #4d6492;
       font-size: 12px;
       font-weight: 600;
-      margin-top: 2px;
+      margin-top: 0;
+      margin-bottom: 8px;
     }
 
     @media (max-width: 1500px) {
@@ -362,7 +453,8 @@
         padding: 8px 0;
       }
       .poster-grid { grid-template-columns: 1fr; }
-      .right-stack { grid-template-rows: auto auto; }
+      .poster-grid { flex-direction: column; }
+      .right-stack { gap: 12px; }
       .combo-column { grid-template-rows: auto; }
       .showcase-layout { grid-template-columns: 1fr; }
       .vertical-title {
@@ -377,7 +469,8 @@
       }
       .showcase-summary { min-height: auto; }
       .boards { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
-      svg { height: 520px; }
+      .svg-stage { height: 520px; }
+      .pane-resizer { display: none; }
     }
   </style>
 </head>
@@ -388,13 +481,11 @@
     </header>
 
     <section class="poster-grid">
-      <article class="poster-column">
+      <article class="poster-column" id="bgColumn" style="flex:0 0 32%;">
         <h2>业务背景介绍</h2>
         <p class="desc">聚焦挑战1，突出业务场景中的资源利用率问题。</p>
         <div class="panel bg-panel">
-          <div class="bg-gallery">
-            <img class="bg-image" src="./assets/background-intro-1.png" alt="业务背景挑战1-图片1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92&quot;>未找到 assets/background-intro-1.png，请放入第一张业务背景图。</div>'" />
-          </div>
+          <div class="bg-gallery"></div>
           <div class="bg-card">
             <h3>挑战1：资源利用率低</h3>
             <ul>
@@ -407,17 +498,28 @@
               <li>需要更灵活的调度策略以提升按时完成率与资源利用率。</li>
             </ul>
           </div>
+          <div class="bg-item active" id="bgItem1" data-item="1" style="left:5%; top:5%; width:40%; height:38%;">
+            <img class="bg-image" src="./assets/background-intro-1.png" alt="业务背景挑战-图片1" onerror="this.outerHTML='<div style=&quot;color:#5e6f92;padding:10px;font-size:13px;&quot;>未找到 assets/background-intro-1.png，请放入第一张业务背景图。</div>'" />
+            <span class="resize-handle" aria-hidden="true"></span>
+          </div>
+          <div class="bg-item" id="bgItem2" data-item="2" style="left:53%; top:8%; width:40%; height:35%;">
+            <img class="bg-image" src="./assets/background-intro-2.png" alt="业务背景挑战-图片2" onerror="this.outerHTML='<div style=&quot;color:#5e6f92;padding:10px;font-size:13px;&quot;>未找到 assets/background-intro-2.png，请放入第二张业务背景图。</div>'" />
+            <span class="resize-handle" aria-hidden="true"></span>
+          </div>
         </div>
       </article>
+      <div class="pane-resizer vertical" id="mainSplitter" title="拖拽调整左侧与右侧区域宽度"></div>
 
-      <div class="right-stack">
-        <article class="poster-column middle-column">
+      <div class="right-stack" id="rightStack">
+        <article class="poster-column middle-column" id="techColumn" style="flex:0 0 64%;">
           <h2>技术介绍</h2>
           <p class="desc">该栏改为横向排布，对比更直观展示左右两条链路差异。</p>
           <div class="boards">
             <section class="card hard">
               <h3>硬调度</h3>
-              <svg id="hardSVG" viewBox="0 0 560 560"></svg>
+              <div class="svg-stage" id="hardStage" title="拖拽移动，滚轮缩放，双击重置">
+                <svg id="hardSVG" viewBox="0 0 560 560"></svg>
+              </div>
             </section>
             <div class="compare-arrow" aria-hidden="true">
               <span>→</span>
@@ -425,40 +527,62 @@
             </div>
             <section class="card soft">
               <h3>软调度</h3>
-              <svg id="softSVG" viewBox="0 0 560 560"></svg>
+              <div class="svg-stage" id="softStage" title="拖拽移动，滚轮缩放，双击重置">
+                <svg id="softSVG" viewBox="0 0 560 560"></svg>
+              </div>
             </section>
           </div>
         </article>
+        <div class="pane-resizer horizontal" id="rightSplitter" title="拖拽调整技术介绍与效果展示高度"></div>
 
-        <article class="poster-column combo-column">
+        <article class="poster-column combo-column" id="effectColumn" style="flex:1 1 auto;">
           <div class="showcase-layout">
             <div class="vertical-title">效果展示</div>
             <div class="chart-grid">
               <section class="chart-card">
                 <h4>按时完成率（%）</h4>
-                <svg class="chart-svg" viewBox="0 0 560 260" aria-label="硬调度与TWS按时完成率柱状图">
-                  <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
-                  <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
-                  <rect x="160" y="103" width="100" height="117" fill="#e74c3c" rx="8"/>
-                  <rect x="320" y="21" width="100" height="199" fill="#27ae60" rx="8"/>
-                  <text x="210" y="95" text-anchor="middle" font-size="14" fill="#243b66">56.91%</text>
-                  <text x="370" y="15" text-anchor="middle" font-size="14" fill="#243b66">99.54%</text>
-                  <text x="210" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">硬调度</text>
-                  <text x="370" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">TWS</text>
-                </svg>
+                <div class="chart-canvas" title="拖拽右下角可调整柱状图大小">
+                  <svg class="chart-svg" viewBox="0 0 560 260" aria-label="硬调度与TWS按时完成率柱状图">
+                    <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                    <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                    <rect x="160" y="103" width="100" height="117" fill="#e74c3c" rx="8"/>
+                    <rect x="320" y="21" width="100" height="199" fill="#27ae60" rx="8"/>
+                    <text x="210" y="95" text-anchor="middle" font-size="18" fill="#243b66">56.91%</text>
+                    <text x="370" y="15" text-anchor="middle" font-size="18" fill="#243b66">99.54%</text>
+                    <text x="210" y="242" text-anchor="middle" font-size="16" fill="#4a5b7d">硬调度</text>
+                    <text x="370" y="242" text-anchor="middle" font-size="16" fill="#4a5b7d">TWS</text>
+                  </svg>
+                </div>
               </section>
               <section class="chart-card">
                 <h4>端到端耗时（s）</h4>
-                <svg class="chart-svg" viewBox="0 0 560 260" aria-label="硬调度与TWS端到端耗时柱状图">
-                  <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
-                  <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
-                  <rect x="160" y="90" width="100" height="130" fill="#e74c3c" rx="8"/>
-                  <rect x="320" y="123" width="100" height="97" fill="#27ae60" rx="8"/>
-                  <text x="210" y="82" text-anchor="middle" font-size="14" fill="#243b66">6.75s</text>
-                  <text x="370" y="115" text-anchor="middle" font-size="14" fill="#243b66">5.02s</text>
-                  <text x="210" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">硬调度</text>
-                  <text x="370" y="242" text-anchor="middle" font-size="12" fill="#4a5b7d">TWS</text>
-                </svg>
+                <div class="chart-canvas" title="拖拽右下角可调整柱状图大小">
+                  <svg class="chart-svg" viewBox="0 0 560 260" aria-label="硬调度与TWS端到端耗时柱状图">
+                    <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                    <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                    <rect x="160" y="90" width="100" height="130" fill="#e74c3c" rx="8"/>
+                    <rect x="320" y="123" width="100" height="97" fill="#27ae60" rx="8"/>
+                    <text x="210" y="82" text-anchor="middle" font-size="18" fill="#243b66">6.75s</text>
+                    <text x="370" y="115" text-anchor="middle" font-size="18" fill="#243b66">5.02s</text>
+                    <text x="210" y="242" text-anchor="middle" font-size="16" fill="#4a5b7d">硬调度</text>
+                    <text x="370" y="242" text-anchor="middle" font-size="16" fill="#4a5b7d">TWS</text>
+                  </svg>
+                </div>
+              </section>
+              <section class="chart-card">
+                <h4>NPU资源利用率（%）</h4>
+                <div class="chart-canvas" title="拖拽右下角可调整柱状图大小">
+                  <svg class="chart-svg" viewBox="0 0 560 260" aria-label="三任务串行与并行NPU资源利用率柱状图">
+                    <line x1="52" y1="16" x2="52" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                    <line x1="52" y1="220" x2="536" y2="220" stroke="#9ca9c0" stroke-width="1.5"/>
+                    <rect x="160" y="145" width="100" height="75" fill="#e67e22" rx="8"/>
+                    <rect x="320" y="46" width="100" height="174" fill="#16a085" rx="8"/>
+                    <text x="210" y="137" text-anchor="middle" font-size="18" fill="#243b66">37.55%</text>
+                    <text x="370" y="38" text-anchor="middle" font-size="18" fill="#243b66">86.84%</text>
+                    <text x="210" y="242" text-anchor="middle" font-size="16" fill="#4a5b7d">三任务串行</text>
+                    <text x="370" y="242" text-anchor="middle" font-size="16" fill="#4a5b7d">三任务并行</text>
+                  </svg>
+                </div>
               </section>
             </div>
             <aside class="showcase-summary">
@@ -751,6 +875,188 @@
     const softNodes = setupSoft();
     hardAnimation(hardNodes);
     softAnimation(softNodes);
+
+    const stageState = {
+      hardStage: { scale: 100, x: 0, y: 0 },
+      softStage: { scale: 100, x: 0, y: 0 }
+    };
+
+    function applyStageTransform(stageId) {
+      const stage = document.getElementById(stageId);
+      const svg = stage.querySelector('svg');
+      const s = stageState[stageId];
+      svg.style.transformOrigin = 'center center';
+      svg.style.transform = `translate(${s.x}px, ${s.y}px) scale(${s.scale / 100})`;
+    }
+
+    function clamp(val, min, max) { return Math.min(max, Math.max(min, val)); }
+
+    function bindSvgDirectEditor(stageId) {
+      const stage = document.getElementById(stageId);
+      let dragging = false;
+      let startX = 0;
+      let startY = 0;
+      let baseX = 0;
+      let baseY = 0;
+
+      stage.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return;
+        dragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        baseX = stageState[stageId].x;
+        baseY = stageState[stageId].y;
+        stage.classList.add('dragging');
+        stage.setPointerCapture(e.pointerId);
+      });
+
+      stage.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        stageState[stageId].x = baseX + (e.clientX - startX);
+        stageState[stageId].y = baseY + (e.clientY - startY);
+        applyStageTransform(stageId);
+      });
+
+      const stopDrag = () => {
+        dragging = false;
+        stage.classList.remove('dragging');
+      };
+      stage.addEventListener('pointerup', stopDrag);
+      stage.addEventListener('pointercancel', stopDrag);
+
+      stage.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 6 : -6;
+        stageState[stageId].scale = clamp(stageState[stageId].scale + delta, 55, 220);
+        applyStageTransform(stageId);
+      }, { passive: false });
+
+      stage.addEventListener('dblclick', () => {
+        stageState[stageId] = { scale: 100, x: 0, y: 0 };
+        applyStageTransform(stageId);
+      });
+    }
+
+    applyStageTransform('hardStage');
+    applyStageTransform('softStage');
+    bindSvgDirectEditor('hardStage');
+    bindSvgDirectEditor('softStage');
+
+    const bgPanel = document.querySelector('.bg-panel');
+    const bgItems = [...document.querySelectorAll('.bg-item')];
+    let activeBgItem = bgItems[0];
+
+    function setActiveBgItem(item) {
+      activeBgItem = item || null;
+      bgItems.forEach((el) => el.classList.toggle('active', !!item && el === item));
+    }
+
+    function keepItemInBounds(item) {
+      const left = parseFloat(item.style.left);
+      const top = parseFloat(item.style.top);
+      const width = parseFloat(item.style.width);
+      const height = parseFloat(item.style.height);
+      item.style.left = `${clamp(left, 0, 100 - width)}%`;
+      item.style.top = `${clamp(top, 0, 100 - height)}%`;
+    }
+
+    function attachDrag(item) {
+      let mode = null;
+      let startX = 0;
+      let startY = 0;
+      let startLeft = 0;
+      let startTop = 0;
+      let startW = 0;
+      let startH = 0;
+
+      item.addEventListener('pointerdown', (e) => {
+        const wasActive = activeBgItem === item;
+        let moved = false;
+        setActiveBgItem(item);
+        item.setPointerCapture(e.pointerId);
+        const rect = bgPanel.getBoundingClientRect();
+        startX = e.clientX;
+        startY = e.clientY;
+        startLeft = parseFloat(item.style.left);
+        startTop = parseFloat(item.style.top);
+        startW = parseFloat(item.style.width);
+        startH = parseFloat(item.style.height);
+        mode = e.target.classList.contains('resize-handle') ? 'resize' : 'drag';
+
+        const onMove = (evt) => {
+          const dxPct = ((evt.clientX - startX) / rect.width) * 100;
+          const dyPct = ((evt.clientY - startY) / rect.height) * 100;
+          if (Math.abs(dxPct) > 0.2 || Math.abs(dyPct) > 0.2) moved = true;
+          if (mode === 'drag') {
+            item.style.left = `${clamp(startLeft + dxPct, 0, 100 - parseFloat(item.style.width))}%`;
+            item.style.top = `${clamp(startTop + dyPct, 0, 100 - parseFloat(item.style.height))}%`;
+          } else {
+            item.style.width = `${clamp(startW + dxPct, 18, 95)}%`;
+            item.style.height = `${clamp(startH + dyPct, 18, 95)}%`;
+            keepItemInBounds(item);
+          }
+        };
+
+        const onUp = () => {
+          if (!moved && wasActive) setActiveBgItem(null);
+          item.removeEventListener('pointermove', onMove);
+          item.removeEventListener('pointerup', onUp);
+          item.removeEventListener('pointercancel', onUp);
+        };
+
+        item.addEventListener('pointermove', onMove);
+        item.addEventListener('pointerup', onUp);
+        item.addEventListener('pointercancel', onUp);
+      });
+    }
+
+    bgItems.forEach((item) => {
+      item.dataset.baseW = parseFloat(item.style.width);
+      item.dataset.baseH = parseFloat(item.style.height);
+      item.dataset.scale = 100;
+      attachDrag(item);
+    });
+
+    setActiveBgItem(document.getElementById('bgItem1'));
+
+    function setupPaneResizer(splitter, primaryPane, secondaryPane, direction = 'vertical') {
+      let dragging = false;
+      let start = 0;
+      let startPrimary = 0;
+      let startSecondary = 0;
+
+      splitter.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        splitter.setPointerCapture(e.pointerId);
+        start = direction === 'vertical' ? e.clientX : e.clientY;
+        const pRect = primaryPane.getBoundingClientRect();
+        const sRect = secondaryPane.getBoundingClientRect();
+        startPrimary = direction === 'vertical' ? pRect.width : pRect.height;
+        startSecondary = direction === 'vertical' ? sRect.width : sRect.height;
+      });
+
+      splitter.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const delta = (direction === 'vertical' ? e.clientX : e.clientY) - start;
+        const total = startPrimary + startSecondary;
+        const min = total * 0.2;
+        const newPrimary = clamp(startPrimary + delta, min, total - min);
+        const newSecondary = total - newPrimary;
+        primaryPane.style.flex = `0 0 ${newPrimary}px`;
+        secondaryPane.style.flex = `0 0 ${newSecondary}px`;
+      });
+
+      const stopDrag = () => { dragging = false; };
+      splitter.addEventListener('pointerup', stopDrag);
+      splitter.addEventListener('pointercancel', stopDrag);
+    }
+
+    const bgColumn = document.getElementById('bgColumn');
+    const rightStack = document.getElementById('rightStack');
+    const techColumn = document.getElementById('techColumn');
+    const effectColumn = document.getElementById('effectColumn');
+    setupPaneResizer(document.getElementById('mainSplitter'), bgColumn, rightStack, 'vertical');
+    setupPaneResizer(document.getElementById('rightSplitter'), techColumn, effectColumn, 'horizontal');
 
     const demoVideo = document.getElementById('demoVideo');
     if (demoVideo) {
